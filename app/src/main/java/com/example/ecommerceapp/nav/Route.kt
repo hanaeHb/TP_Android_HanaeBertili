@@ -210,6 +210,7 @@ fun DetailsScreen(productId: String) {
             category = "Hydrate Cream",
             quantity = 12
         )
+
         "P2" -> Product(
             id = "P2",
             title = "iUNIK – Centella Calming Gel Cream",
@@ -219,6 +220,7 @@ fun DetailsScreen(productId: String) {
             category = "Hydrate Cream",
             quantity = 5
         )
+
         "P3" -> Product(
             id = "P3",
             title = "Beauty of Joseon – Ground Rice and Honey Glow Serum",
@@ -228,6 +230,7 @@ fun DetailsScreen(productId: String) {
             category = "Serum",
             quantity = 20
         )
+
         "P4" -> Product(
             id = "P4",
             title = "Medicube PDRN Pink One Day Serum Set",
@@ -237,6 +240,7 @@ fun DetailsScreen(productId: String) {
             category = "Serum",
             quantity = 10
         )
+
         "P5" -> Product(
             id = "P5",
             title = "Anua – Peach Niacin UV Tone Up",
@@ -246,6 +250,7 @@ fun DetailsScreen(productId: String) {
             category = "Sunscreen",
             quantity = 8
         )
+
         "P6" -> Product(
             id = "P6",
             title = "Beauty of Joseon – Sunscreen",
@@ -255,6 +260,7 @@ fun DetailsScreen(productId: String) {
             category = "Sunscreen",
             quantity = 33
         )
+
         "P7" -> Product(
             id = "P7",
             title = "SKIN 1004 Madagascar Centella",
@@ -264,6 +270,7 @@ fun DetailsScreen(productId: String) {
             category = "Mask",
             quantity = 29
         )
+
         "P8" -> Product(
             id = "P8",
             title = "Mary & May Calendula Peptide Ageless",
@@ -273,6 +280,7 @@ fun DetailsScreen(productId: String) {
             category = "Serum",
             quantity = 0
         )
+
         else -> Product(
             id = "?",
             title = "Produit inconnu",
@@ -295,71 +303,75 @@ fun DetailsScreen(productId: String) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("My Store", style = MaterialTheme.typography.headlineSmall)
+            Text("여자_SKIN", style = MaterialTheme.typography.headlineSmall)
             Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Panier")
         }
 
-        // Main content
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.Top
+                .padding(top = 100.dp) // مسافة بين الرأس والمحتوى
         ) {
-            // Image on the left
-            AsyncImage(
-                model = product.imageResId,
-                contentDescription = null,
+            // Row for image and product details
+            Row(
                 modifier = Modifier
-                    .size(160.dp)
-                    .clip(RoundedCornerShape(10.dp))
-            )
-
-            // Product details on the right
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.Top
             ) {
-                // Product title, price, and quantity
-                Text("Title: ${product.title}", style = MaterialTheme.typography.titleLarge)
-                Text("Price: ${product.price} $", style = MaterialTheme.typography.bodyLarge)
-                Text("${product.quantity} in stock", style = MaterialTheme.typography.bodyMedium)
+                // Image of the product
+                AsyncImage(
+                    model = product.imageResId,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(240.dp)
+                        .width(175.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
+                )
 
-                Spacer(modifier = Modifier.height(16.dp))
 
-                // Add to Cart button
-                Button(
-                    onClick = {  },
-                    modifier = Modifier.fillMaxWidth()
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
                 ) {
-                    Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Panier")
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Add to Cart")
+
+                    Text("${product.title}", style = MaterialTheme.typography.titleLarge)
+                    Text("${product.price} $", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        "${product.quantity} in stock",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Green)
+                    )
+
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+                    Button(
+                        onClick = { },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFFFFFF),
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Panier"
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Add to Cart")
+                    }
+
                 }
             }
-        }
 
-        // Description below the product details
-        Text(
-            "Description: ${product.description}",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(16.dp)
-        )
-
-        // Footer
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 0.dp, bottom = 48.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Me")
-            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Panier")
+            Text(
+                "${product.description}",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
 }
