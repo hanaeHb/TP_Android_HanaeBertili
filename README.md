@@ -1,10 +1,15 @@
 # APPLICATION MOBILE Ecommerce SKIN CARE "여자_SKIN"
+
 # First Page
 ![greating](https://github.com/user-attachments/assets/93c1c76d-355d-468a-9075-ff0bc0747f08)
 
-# Home
-![WhatsApp Image 2025-05-04 à 04 02 46_60408d9b](https://github.com/user-attachments/assets/0be0ea83-d03f-44a5-bb1e-fadcccf43133)
+# Home_1
+![home1](https://github.com/user-attachments/assets/02d999ba-78fe-4099-b35d-609d2cfa5e65)
+
+# Home_2
+![home2](https://github.com/user-attachments/assets/d4a27c0b-685e-4073-bc85-f51d3e5ae2d7)
+
 # Product Page
-![WhatsApp Image 2025-05-04 à 04 02 46_ec7cc5bc](https://github.com/user-attachments/assets/10b61d0a-e23d-4ffe-b7db-c6ea5aa1a100)
+![details](https://github.com/user-attachments/assets/28b3b181-4b14-4616-9da9-ec7551132e69)
 
 
