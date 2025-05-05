@@ -2,63 +2,56 @@ package com.example.ecommerceapp.nav
 
 
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
-
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.ecommerceapp.Product
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-
-
 import coil.compose.AsyncImage
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.*
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-
-import coil.compose.rememberImagePainter
+import com.example.ecommerceapp.Product
 import com.example.ecommerceapp.R
+import kotlinx.coroutines.delay
 
 
 object Routes {
+    const val  Greating = "Greating"
     const val  Home = "Home"
     const val  ProductDetails = "ProductDetails"
 }
@@ -66,13 +59,21 @@ object Routes {
 fun AppNav() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routes.Home) {
+
+    NavHost(navController = navController, startDestination = Routes.Greating) {
+        composable(Routes.Greating) {
+            GreetingScreen(onNavigateToHome = {
+                navController.navigate(Routes.Home) {
+                    popUpTo(Routes.Greating) { inclusive = true }
+                }
+            })
+        }
+
         composable(Routes.Home) {
             HomeScreen(onProductClick = { productId ->
                 navController.navigate("${Routes.ProductDetails}/$productId")
             })
         }
-
 
         composable(
             route = "${Routes.ProductDetails}/{productId}",
@@ -82,6 +83,112 @@ fun AppNav() {
             DetailsScreen(productId = productId)
         }
     }
+}
+
+
+@Composable
+fun GreetingScreen(onNavigateToHome: () -> Unit) {
+
+    val alphaAnim = remember { Animatable(0f) }
+
+    val progressAnim = remember { Animatable(0f) }
+
+    val col = Color(0xFFF1A892)
+
+    val customFontFamily = FontFamily(
+        Font(R.font.dancingscript)
+    )
+
+    LaunchedEffect(Unit) {
+        alphaAnim.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 2000)
+        )
+        progressAnim.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 5000)
+        )
+        delay(8000)
+        onNavigateToHome()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(col)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = (-40).dp)
+                .padding(top = 4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "We care about your skin my lady",
+                fontSize = 38.sp,
+                fontFamily = customFontFamily,
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+                modifier = Modifier
+                    .alpha(alphaAnim.value)
+                    .padding(bottom = 20.dp)
+            )
+
+            Image(
+                painter = painterResource(id = R.drawable.beauty),
+                contentDescription = "Welcome Image",
+                modifier = Modifier
+                    .size(375.dp)
+                    .padding(start = 40.dp, top = 6.dp)
+                    .alpha(alphaAnim.value),
+                contentScale = ContentScale.Fit
+            )
+
+            Text(
+                text = "Every stylish woman needs Korean skincare products.",
+                fontSize = 28.sp,
+                fontFamily = customFontFamily,
+                textAlign = TextAlign.End,
+                color = Color.Black,
+                modifier = Modifier
+                    .alpha(alphaAnim.value)
+                    .padding(bottom = 20.dp, top = 4.dp)
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 35.dp, end = 35.dp, bottom = 68.dp)
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 20.dp)
+        ) {
+            LoadingLine(progressAnim)
+        }
+    }
+}
+
+@Composable
+fun LoadingLine(progressAnim: Animatable<Float, *>) {
+    val col = Color(0xFFF1A892)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(6.dp)
+            .alpha(progressAnim.value)
+            .clip(RoundedCornerShape(3.dp))
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(Color.White, col),
+                    start = Offset(0f, 0f),
+                    end = Offset(1000f, 0f)
+                )
+            )
+            .width(progressAnim.value * 320.dp)
+    )
 }
 
 
@@ -105,9 +212,13 @@ fun HomeScreen(onProductClick: (String) -> Unit) {
         Product("P8", "Mary & May Calendula Peptide Ageless", "In order to reduce inflammation, heal damaged skin, and soothe irritations, this sleeping mask contains 2,200ppm of calendula extract, peptides, and cica extract. A boost of hydration is provided by an additional hyaluronic acid component."
             , R.drawable.marymay, 3600.00, "Serum", 0),
     )
-
-    Column(modifier = Modifier.fillMaxSize()) {
-
+    val customFontFamily = FontFamily(
+        Font(R.font.dancingscript)
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -116,34 +227,54 @@ fun HomeScreen(onProductClick: (String) -> Unit) {
                 .background(Color(0xFFF1A892)),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-        )
-        {
-            Text("여자_SKIN", style = MaterialTheme.typography.headlineSmall)
-            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Panier")
+        ) {
+            Text(
+                text = "여자_SKIN",
+                fontSize = 22.sp,
+                fontFamily = customFontFamily,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = "Category",
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(24.dp)
+            )
         }
-
-
-        Image(
-            painter = painterResource(id = R.drawable.introo),
-            contentDescription = "Intro",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
-            contentScale = ContentScale.Crop
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
-                .fillMaxHeight(0.85f)
-                .padding(horizontal = 16.dp),
+                .weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
+            contentPadding = PaddingValues(bottom = 64.dp)
         ) {
+            item(span = { GridItemSpan(2) }) {
+                Image(
+                    painter = painterResource(id = R.drawable.introo),
+                    contentDescription = "Intro",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            item(span = { GridItemSpan(2) }) {
+                Text(
+                    text = "Products for you my lady",
+                    fontSize = 32.sp,
+                    fontFamily = customFontFamily,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 150.dp, bottom = 25.dp)
+                )
+            }
+
             items(products) { product ->
                 ProductCard(product = product, onClick = { onProductClick(product.id) })
             }
@@ -153,7 +284,8 @@ fun HomeScreen(onProductClick: (String) -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 8.dp),
+                .height(80.dp)
+                .padding(bottom = 45.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -162,16 +294,20 @@ fun HomeScreen(onProductClick: (String) -> Unit) {
             Icon(imageVector = Icons.Default.Person, contentDescription = "Me")
             Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Panier")
         }
-
     }
 }
 
 @Composable
 fun ProductCard(product: Product, onClick: () -> Unit) {
+    val customFontFamily = FontFamily(
+        Font(R.font.dancingscript)
+    )
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
+            .height(280.dp)
+            .width(250.dp)
+            .padding(horizontal = 8.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF1A892)),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -179,7 +315,7 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
     ) {
         Column(
             modifier = Modifier
-                .padding(4.dp)
+                .padding(8.dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -192,14 +328,57 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
                     .clip(RectangleShape),
                 contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = product.title, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Spacer(modifier = Modifier.height(6.dp))
+
+
+            Text(
+                text = product.title,
+                fontWeight = FontWeight.Bold,
+                fontFamily = customFontFamily,
+                fontSize = 15.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+
+            Text(
+                text = "${product.price} $",
+                fontSize = 13.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(top = 2.dp)
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+            ) {
+                repeat(5) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Star",
+                        tint = Color.Black,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
         }
     }
 }
 
+
 @Composable
 fun DetailsScreen(productId: String) {
+
+    val customFontFamily = FontFamily(
+        Font(R.font.dancingscript)
+    )
+
+    val stCol = Color(0xFF338F82)
+    val col = Color(0xFFF1A892)
+
     val product = when (productId) {
         "P1" -> Product(
             id = "P1",
@@ -293,7 +472,7 @@ fun DetailsScreen(productId: String) {
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // Header
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -303,15 +482,27 @@ fun DetailsScreen(productId: String) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("여자_SKIN", style = MaterialTheme.typography.headlineSmall)
-            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Panier")
+            Text(
+                text = "여자_SKIN",
+                fontSize = 22.sp,
+                fontFamily = customFontFamily,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = "Category",
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(24.dp)
+            )
         }
 
         Column(
             modifier = Modifier
-                .padding(top = 100.dp) // مسافة بين الرأس والمحتوى
+                .padding(top = 100.dp)
         ) {
-            // Row for image and product details
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -319,14 +510,14 @@ fun DetailsScreen(productId: String) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.Top
             ) {
-                // Image of the product
+
                 AsyncImage(
                     model = product.imageResId,
                     contentDescription = null,
                     modifier = Modifier
                         .height(240.dp)
                         .width(175.dp)
-                        .clip(RoundedCornerShape(10.dp)),
+                        .size(250.dp),
                     contentScale = ContentScale.Crop
                 )
 
@@ -337,11 +528,18 @@ fun DetailsScreen(productId: String) {
                         .padding(8.dp)
                 ) {
 
-                    Text("${product.title}", style = MaterialTheme.typography.titleLarge)
-                    Text("${product.price} $", style = MaterialTheme.typography.bodyLarge)
+                    Text("${product.title}",
+                        fontFamily = customFontFamily,
+                        fontSize = 22.sp,
+                    )
+                    Text("${product.price} $",
+                        fontFamily = customFontFamily,
+                        fontSize = 18.sp,
+                        color = col
+                        )
                     Text(
                         "${product.quantity} in stock",
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Green)
+                        style = MaterialTheme.typography.bodyMedium.copy(stCol)
                     )
 
 
@@ -352,7 +550,7 @@ fun DetailsScreen(productId: String) {
                         onClick = { },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFFFFFFF),
+                            containerColor = col,
                             contentColor = Color.Black
                         )
                     ) {
@@ -370,9 +568,11 @@ fun DetailsScreen(productId: String) {
             Text(
                 "${product.description}",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(start = 16.dp, top = 35.dp, end = 16.dp)
             )
         }
     }
 }
+
+
 
