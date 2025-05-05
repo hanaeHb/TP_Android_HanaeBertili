@@ -1,4 +1,4 @@
-# APPLICATION MOBILE Ecommerce SKIN CARE "여자_SKIN"
+# APPLICATION MOBILE ECOMMERCE SKIN CARE "여자_SKIN"
 
 # First Page
 ![image](https://github.com/user-attachments/assets/8be2c05c-f294-4ba8-b6ab-459089850dae)
