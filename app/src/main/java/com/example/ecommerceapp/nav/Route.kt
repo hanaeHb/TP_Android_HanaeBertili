@@ -44,9 +44,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import coil.compose.AsyncImage
-import com.example.ecommerceapp.Product
+import com.example.ecommerceapp.ui.product.component.DetailsScreen
+import com.example.ecommerceapp.ui.product.Screen.HomeScreen
 import com.example.ecommerceapp.R
+import com.example.ecommerceapp.ui.product.ProductViewModel
 import kotlinx.coroutines.delay
 
 
@@ -56,7 +57,7 @@ object Routes {
     const val  ProductDetails = "ProductDetails"
 }
 @Composable
-fun AppNav() {
+fun AppNav(viewModel: ProductViewModel) {
     val navController = rememberNavController()
 
 
@@ -70,7 +71,7 @@ fun AppNav() {
         }
 
         composable(Routes.Home) {
-            HomeScreen(onProductClick = { productId ->
+            HomeScreen(viewModel, onProductClick = { productId ->
                 navController.navigate("${Routes.ProductDetails}/$productId")
             })
         }
@@ -191,7 +192,7 @@ fun LoadingLine(progressAnim: Animatable<Float, *>) {
     )
 }
 
-
+/*
 @Composable
 fun HomeScreen(onProductClick: (String) -> Unit) {
     val products = listOf(
@@ -295,8 +296,8 @@ fun HomeScreen(onProductClick: (String) -> Unit) {
             Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Panier")
         }
     }
-}
-
+}*/
+/*
 @Composable
 fun ProductCard(product: Product, onClick: () -> Unit) {
     val customFontFamily = FontFamily(
@@ -366,9 +367,9 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
             }
         }
     }
-}
+}*/
 
-
+/*
 @Composable
 fun DetailsScreen(productId: String) {
 
@@ -572,7 +573,7 @@ fun DetailsScreen(productId: String) {
             )
         }
     }
-}
+}*/
 
 
 
