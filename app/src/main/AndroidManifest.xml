@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/logop"
+        android:icon="@drawable/jennie"
         android:label="여자_SKIN"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"

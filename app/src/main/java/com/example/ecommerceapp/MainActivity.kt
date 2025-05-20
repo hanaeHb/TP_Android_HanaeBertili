@@ -12,7 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.ecommerceapp.nav.AppNav
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import com.example.ecommerceapp.ui.theme.EcommerceAPPTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: ProductViewModel by viewModels<ProductViewModel>()
