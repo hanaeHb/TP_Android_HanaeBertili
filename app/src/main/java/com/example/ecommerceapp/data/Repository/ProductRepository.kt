@@ -12,9 +12,9 @@ class ProductRepository @Inject constructor(){
         delay(2000)
         return listOf(
             Product("P1", "Dr.Althea – 345 Relief Cream", "Resveratrol 345NA – Intensive Repair Cream is a regenerating ointment gel cream rich in nutrients. The product strengthens the cell regeneration function in our skin for firmer skin while reducing the appearance of fine lines and wrinkles."
-                ,  R.drawable.dralthea, 990.99, "Hydrate Cream", 12),
+                ,  R.drawable.medicup, 990.99, "Hydrate Cream", 12),
             Product("P2", "iUNIK – Centella Calming Gel Cream", "iUNIK Centella Calming Gel Cream is formulated with Centella Asiatica Leaf Water and Tea Tree Leaf Water to soothe and hydrate the skin."
-                , R.drawable.centella, 399.99, "Hydrate Cream", 5),
+                , R.drawable.snail, 399.99, "Hydrate Cream", 5),
             Product("P3", "Beauty of joseon-Ground", "Beauty of Joseon Ground Rice and Honey Glow Serum is a serum enriched with ground rice and honey, designed to enhance skin radiance and hydration."
                 , R.drawable.joseon, 595.90, "Serum", 20),
             Product("P4", "Medicube PDRN Pink One Day Serum Set", "Packed with 99% salmon PDRN and collagen, this potent anti-aging ampoule restore skin elasticity and promote skin cell regeneration."

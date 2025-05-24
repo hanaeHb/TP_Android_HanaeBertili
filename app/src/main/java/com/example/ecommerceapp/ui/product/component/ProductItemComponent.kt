@@ -25,60 +25,64 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
-
+import androidx.compose.foundation.shape.RoundedCornerShape
 @Composable
 fun ProductCard(product: Product, onClick: () -> Unit) {
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
 
-    Card(
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(280.dp)
-            .width(250.dp)
-            .padding(horizontal = 8.dp)
+            .width(160.dp)
+            .padding(8.dp)
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF1A892)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = RectangleShape
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
+        Card(
             modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .width(160.dp)
+                .height(200.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFE6E6FA)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            Image(
-                painter = painterResource(id = product.imageResId),
-                contentDescription = product.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RectangleShape),
-                contentScale = ContentScale.Crop
-            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = product.imageResId),
+                    contentDescription = product.title,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(5.dp)
+                        .clip(RoundedCornerShape(24.dp)),
+                    contentScale = ContentScale.Crop
 
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = product.title,
-                fontWeight = FontWeight.Bold,
-                fontFamily = customFontFamily,
-                fontSize = 15.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Text(
-                text = "${product.price} $",
-                fontSize = 13.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(top = 2.dp)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            RatingStars(rating = 5)
+                )
+            }
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = product.title,
+            fontWeight = FontWeight.Bold,
+            fontFamily = customFontFamily,
+            fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            color = Color(0xFF1D0057)
+        )
+
+        Text(
+            text = "${product.price} $",
+            fontSize = 13.sp,
+            color = Color(0xFF1D0057),
+            modifier = Modifier.padding(top = 2.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        RatingStars(rating = 5)
     }
 }

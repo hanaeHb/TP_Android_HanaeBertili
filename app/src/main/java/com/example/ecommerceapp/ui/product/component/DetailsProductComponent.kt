@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
@@ -40,14 +42,15 @@ fun DetailsScreen(productId: String) {
     )
 
     val stCol = Color(0xFF338F82)
-    val col = Color(0xFFF1A892)
+    val col = Color(0xFF907E36)
+    val colM = Color(0xFFE6E6FA)
 
     val product = when (productId) {
         "P1" -> Product(
             id = "P1",
             title = "Dr.Althea – 345 Relief Cream",
             description = "Resveratrol 345NA – Intensive Repair Cream is a regenerating ointment gel cream rich in nutrients. The product strengthens the cell regeneration function in our skin for firmer skin while reducing the appearance of fine lines and wrinkles.",
-            imageResId = R.drawable.dralthea,
+            imageResId = R.drawable.medicup,
             price = 990.99,
             category = "Hydrate Cream",
             quantity = 12
@@ -57,7 +60,7 @@ fun DetailsScreen(productId: String) {
             id = "P2",
             title = "iUNIK – Centella Calming Gel Cream",
             description = "iUNIK Centella Calming Gel Cream is formulated with Centella Asiatica Leaf Water and Tea Tree Leaf Water to soothe and hydrate the skin.",
-            imageResId = R.drawable.centella,
+            imageResId = R.drawable.snail,
             price = 399.99,
             category = "Hydrate Cream",
             quantity = 5
@@ -141,7 +144,7 @@ fun DetailsScreen(productId: String) {
                 .fillMaxWidth()
                 .padding(top = 32.dp)
                 .height(50.dp)
-                .background(Color(0xFFF1A892)),
+                .background(Color.White),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -149,12 +152,14 @@ fun DetailsScreen(productId: String) {
                 text = "여자_SKIN",
                 fontSize = 22.sp,
                 fontFamily = customFontFamily,
+                color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
 
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Category",
+                tint = Color(0xFF907E36),
                 modifier = Modifier
                     .padding(8.dp)
                     .size(24.dp)
@@ -180,7 +185,8 @@ fun DetailsScreen(productId: String) {
                     modifier = Modifier
                         .height(240.dp)
                         .width(175.dp)
-                        .size(250.dp),
+                        .size(250.dp)
+                        .clip(RoundedCornerShape(24.dp)),
                     contentScale = ContentScale.Crop
                 )
 
@@ -213,13 +219,13 @@ fun DetailsScreen(productId: String) {
                         onClick = { },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = col,
-                            contentColor = Color.Black
+                            containerColor = colM,
+                            contentColor = col
                         )
                     ) {
                         Icon(
                             imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = "Panier"
+                            contentDescription = "cart"
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Add to Cart")

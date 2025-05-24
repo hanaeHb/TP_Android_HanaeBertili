@@ -18,7 +18,7 @@ fun RatingStars(rating: Int, modifier: Modifier = Modifier, starSize: Dp = 16.dp
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
-                tint = if (index < rating) Color.Black else Color.LightGray,
+                tint = if (index < rating) Color(0xFF907E36) else Color(0xFF1D0057),
                 modifier = Modifier.size(starSize)
             )
         }

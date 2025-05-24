@@ -42,6 +42,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ecommerceapp.ui.product.ProductIntent
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import com.example.ecommerceapp.ui.product.component.ProductCard
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.statusBars
 
 @Composable
 fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (String) -> Unit) {
@@ -61,9 +64,9 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp)
+                .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color(0xFFF1A892)),
+                .background(Color.White),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -71,12 +74,14 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
                 text = "여자_SKIN",
                 fontSize = 22.sp,
                 fontFamily = customFontFamily,
+                color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
 
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Category",
+                tint = Color(0xFF907E36),
                 modifier = Modifier
                     .padding(8.dp)
                     .size(24.dp)
@@ -90,7 +95,9 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Loading products...")
+                Text(text = "Loading products...",
+                    color = Color(0xFF907E36),
+                    )
             }
         } else if (state.error != null) {
 
@@ -111,18 +118,20 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
             ) {
                 item(span = { GridItemSpan(2) }) {
                     Image(
-                        painter = painterResource(id = R.drawable.introo),
+                        painter = painterResource(id = R.drawable.bestskincare),
                         contentDescription = "Intro",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(250.dp),
-                        contentScale = ContentScale.Crop
+                            .height(195.dp)
+                            .padding(top = 0.dp),
+                        contentScale = ContentScale.Fit
                     )
                 }
 
                 item(span = { GridItemSpan(2) }) {
                     Text(
                         text = "Products for you my lady",
+                        color = Color(0xFF907E36),
                         fontSize = 32.sp,
                         fontFamily = customFontFamily,
                         textAlign = TextAlign.Center,
@@ -146,10 +155,10 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Me")
-            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Panier")
+            Icon(imageVector = Icons.Default.Home, contentDescription = "Home", tint = Color(0xFF907E36),)
+            Icon(imageVector = Icons.Default.Search, contentDescription = "Search", tint = Color(0xFF907E36),)
+            Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = Color(0xFF907E36),)
+            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Cart", tint = Color(0xFF907E36),)
         }
     }
 }

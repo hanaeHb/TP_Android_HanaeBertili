@@ -86,30 +86,24 @@ fun AppNav(viewModel: ProductViewModel) {
     }
 }
 
-
 @Composable
 fun GreetingScreen(onNavigateToHome: () -> Unit) {
-
     val alphaAnim = remember { Animatable(0f) }
-
     val progressAnim = remember { Animatable(0f) }
+    val col = Color(0xFFBE9FEF)
 
-    val col = Color(0xFFF1A892)
-
-    val customFontFamily = FontFamily(
-        Font(R.font.dancingscript)
-    )
+    val customFontFamily = FontFamily(Font(R.font.dancingscript))
 
     LaunchedEffect(Unit) {
         alphaAnim.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 2000)
+            animationSpec = tween(2000)
         )
         progressAnim.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 5000)
+            animationSpec = tween(5000)
         )
-        delay(8000)
+        delay(5000)
         onNavigateToHome()
     }
 
@@ -118,77 +112,39 @@ fun GreetingScreen(onNavigateToHome: () -> Unit) {
             .fillMaxSize()
             .background(col)
     ) {
-        Column(
+
+        Image(
+            painter = painterResource(id = R.drawable.greet),
+            contentDescription = "Welcome Image",
             modifier = Modifier
                 .fillMaxSize()
-                .offset(y = (-40).dp)
-                .padding(top = 4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "We care about your skin my lady",
-                fontSize = 38.sp,
-                fontFamily = customFontFamily,
-                textAlign = TextAlign.Center,
-                color = Color.Black,
-                modifier = Modifier
-                    .alpha(alphaAnim.value)
-                    .padding(bottom = 20.dp)
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.beauty),
-                contentDescription = "Welcome Image",
-                modifier = Modifier
-                    .size(375.dp)
-                    .padding(start = 40.dp, top = 6.dp)
-                    .alpha(alphaAnim.value),
-                contentScale = ContentScale.Fit
-            )
-
-            Text(
-                text = "Every stylish woman needs Korean skincare products.",
-                fontSize = 28.sp,
-                fontFamily = customFontFamily,
-                textAlign = TextAlign.End,
-                color = Color.Black,
-                modifier = Modifier
-                    .alpha(alphaAnim.value)
-                    .padding(bottom = 20.dp, top = 4.dp)
-            )
-        }
+                .alpha(alphaAnim.value),
+            
+            contentScale = ContentScale.Crop
+        )
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 35.dp, end = 35.dp, bottom = 68.dp)
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 20.dp)
+                .align(Alignment.Center)
         ) {
-            LoadingLine(progressAnim)
+            LoadingText(progressAnim)
         }
     }
 }
 
 @Composable
-fun LoadingLine(progressAnim: Animatable<Float, *>) {
-    val col = Color(0xFFF1A892)
-
-    Box(
+fun LoadingText(progressAnim: Animatable<Float, *>) {
+    Text(
+        text = "Loading Application....",
         modifier = Modifier
             .fillMaxWidth()
-            .height(6.dp)
-            .alpha(progressAnim.value)
-            .clip(RoundedCornerShape(3.dp))
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(Color.White, col),
-                    start = Offset(0f, 0f),
-                    end = Offset(1000f, 0f)
-                )
-            )
-            .width(progressAnim.value * 320.dp)
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .alpha(progressAnim.value),
+        color = Color.White,
+        fontSize = 18.sp,
+        textAlign = TextAlign.Center,
+        fontWeight = FontWeight.Medium
     )
 }
 
