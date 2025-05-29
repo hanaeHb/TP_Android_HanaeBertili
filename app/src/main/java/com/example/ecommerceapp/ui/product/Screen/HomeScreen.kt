@@ -1,7 +1,11 @@
 package com.example.ecommerceapp.ui.product.Screen
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,6 +49,13 @@ import com.example.ecommerceapp.ui.product.component.ProductCard
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 
 @Composable
 fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (String) -> Unit) {
@@ -129,6 +140,39 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
                 }
 
                 item(span = { GridItemSpan(2) }) {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        listOf(
+                            Pair(R.drawable.sunscreen1, "Sunscreen"),
+                            Pair(R.drawable.serumm, "Serum"),
+                            Pair(R.drawable.mask, "Mask"),
+                            Pair(R.drawable.cream, "Hydrate Cream"),
+                            Pair(R.drawable.toner2, "Toner"),
+                        ).forEach { (iconRes, label) ->
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(top = 80.dp)
+                            ) {
+                                ZoomableImage(iconRes = iconRes, label = label)
+                                Text(
+                                    text = label,
+                                    color = Color(0xFF907E36),
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+
+                item(span = { GridItemSpan(2) }) {
                     Text(
                         text = "Products for you my lady",
                         color = Color(0xFF907E36),
@@ -137,7 +181,7 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 150.dp, bottom = 25.dp)
+                            .padding(top = 80.dp, bottom = 25.dp)
                     )
                 }
 
@@ -161,4 +205,25 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
             Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Cart", tint = Color(0xFF907E36),)
         }
     }
+}
+
+@Composable
+fun ZoomableImage(iconRes: Int, label: String) {
+    var clicked by remember { mutableStateOf(false) }
+
+    val scale by animateFloatAsState(if (clicked) 1.2f else 1f)
+
+    Image(
+        painter = painterResource(id = iconRes),
+        contentDescription = label,
+        modifier = Modifier
+            .size(78.dp)
+            .clip(CircleShape)
+            .background(Color(0xFFECECEC), shape = CircleShape)
+            .border(2.8.dp, Color(0xFFE6E6FA), CircleShape)
+            .padding(1.dp)
+            .scale(scale)
+            .clickable { clicked = !clicked },
+        contentScale = ContentScale.Crop
+    )
 }

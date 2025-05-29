@@ -7,6 +7,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -19,10 +21,14 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Box
+
+
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -114,7 +120,7 @@ fun GreetingScreen(onNavigateToHome: () -> Unit) {
     ) {
 
         Image(
-            painter = painterResource(id = R.drawable.greet),
+            painter = painterResource(id = R.drawable.fav8),
             contentDescription = "Welcome Image",
             modifier = Modifier
                 .fillMaxSize()
@@ -136,17 +142,18 @@ fun GreetingScreen(onNavigateToHome: () -> Unit) {
 @Composable
 fun LoadingText(progressAnim: Animatable<Float, *>) {
     Text(
-        text = "Loading Application....",
+        text = ".....",
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentWidth(Alignment.CenterHorizontally)
             .alpha(progressAnim.value),
-        color = Color.White,
-        fontSize = 18.sp,
+        color = Color(0xFF5C5122),
+        fontSize = 40.sp,
         textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Bold
     )
 }
+
 
 /*
 @Composable
