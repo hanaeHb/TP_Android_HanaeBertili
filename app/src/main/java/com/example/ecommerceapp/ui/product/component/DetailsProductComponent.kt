@@ -1,5 +1,6 @@
 package com.example.ecommerceapp.ui.product.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,7 @@ import com.example.ecommerceapp.data.Entities.Product
 @Composable
 fun DetailsScreen(product: Product) {
 
+    val imageResId = getImageResIdByName(product.imageResId)
     val customFontFamily = FontFamily(
         Font(R.font.dancingscript)
     )
@@ -86,8 +89,8 @@ fun DetailsScreen(product: Product) {
                 verticalAlignment = Alignment.Top
             ) {
 
-                AsyncImage(
-                    model = product.imageResId,
+                Image(
+                    painter = painterResource(id = imageResId),
                     contentDescription = null,
                     modifier = Modifier
                         .height(240.dp)

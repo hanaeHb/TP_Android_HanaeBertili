@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object NetworkModule{
    @Provides
-    fun provideBaseUrl(): String = "https://raw.githubusercontent.com/hanaeHb/TP_Android_HanaeBertili/tree/master/app/public/products-api/"
+    fun provideBaseUrl(): String = "https://raw.githubusercontent.com/hanaeHb/TP_Android_HanaeBertili/master/app/public/products-api/"
 
     @Provides
     @Singleton
