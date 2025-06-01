@@ -1,0 +1,42 @@
+[
+  {
+    "id": "P1",
+    "title": "Dr.Althea – 345 Relief Cream",
+    "description": "Resveratrol 345NA – Intensive Repair Cream is a regenerating ointment gel cream rich in nutrients. The product strengthens the cell regeneration function in our skin for firmer skin while reducing the appearance of fine lines and wrinkles.",
+    "imageResId": "medicup",
+    "price": "990.99",
+    "category": "Hydrate Cream",
+    "quantity": "12"
+  },
+
+  {
+    "id": "P2",
+    "title": "iUNIK – Centella Calming Gel Cream",
+    "description": "iUNIK Centella Calming Gel Cream is formulated with Centella Asiatica Leaf Water and Tea Tree Leaf Water to soothe and hydrate the skin.",
+    "imageResId": "snail",
+    "price": "399.99",
+    "category": "Hydrate Cream",
+    "quantity": "5"
+  },
+
+  {
+    "id": "P3",
+    "title": "Beauty of joseon-Ground",
+    "description": "Beauty of Joseon Ground Rice and Honey Glow Serum is a serum enriched with ground rice and honey, designed to enhance skin radiance and hydration.",
+    "imageResId": "fav5",
+    "price": "595.90",
+    "category": "Serum",
+    "quantity": "20"
+  },
+
+  {
+    "id": "P4",
+    "title": "Medicube PDRN Pink One Day Serum Set",
+    "description": "Packed with 99% salmon PDRN and collagen, this potent anti-aging ampoule restore skin elasticity and promote skin cell regeneration.",
+    "imageResId": "fav4",
+    "price": "1500.00",
+    "category": "Serum",
+    "quantity": "10"
+  }
+
+]

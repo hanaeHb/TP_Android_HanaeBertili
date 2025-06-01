@@ -26,9 +26,12 @@ import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.platform.LocalContext
+
 @Composable
 fun ProductCard(product: Product, onClick: () -> Unit) {
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
+    val imageResId = getImageResIdByName(product.imageResId)
 
     Column(
         modifier = Modifier
@@ -50,14 +53,13 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = product.imageResId),
+                    painter = painterResource(id = imageResId),
                     contentDescription = product.title,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(5.dp)
                         .clip(RoundedCornerShape(24.dp)),
                     contentScale = ContentScale.Crop
-
                 )
             }
         }

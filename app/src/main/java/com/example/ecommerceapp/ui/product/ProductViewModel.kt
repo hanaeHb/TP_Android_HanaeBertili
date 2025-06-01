@@ -1,8 +1,9 @@
 package com.example.ecommerceapp.ui.product
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
+import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.data.Repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,11 @@ class ProductViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(ProductViewState())
     val state: StateFlow<ProductViewState> = _state
+
+    fun getProductById(id: String): Product? {
+        return _state.value.products.find { it.id == id }
+    }
+
     fun handleIntent(intent: ProductIntent) {
         when (intent) {
             is ProductIntent.LoadProducts -> {

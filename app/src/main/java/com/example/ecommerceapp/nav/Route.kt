@@ -56,7 +56,6 @@ import com.example.ecommerceapp.R
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import kotlinx.coroutines.delay
 
-
 object Routes {
     const val  Greating = "Greating"
     const val  Home = "Home"
@@ -83,11 +82,17 @@ fun AppNav(viewModel: ProductViewModel) {
         }
 
         composable(
-            route = "${Routes.ProductDetails}/{productId}",
+            "${Routes.ProductDetails}/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.StringType })
         ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId") ?: ""
-            DetailsScreen(productId = productId)
+            val product = viewModel.getProductById(productId)
+
+            if (product != null) {
+                DetailsScreen(product = product)
+            } else {
+                Text("Product not found", color = Color.Red, modifier = Modifier.padding(16.dp))
+            }
         }
     }
 }

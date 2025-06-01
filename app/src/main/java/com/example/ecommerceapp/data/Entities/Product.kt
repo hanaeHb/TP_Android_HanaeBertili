@@ -1,11 +1,20 @@
 package com.example.ecommerceapp.data.Entities
 
+import com.google.gson.annotations.SerializedName
+
 data class Product(
+    @SerializedName("id")
     val id: String,
+    @SerializedName("title")
     val title: String,
+    @SerializedName("description")
     val description: String,
-    val imageResId: Int,
-    val price: Double,
+    @SerializedName("imageResId")
+    val imageResId: String,
+    @SerializedName("price")
+    val price: String,
+    @SerializedName("category")
     val category: String,
-    val quantity: Int
+    @SerializedName("quantity")
+    val quantity: String
 )
