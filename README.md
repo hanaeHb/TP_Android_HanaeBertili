@@ -1,7 +1,7 @@
 # APPLICATION MOBILE ECOMMERCE SKIN CARE "여자_SKIN"
 
 # First Page
-![image](https://github.com/user-attachments/assets/8be2c05c-f294-4ba8-b6ab-459089850dae)
+![image](https://github.com/user-attachments/assets/f055cbad-6321-4bad-bbbe-178fa880656c)
 
 # Loading Products
 ![image](https://github.com/user-attachments/assets/df4e8115-1b91-4f86-be29-98ecb8741601)
