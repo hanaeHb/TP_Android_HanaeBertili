@@ -3,7 +3,7 @@
     "id": "P1",
     "title": "Dr.Althea – 345 Relief Cream",
     "description": "Resveratrol 345NA – Intensive Repair Cream is a regenerating ointment gel cream rich in nutrients. The product strengthens the cell regeneration function in our skin for firmer skin while reducing the appearance of fine lines and wrinkles.",
-    "imageResId": "medicup",
+    "imageResId": "p1",
     "price": "990.99",
     "category": "Hydrate Cream",
     "quantity": "12"
@@ -13,7 +13,7 @@
     "id": "P2",
     "title": "iUNIK – Centella Calming Gel Cream",
     "description": "iUNIK Centella Calming Gel Cream is formulated with Centella Asiatica Leaf Water and Tea Tree Leaf Water to soothe and hydrate the skin.",
-    "imageResId": "snail",
+    "imageResId": "p2",
     "price": "399.99",
     "category": "Hydrate Cream",
     "quantity": "5"
@@ -23,7 +23,7 @@
     "id": "P3",
     "title": "Beauty of joseon-Ground",
     "description": "Beauty of Joseon Ground Rice and Honey Glow Serum is a serum enriched with ground rice and honey, designed to enhance skin radiance and hydration.",
-    "imageResId": "fav5",
+    "imageResId": "p3",
     "price": "595.90",
     "category": "Serum",
     "quantity": "20"
@@ -33,10 +33,69 @@
     "id": "P4",
     "title": "Medicube PDRN Pink One Day Serum Set",
     "description": "Packed with 99% salmon PDRN and collagen, this potent anti-aging ampoule restore skin elasticity and promote skin cell regeneration.",
-    "imageResId": "fav4",
+    "imageResId": "p4",
     "price": "1500.00",
     "category": "Serum",
     "quantity": "10"
-  }
+  },
 
+  {
+    "id": "P5",
+    "title": "Beauty of Joseon Relief Sun Aqua-fresh Mini",
+    "description": "Beauty of Joseon Relief Sun Aqua-Fresh Mini is a lightweight, hydrating sunscreen with SPF50+ PA++++. Infused with rice extract and probiotics, it soothes and protects the skin without leaving a white cast or greasy finish. Its mini size makes it perfect for on-the-go touch-ups.",
+    "imageResId": "p5",
+    "price": "500.00",
+    "category": "Sunscreen",
+    "quantity": "12"
+  },
+
+  {
+    "id": "P6",
+    "title": "Anua – Peach Niacin UV Tone Up Protection 01 Melting Peach",
+    "description": "This tone up sunscreen is fitted with SPF50+ PA++++ broad-spectrum sun protection. It’s formulated with peach extract, alongside Vitamin B12 and 20,000ppm of niacinamide to brighten skin and fade blemishes while boosting skin hydration.",
+    "imageResId": "p6",
+    "price": "2600.00",
+    "category": "Sunscreen",
+    "quantity": "19"
+  },
+
+  {
+    "id": "P7",
+    "title": "i’m from Mugwort Mask",
+    "description": "A gentle wash-off mask that helps calm and soothe irritated or sensitive skin. Formulated with mugwort harvest from Ganghwa County in Korea, the mask helps detoxify skin and nourish it with needed vitamins and minerals.",
+    "imageResId": "p7",
+    "price": "4000.00",
+    "category": "Mask",
+    "quantity": "25"
+  },
+
+  {
+    "id": "P8",
+    "title": "I’m From Honey Mask Mini",
+    "description": "Travel-sized version of premium wash-off mask contains 38.7% of natural honey to tighten pores, to nourish and hydrate skin, and to leave skin soft, smooth and revitalized. Enriched with propolis, bee venom, macadamia nut oil, jojoba seed oil, hazelnut oil and sunflower seed oil.",
+    "imageResId": "p8",
+    "price": "1000.00",
+    "category": "Mask",
+    "quantity": "28"
+  },
+
+  {
+    "id": "P9",
+    "title": "COSRX – AHA/BHA Clarifying Treatment Toner Mini",
+    "description": "Water, Salix Alba (Willow) Bark Water, Pyrus Malus (Apple) Fruit Water, Butylene Glycol, 1,2-Hexanediol, Sodium Lactate, Glycolic Acid, Betaine Salicylate, Allantoin, Panthenol, Ethyl Hexanediol.",
+    "imageResId": "p9",
+    "price": "1000.00",
+    "category": "Toner",
+    "quantity": "18"
+  },
+
+  {
+    "id": "P10",
+    "title": "I’m from – Rice Toner Mini",
+    "description": "Packed with 77.78% goami (rice) extracts, this toner leaves skin glowing with its whitening, anti-wrinkle as well as moisturizing benefits. Gently shake before use.",
+    "imageResId": "p10",
+    "price": "1500.00",
+    "category": "Toner",
+    "quantity": "8"
+  }
 ]
