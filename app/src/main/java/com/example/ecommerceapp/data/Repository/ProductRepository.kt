@@ -10,11 +10,15 @@ import javax.inject.Inject
 
 class ProductRepository @Inject constructor(
     private val api: ProductApi
-){
+) {
     suspend fun getProducts(): List<Product> {
-        return api.getProducts()
-        val products = api.getProducts()
-        Log.d("products repo", "size :"+ products.size)
-        return products
+        return try {
+            val products = api.getProducts()
+            Log.d("ProductRepository", "Successfully fetched ${products.size} products")
+            products
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "Error fetching products", e)
+            emptyList()
+        }
     }
 }

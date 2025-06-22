@@ -6,33 +6,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -42,36 +31,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ecommerceapp.ui.product.ProductIntent
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import com.example.ecommerceapp.ui.product.component.ProductCard
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
+import androidx.compose.foundation.layout.asPaddingValues
 
 @Composable
-fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (String) -> Unit) {
+fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit) {
     val state by viewModel.state.collectAsState()
 
-    val customFontFamily = FontFamily(
-        Font(R.font.dancingscript)
-    )
+    val customFontFamily = FontFamily(Font(R.font.dancingscript))
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var searchQuery by remember { mutableStateOf("") }
 
-    LaunchedEffect(viewModel) {
-        viewModel.handleIntent(ProductIntent.LoadProducts)
+
+    LaunchedEffect(Unit) {
+        if (state.products.isEmpty()) {
+            viewModel.handleIntent(ProductIntent.LoadProducts)
+        }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
+
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,97 +83,159 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
             )
         }
 
-        if (state.isLoading) {
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Loading products...",
-                    color = Color(0xFF907E36),
-                    )
+        when {
+            state.isLoading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Loading products...", color = Color(0xFF907E36))
+                }
             }
-        } else if (state.error != null) {
 
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Error: ${state.error}")
+            state.error != null -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Error: ${state.error}", color = Color.Red)
+                }
             }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 64.dp)
-            ) {
-                item(span = { GridItemSpan(2) }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.bestskincare),
-                        contentDescription = "Intro",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(195.dp)
-                            .padding(top = 0.dp),
-                        contentScale = ContentScale.Fit
-                    )
+
+            else -> {
+                val filteredProducts = state.products.filter { product ->
+                    (selectedCategory == null || product.category == selectedCategory) &&
+                            (searchQuery.isBlank() || product.title.contains(searchQuery, ignoreCase = true))
                 }
 
-                item(span = { GridItemSpan(2) }) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(bottom = 64.dp)
+                ) {
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        listOf(
-                            Pair(R.drawable.sunscreen1, "Sunscreen"),
-                            Pair(R.drawable.serumm, "Serum"),
-                            Pair(R.drawable.mask, "Mask"),
-                            Pair(R.drawable.cream, "Hydrate Cream"),
-                            Pair(R.drawable.toner2, "Toner"),
-                        ).forEach { (iconRes, label) ->
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.padding(top = 80.dp)
-                            ) {
-                                ZoomableImage(iconRes = iconRes, label = label)
-                                Text(
-                                    text = label,
-                                    color = Color(0xFF907E36),
-                                    fontSize = 14.sp,
-                                    modifier = Modifier.padding(top = 8.dp)
+                    item(span = { GridItemSpan(2) }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.bestskincare),
+                            contentDescription = "Intro",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(195.dp)
+                                .padding(top = 0.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+
+                    item(span = { GridItemSpan(2) }) {
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            label = { Text("Search products") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 15.dp),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Search Icon",
+                                    tint = Color(0xFF907E36),
+                                    modifier = Modifier.size(20.dp)
                                 )
+                            },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedLabelColor = Color(0xFF907E36),
+                                unfocusedLabelColor = Color(0xFF907E36).copy(alpha = 0.7f),
+                                focusedBorderColor = Color(0xFF907E36),
+                                unfocusedBorderColor = Color(0xFF907E36).copy(alpha = 0.5f),
+                                cursorColor = Color(0xFF907E36)
+                            )
+                        )
+                    }
+
+                    item(span = { GridItemSpan(2) }) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp)
+                                .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(20.dp)
+                        ) {
+                            listOf(
+                                Pair(R.drawable.fav4, "All"),
+                                Pair(R.drawable.sunscreen1, "Sunscreen"),
+                                Pair(R.drawable.serumm, "Serum"),
+                                Pair(R.drawable.mask, "Mask"),
+                                Pair(R.drawable.cream, "Hydrate Cream"),
+                                Pair(R.drawable.toner2, "Toner"),
+                            ).forEach { (iconRes, label) ->
+                                val isSelected = selectedCategory == label || (label == "All" && selectedCategory == null)
+                                val scale by animateFloatAsState(if (isSelected) 1.1f else 1f)
+
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .padding(top = 30.dp)
+                                        .scale(scale)
+                                        .clickable {
+                                            selectedCategory = if (label == "All") null else label
+                                        }
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = iconRes),
+                                        contentDescription = label,
+                                        modifier = Modifier
+                                            .size(80.dp)
+                                            .clip(CircleShape)
+                                            .background(
+                                                if (isSelected) Color(0xFFDCD0FF) else Color(0xFFECECEC),
+                                                shape = CircleShape
+                                            )
+                                            .border(
+                                                width = if (isSelected) 3.5.dp else 2.5.dp,
+                                                color = if (isSelected) Color(0xFF907E36) else Color(0xFFE6E6FA),
+                                                shape = CircleShape
+                                            )
+                                            .padding(1.dp),
+                                        contentScale = ContentScale.Crop
+                                    )
+
+                                    Text(
+                                        text = label,
+                                        color = if (isSelected) Color.Black else Color(0xFF907E36),
+                                        fontSize = if (isSelected) 16.sp else 14.sp,
+                                        modifier = Modifier.padding(top = 8.dp)
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
+                    item(span = { GridItemSpan(2) }) {
+                        Text(
+                            text = "Products for you my lady",
+                            color = Color(0xFF907E36),
+                            fontSize = 32.sp,
+                            fontFamily = customFontFamily,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 80.dp, bottom = 25.dp)
+                        )
+                    }
 
-                item(span = { GridItemSpan(2) }) {
-                    Text(
-                        text = "Products for you my lady",
-                        color = Color(0xFF907E36),
-                        fontSize = 32.sp,
-                        fontFamily = customFontFamily,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 80.dp, bottom = 25.dp)
-                    )
-                }
-
-                items(state.products) { product ->
-                    ProductCard(product = product, onClick = { onProductClick(product.id) })
+                    items(filteredProducts) { product ->
+                        ProductCard(product = product, onClick = { onProductClick(product.id) })
+                    }
                 }
             }
         }
+
 
         Row(
             modifier = Modifier
@@ -199,31 +245,10 @@ fun HomeScreen(viewModel: ProductViewModel = viewModel(), onProductClick: (Strin
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.Default.Home, contentDescription = "Home", tint = Color(0xFF907E36),)
-            Icon(imageVector = Icons.Default.Search, contentDescription = "Search", tint = Color(0xFF907E36),)
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = Color(0xFF907E36),)
-            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Cart", tint = Color(0xFF907E36),)
+            Icon(imageVector = Icons.Default.Home, contentDescription = "Home", tint = Color(0xFF907E36))
+            Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorite", tint = Color(0xFF907E36))
+            Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = Color(0xFF907E36))
+            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Cart", tint = Color(0xFF907E36))
         }
     }
-}
-
-@Composable
-fun ZoomableImage(iconRes: Int, label: String) {
-    var clicked by remember { mutableStateOf(false) }
-
-    val scale by animateFloatAsState(if (clicked) 1.2f else 1f)
-
-    Image(
-        painter = painterResource(id = iconRes),
-        contentDescription = label,
-        modifier = Modifier
-            .size(78.dp)
-            .clip(CircleShape)
-            .background(Color(0xFFECECEC), shape = CircleShape)
-            .border(2.8.dp, Color(0xFFE6E6FA), CircleShape)
-            .padding(1.dp)
-            .scale(scale)
-            .clickable { clicked = !clicked },
-        contentScale = ContentScale.Crop
-    )
 }

@@ -77,7 +77,7 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
         )
 
         Text(
-            text = "${product.price} $",
+            text = "$ ${product.price}",
             fontSize = 13.sp,
             color = Color(0xFF1D0057),
             modifier = Modifier.padding(top = 2.dp)

@@ -54,12 +54,15 @@ import com.example.ecommerceapp.ui.product.component.DetailsScreen
 import com.example.ecommerceapp.ui.product.Screen.HomeScreen
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.product.component.CartScreen
 import kotlinx.coroutines.delay
+import androidx.hilt.navigation.compose.hiltViewModel
 
 object Routes {
     const val  Greating = "Greating"
     const val  Home = "Home"
     const val  ProductDetails = "ProductDetails"
+    const val Cart = "Cart"
 }
 @Composable
 fun AppNav(viewModel: ProductViewModel) {
@@ -89,10 +92,19 @@ fun AppNav(viewModel: ProductViewModel) {
             val product = viewModel.getProductById(productId)
 
             if (product != null) {
-                DetailsScreen(product = product)
+                DetailsScreen(
+                    product = product,
+                    onConfirm = {
+                        viewModel.addToCart(product)
+                        navController.navigate(Routes.Cart)
+                    }
+                )
             } else {
                 Text("Product not found", color = Color.Red, modifier = Modifier.padding(16.dp))
             }
+        }
+        composable(Routes.Cart) {
+            CartScreen(viewModel = viewModel)
         }
     }
 }
