@@ -6,7 +6,9 @@
     "imageResId": "p1",
     "price": "990.99",
     "category": "Hydrate Cream",
-    "quantity": "12"
+    "quantity": "12",
+    "discountPercentage": 25,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -16,7 +18,9 @@
     "imageResId": "p2",
     "price": "399.99",
     "category": "Hydrate Cream",
-    "quantity": "5"
+    "quantity": "5",
+    "discountPercentage": 20,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -26,7 +30,9 @@
     "imageResId": "p3",
     "price": "595.90",
     "category": "Serum",
-    "quantity": "20"
+    "quantity": "20",
+    "discountPercentage": 30,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -36,7 +42,9 @@
     "imageResId": "p4",
     "price": "1500.00",
     "category": "Serum",
-    "quantity": "10"
+    "quantity": "10",
+    "discountPercentage": 10,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -46,7 +54,9 @@
     "imageResId": "p5",
     "price": "500.00",
     "category": "Sunscreen",
-    "quantity": "12"
+    "quantity": "12",
+    "discountPercentage": 50,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -56,7 +66,9 @@
     "imageResId": "p6",
     "price": "2600.00",
     "category": "Sunscreen",
-    "quantity": "19"
+    "quantity": "19",
+    "discountPercentage": 40,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -66,7 +78,9 @@
     "imageResId": "p7",
     "price": "4000.00",
     "category": "Mask",
-    "quantity": "25"
+    "quantity": "25",
+    "discountPercentage": 15,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -76,7 +90,9 @@
     "imageResId": "p8",
     "price": "1000.00",
     "category": "Mask",
-    "quantity": "28"
+    "quantity": "28",
+    "discountPercentage": 25,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -86,7 +102,9 @@
     "imageResId": "p9",
     "price": "1000.00",
     "category": "Toner",
-    "quantity": "18"
+    "quantity": "18",
+    "discountPercentage": 60,
+    "offerEnd": 1750876800000
   },
 
   {
@@ -96,6 +114,8 @@
     "imageResId": "p10",
     "price": "1500.00",
     "category": "Toner",
-    "quantity": "8"
+    "quantity": "8",
+    "discountPercentage": 25,
+    "offerEnd": 1750876800000
   }
 ]

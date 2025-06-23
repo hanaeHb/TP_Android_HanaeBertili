@@ -162,7 +162,6 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 20.dp)
                                 .horizontalScroll(rememberScrollState()),
                             horizontalArrangement = Arrangement.spacedBy(20.dp)
                         ) {

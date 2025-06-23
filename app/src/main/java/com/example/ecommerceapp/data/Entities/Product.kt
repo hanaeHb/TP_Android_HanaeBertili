@@ -18,5 +18,10 @@ data class Product(
     @SerializedName("quantity")
     val quantity: String,
 
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    @SerializedName("discountPercentage")
+    val discountPercentage: Int?,
+
+    @SerializedName("offerEnd")
+    val offerEnd: Long?
 )

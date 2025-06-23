@@ -49,7 +49,6 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(bottom = 28.dp)
     )  {
 
         Row(
@@ -170,8 +169,8 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
-                .background(Color.White),
+                .height(80.dp)
+                .padding(bottom = 45.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
