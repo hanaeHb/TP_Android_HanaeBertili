@@ -51,6 +51,8 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
     var filterByPromotion by remember { mutableStateOf(false) }
     var sortByPriceAscending by remember { mutableStateOf<Boolean?>(null) }
     var filterByOfferEndingSoon by remember { mutableStateOf(false) }
+    var brandMenuExpanded by remember { mutableStateOf(false) }
+    var selectedBrand by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         if (state.products.isEmpty()) {
@@ -78,14 +80,47 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                 modifier = Modifier.padding(start = 16.dp)
             )
 
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "Category",
-                tint = Color(0xFF907E36),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(24.dp)
-            )
+            Box {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Category",
+                    tint = Color(0xFF907E36),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(24.dp)
+                        .clickable {
+                            brandMenuExpanded = true
+                        }
+                )
+
+                DropdownMenu(
+                    expanded = brandMenuExpanded,
+                    onDismissRequest = { brandMenuExpanded = false },
+                    modifier = Modifier.background(Color.White)
+                ) {
+                    val brands = state.products
+                        .map { it.brand }
+                        .distinct()
+
+                    brands.forEach { brand ->
+                        DropdownMenuItem(
+                            text = { Text(brand) },
+                            onClick = {
+                                selectedBrand = brand
+                                brandMenuExpanded = false
+                            }
+                        )
+                    }
+
+                    DropdownMenuItem(
+                        text = { Text("All brands") },
+                        onClick = {
+                            selectedBrand = null
+                            brandMenuExpanded = false
+                        }
+                    )
+                }
+            }
         }
 
 
@@ -116,7 +151,8 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                     .filter { product ->
                         (selectedCategory == null || product.category == selectedCategory) &&
                                 (searchQuery.isBlank() || product.title.contains(searchQuery, ignoreCase = true)) &&
-                                (!filterByPromotion || (product.discountPercentage ?: 0) > 0)
+                                (!filterByPromotion || (product.discountPercentage ?: 0) > 0)&&
+                                (selectedBrand == null || product.brand == selectedBrand)
                     }
                     .sortedWith(
                         compareBy<Product> { product ->

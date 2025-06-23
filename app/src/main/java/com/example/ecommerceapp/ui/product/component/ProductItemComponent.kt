@@ -28,6 +28,8 @@ import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,11 +55,32 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
         price
     }
 
-    val offerEndsAt = product.offerEnd?.let { timestamp ->
-        val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-        sdf.format(Date(timestamp))
-    }
+    val offerRemainingTime = remember(product.offerEnd) { mutableStateOf("") }
 
+    LaunchedEffect(product.offerEnd) {
+        while (true) {
+            val now = System.currentTimeMillis()
+            val diff = (product.offerEnd ?: 0L) - now
+
+            if (diff > 0) {
+                val totalSeconds = diff / 1000
+                val days = totalSeconds / 86400
+                val hours = (totalSeconds % 86400) / 3600
+                val minutes = (totalSeconds % 3600) / 60
+                val seconds = totalSeconds % 60
+
+                offerRemainingTime.value = if (days > 0) {
+                    String.format(" %dd %02dh:%02dmin:%02ds", days, hours, minutes, seconds)
+                } else {
+                    String.format(" %02dh:%02dmin:%02ds", hours, minutes, seconds)
+                }
+            } else {
+                offerRemainingTime.value = "Offer ended"
+            }
+
+            kotlinx.coroutines.delay(1000L)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -115,7 +138,7 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
                         )
                     }
                 }
-                if (offerEndsAt != null) {
+                if (hasDiscount && product.offerEnd != null) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -123,11 +146,21 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
                             .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(6.dp))
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
-                        Text(
-                            text = "Ends: $offerEndsAt",
-                            color = Color.White,
-                            fontSize = 10.sp
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.AccessTime,
+                                contentDescription = "Time Left",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(17.dp)
+                                    .padding(end = 3.dp)
+                            )
+                            Text(
+                                text = offerRemainingTime.value,
+                                color = Color.White,
+                                fontSize = 10.sp
+                            )
+                        }
                     }
                 }
             }

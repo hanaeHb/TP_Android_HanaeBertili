@@ -8,7 +8,8 @@
     "category": "Hydrate Cream",
     "quantity": "12",
     "discountPercentage": 25,
-    "offerEnd": 1750876800000
+    "offerEnd": 1750876800000,
+    "brand": "Dr.Althea"
   },
 
   {
@@ -20,7 +21,8 @@
     "category": "Hydrate Cream",
     "quantity": "5",
     "discountPercentage": 20,
-    "offerEnd": 1750946400000
+    "offerEnd": 1750946400000,
+    "brand": "iUNIK"
   },
 
   {
@@ -32,7 +34,8 @@
     "category": "Serum",
     "quantity": "20",
     "discountPercentage": 30,
-    "offerEnd": 1751122200000
+    "offerEnd": 1751122200000,
+    "brand": "Beauty of joseon"
   },
 
   {
@@ -44,7 +47,8 @@
     "category": "Serum",
     "quantity": "10",
     "discountPercentage": 0,
-    "offerEnd": null
+    "offerEnd": null,
+    "brand" : "Medicube"
   },
 
   {
@@ -56,7 +60,8 @@
     "category": "Sunscreen",
     "quantity": "12",
     "discountPercentage": 50,
-    "offerEnd": 1750876800000
+    "offerEnd": 1750876800000,
+    "brand": "Beauty of joseon"
   },
 
   {
@@ -68,7 +73,8 @@
     "category": "Sunscreen",
     "quantity": "19",
     "discountPercentage": 0,
-    "offerEnd": null
+    "offerEnd": null,
+    "brand": "Anua"
   },
 
   {
@@ -80,7 +86,8 @@
     "category": "Mask",
     "quantity": "25",
     "discountPercentage": 15,
-    "offerEnd": 1751122200000
+    "offerEnd": 1751122200000,
+    "brand": "I’m From"
   },
 
   {
@@ -92,7 +99,8 @@
     "category": "Mask",
     "quantity": "28",
     "discountPercentage": 25,
-    "offerEnd": 1751201400000
+    "offerEnd": 1751201400000,
+    "brand": "I’m From"
   },
 
   {
@@ -104,7 +112,8 @@
     "category": "Toner",
     "quantity": "18",
     "discountPercentage": 60,
-    "offerEnd": 1751079000000
+    "offerEnd": 1751079000000,
+    "brand": "COSRX"
   },
 
   {
@@ -116,6 +125,7 @@
     "category": "Toner",
     "quantity": "8",
     "discountPercentage": 0,
-    "offerEnd": null
+    "offerEnd": null,
+    "brand": "I’m From"
   }
 ]

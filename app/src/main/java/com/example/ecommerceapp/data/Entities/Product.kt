@@ -23,5 +23,7 @@ data class Product(
     @SerializedName("offerEnd")
     val offerEnd: Long?,
     @SerializedName("rating")
-    val rating: Float? = 0f
+    val rating: Float? = 0f,
+    @SerializedName("brand")
+    val brand: String,
 )
