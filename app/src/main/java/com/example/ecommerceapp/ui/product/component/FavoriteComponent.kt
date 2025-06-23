@@ -39,15 +39,18 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import coil.compose.rememberAsyncImagePainter
-import com.example.ecommerceapp.data.Entities.Product
+
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 @Composable
 fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateHome: () ->  Unit, onClick: (String) -> Unit) {
     val state by viewModel.state.collectAsState()
 
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
-
     LaunchedEffect(Unit) {
         if (state.products.isEmpty()) {
             viewModel.handleIntent(ProductIntent.LoadProducts)
@@ -56,6 +59,7 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
 
     val favoriteProducts = state.products.filter { it.isFavorite }
     val fontFamily = FontFamily(Font(R.font.dancingscript))
+
     Column(modifier = Modifier.fillMaxSize()) {
 
 
@@ -113,6 +117,19 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(favoriteProducts) { product ->
+                val imageResId = getImageResIdByName(product.imageResId)
+                val price = product.price.toDoubleOrNull() ?: 0.0
+                val hasDiscount = product.discountPercentage != null && product.discountPercentage > 0
+                val discountedPrice = if (hasDiscount) {
+                    price - (price * (product.discountPercentage!! / 100.0))
+                } else {
+                    price
+                }
+
+                val offerEndsAt = product.offerEnd?.let { timestamp ->
+                    val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                    sdf.format(Date(timestamp))
+                }
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -127,13 +144,48 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                             .padding(8.dp),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Image(
-                            painter = painterResource(id = getImageResIdByName(product.imageResId)),
-                            contentDescription = null,
+                        Box(
                             modifier = Modifier
-                                .size(140.dp),
-                            contentScale = ContentScale.Crop
-                        )
+                                .size(155.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = imageResId),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                            if (hasDiscount) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopStart)
+                                        .padding(10.dp)
+                                        .background(Color(0xFFC60314), RoundedCornerShape(8.dp))
+                                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                                ) {
+                                    Text(
+                                        text = "-${product.discountPercentage}%",
+                                        color = Color.White,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                            if (offerEndsAt != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .padding(bottom = 6.dp)
+                                        .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(6.dp))
+                                        .padding(horizontal = 12.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = "Ends: $offerEndsAt",
+                                        color = Color.White,
+                                        fontSize = 10.sp
+                                    )
+                                }
+                            }
+                        }
 
                         Text(
                             text = product.title,
@@ -149,12 +201,35 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "$ ${product.price}",
-                                fontSize = 16.sp,
-                                color = Color(0xFF907E36),
-                                fontWeight = FontWeight.Bold
-                            )
+                            if (hasDiscount) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Text(
+                                        text = "$${String.format("%.2f", discountedPrice)}",
+                                        fontSize = 16.sp,
+                                        color = Color(0xFF907E36),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "$${product.price}",
+                                        fontSize = 14.sp,
+                                        color = Color.Gray,
+                                        fontWeight = FontWeight.Normal,
+                                        textDecoration = TextDecoration.LineThrough,
+                                        modifier = Modifier.padding(top = 2.dp),
+                                        maxLines = 1
+                                    )
+                                }
+                            } else {
+                                Text(
+                                    text = "$${product.price}",
+                                    fontSize = 16.sp,
+                                    color = Color(0xFF907E36),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
 
                             IconButton(onClick = {
                                 viewModel.toggleFavorite(product.id)

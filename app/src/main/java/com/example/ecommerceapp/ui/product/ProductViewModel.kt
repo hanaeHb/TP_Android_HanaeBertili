@@ -114,5 +114,4 @@ class ProductViewModel @Inject constructor(
             currentState.copy(products = updatedProducts)
         }
     }
-
 }

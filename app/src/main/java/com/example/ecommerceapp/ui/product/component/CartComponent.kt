@@ -28,6 +28,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
@@ -35,6 +37,9 @@ import com.example.ecommerceapp.data.Entities.CartItems
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import kotlinx.coroutines.delay
 import java.sql.Driver
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNavigateFavorite: () -> Unit) {
@@ -44,9 +49,15 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
     val fontFamily = FontFamily(Font(R.font.dancingscript))
 
     val total = cartItems.sumOf {
-        (it.product.price.toDoubleOrNull() ?: 0.0) * it.quantity
+        val price = it.product.price.toDoubleOrNull() ?: 0.0
+        val discount = it.product.discountPercentage ?: 0
+        val finalPrice = if (discount > 0) {
+            price - (price * discount / 100.0)
+        } else {
+            price
+        }
+        finalPrice * it.quantity
     }
-
     Column(modifier = Modifier
         .fillMaxSize()
     )  {
@@ -100,14 +111,15 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                 modifier = Modifier
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp)
             ) {
                 item {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                         Box(
                             modifier = Modifier
                                 .background(colM, RoundedCornerShape(8.dp))
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
                         ) {
                             Column {
                                 Text(
@@ -292,7 +304,17 @@ fun CartItemRow(
     val price = item.product.price.toDoubleOrNull() ?: 0.0
     val subtotal = quantity * price
     val imageResId = getImageResIdByName(item.product.imageResId)
-    val customFontFamily = FontFamily(Font(R.font.dancingscript))
+    val hasDiscount = item.product.discountPercentage != null && item.product.discountPercentage > 0
+    val discountedPrice = if (hasDiscount) {
+        price - (price * (item.product.discountPercentage!! / 100.0))
+    } else {
+        price
+    }
+
+    val offerEndsAt = item.product.offerEnd?.let { timestamp ->
+        val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        sdf.format(Date(timestamp))
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -313,15 +335,50 @@ fun CartItemRow(
                 .padding(10.dp),
             verticalAlignment = Alignment.Top
         ) {
-            Image(
-                painter = painterResource(id = imageResId),
-                contentDescription = null,
+            Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-
+                    .height(150.dp)
+                    .weight(0.8f)
+                    .clip(RoundedCornerShape(8.dp)),
+            ) {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                if (hasDiscount) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(8.dp)
+                            .background(Color(0xFFC60314), RoundedCornerShape(8.dp))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "-${item.product.discountPercentage}%",
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                if (offerEndsAt != null) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 6.dp)
+                            .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(6.dp))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "Ends: $offerEndsAt",
+                            color = Color.White,
+                            fontSize = 10.sp
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
@@ -330,13 +387,35 @@ fun CartItemRow(
                     fontSize = 17.sp,
                     style = MaterialTheme.typography.bodyLarge,
                 )
-                Text(
-                    text = "$${"%.2f".format(subtotal)}",
-                    color = Color(0xFF907E36),
-                    fontSize = 16.sp
-                )
-
-
+                if (hasDiscount) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = "$${"%.2f".format(discountedPrice)}",
+                            fontSize = 16.sp,
+                            color = Color(0xFF907E36),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "$${"%.2f".format(subtotal)}",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Normal,
+                            textDecoration = TextDecoration.LineThrough,
+                            modifier = Modifier.padding(top = 2.dp),
+                            maxLines = 1
+                        )
+                    }
+                } else {
+                    Text(
+                        text = "$${"%.2f".format(subtotal)}",
+                        color = Color(0xFF907E36),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

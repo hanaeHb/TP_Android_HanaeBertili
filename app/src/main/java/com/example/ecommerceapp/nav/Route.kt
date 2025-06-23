@@ -134,17 +134,18 @@ fun AppNav(viewModel: ProductViewModel) {
             )
         }
         composable(Routes.Favorite) {
-            FavoriteScreen(viewModel = viewModel,
-                onNavigateCart = {
-                    navController.navigate(Routes.Cart)
-                },
-                onNavigateHome = {
-                    navController.navigate(Routes.Home)
-                },
-                onClick = { productId ->
-                    navController.navigate("${Routes.ProductDetails}/$productId")
-                }
-            )
+                FavoriteScreen(
+                    viewModel = viewModel,
+                    onNavigateCart = {
+                        navController.navigate(Routes.Cart)
+                    },
+                    onNavigateHome = {
+                        navController.navigate(Routes.Home)
+                    },
+                    onClick = { productId ->
+                        navController.navigate("${Routes.ProductDetails}/$productId")
+                    }
+                )
         }
 
     }

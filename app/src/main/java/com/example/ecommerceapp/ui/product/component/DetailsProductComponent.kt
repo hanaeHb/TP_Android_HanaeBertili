@@ -19,6 +19,10 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,7 +72,9 @@ fun DetailsScreen(
         val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         sdf.format(Date(timestamp))
     }
-        Column(modifier = Modifier.fillMaxSize())
+    var userRating by remember { mutableStateOf(product.rating ?: 0f) }
+
+    Column(modifier = Modifier.fillMaxSize())
         {
 
             Row(
@@ -235,6 +241,23 @@ fun DetailsScreen(
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
+
+                        Text(
+                            text = "Your rating:",
+                            fontSize = 14.sp,
+                            color = Color(0xFF1D0057),
+                            modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
+                        )
+
+                        StarRating(
+                            rating = userRating,
+                            onRatingChanged = { newRating ->
+                                userRating = newRating
+
+                                Log.d("RATING", "User rated product ${product.id} with $newRating stars")
+                            }
+                        )
+
                     }
                 }
 

@@ -37,6 +37,9 @@ import com.example.ecommerceapp.ui.product.component.ProductCard
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.ui.text.font.FontWeight
+import com.example.ecommerceapp.data.Entities.Product
+import com.example.ecommerceapp.ui.product.getEffectivePrice
 
 @Composable
 fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit) {
@@ -45,7 +48,9 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var searchQuery by remember { mutableStateOf("") }
-
+    var filterByPromotion by remember { mutableStateOf(false) }
+    var sortByPriceAscending by remember { mutableStateOf<Boolean?>(null) }
+    var filterByOfferEndingSoon by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (state.products.isEmpty()) {
@@ -106,10 +111,30 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
             }
 
             else -> {
-                val filteredProducts = state.products.filter { product ->
-                    (selectedCategory == null || product.category == selectedCategory) &&
-                            (searchQuery.isBlank() || product.title.contains(searchQuery, ignoreCase = true))
-                }
+                var priceMenuExpanded by remember { mutableStateOf(false) }
+                val filteredProducts = state.products
+                    .filter { product ->
+                        (selectedCategory == null || product.category == selectedCategory) &&
+                                (searchQuery.isBlank() || product.title.contains(searchQuery, ignoreCase = true)) &&
+                                (!filterByPromotion || (product.discountPercentage ?: 0) > 0)
+                    }
+                    .sortedWith(
+                        compareBy<Product> { product ->
+
+                            if (filterByOfferEndingSoon) product.offerEnd ?: Long.MAX_VALUE else Long.MAX_VALUE
+                        }.thenComparator { a, b ->
+
+                            if (sortByPriceAscending == null) 0
+                            else {
+                                val priceA = a.getEffectivePrice()
+                                val priceB = b.getEffectivePrice()
+                                if (sortByPriceAscending == true)
+                                    priceA.compareTo(priceB)
+                                else
+                                    priceB.compareTo(priceA)
+                            }
+                        }
+                    )
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
@@ -135,7 +160,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                         OutlinedTextField(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
-                            label = { Text("Search products") },
+                            label = { Text("Search products...") },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 15.dp),
@@ -159,75 +184,178 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                     }
 
                     item(span = { GridItemSpan(2) }) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .horizontalScroll(rememberScrollState()),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp)
-                        ) {
-                            listOf(
-                                Pair(R.drawable.fav4, "All"),
-                                Pair(R.drawable.sunscreen1, "Sunscreen"),
-                                Pair(R.drawable.serumm, "Serum"),
-                                Pair(R.drawable.mask, "Mask"),
-                                Pair(R.drawable.cream, "Hydrate Cream"),
-                                Pair(R.drawable.toner2, "Toner"),
-                            ).forEach { (iconRes, label) ->
-                                val isSelected = selectedCategory == label || (label == "All" && selectedCategory == null)
-                                val scale by animateFloatAsState(if (isSelected) 1.1f else 1f)
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.spacedBy(20.dp)
+                            ) {
+                                listOf(
+                                    Pair(R.drawable.fav4, "All"),
+                                    Pair(R.drawable.sunscreen1, "Sunscreen"),
+                                    Pair(R.drawable.serumm, "Serum"),
+                                    Pair(R.drawable.mask, "Mask"),
+                                    Pair(R.drawable.cream, "Hydrate Cream"),
+                                    Pair(R.drawable.toner2, "Toner"),
+                                ).forEach { (iconRes, label) ->
+                                    val isSelected = selectedCategory == label || (label == "All" && selectedCategory == null)
+                                    val scale by animateFloatAsState(if (isSelected) 1.1f else 1f)
 
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier
-                                        .padding(top = 30.dp)
-                                        .scale(scale)
-                                        .clickable {
-                                            selectedCategory = if (label == "All") null else label
-                                        }
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = iconRes),
-                                        contentDescription = label,
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
                                         modifier = Modifier
-                                            .size(80.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                if (isSelected) Color(0xFFDCD0FF) else Color(0xFFECECEC),
-                                                shape = CircleShape
+                                            .padding(top = 30.dp)
+                                            .scale(scale)
+                                            .clickable {
+                                                selectedCategory = if (label == "All") null else label
+                                            }
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = iconRes),
+                                            contentDescription = label,
+                                            modifier = Modifier
+                                                .size(80.dp)
+                                                .clip(CircleShape)
+                                                .background(
+                                                    if (isSelected) Color(0xFFDCD0FF) else Color(0xFFECECEC),
+                                                    shape = CircleShape
+                                                )
+                                                .border(
+                                                    width = if (isSelected) 3.5.dp else 2.5.dp,
+                                                    color = if (isSelected) Color(0xFF907E36) else Color(0xFFE6E6FA),
+                                                    shape = CircleShape
+                                                )
+                                                .padding(1.dp),
+                                            contentScale = ContentScale.Crop
+                                        )
+
+                                        Text(
+                                            text = label,
+                                            color = if (isSelected) Color.Black else Color(0xFF907E36),
+                                            fontSize = if (isSelected) 16.sp else 14.sp,
+                                            modifier = Modifier.padding(top = 8.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                FilterChip(
+                                    selected = filterByPromotion,
+                                    onClick = { filterByPromotion = !filterByPromotion },
+                                    label = { Text("Offers products")},
+                                        colors = FilterChipDefaults.filterChipColors(
+                                            selectedContainerColor = Color(0xFF907E36),
+                                            selectedLabelColor = Color.White,
+                                            containerColor = Color(0xFFECECEC),
+                                            labelColor = Color(0xFF907E36)
+                                        )
+                                )
+                                Box {
+                                    FilterChip(
+                                        selected = sortByPriceAscending != null,
+                                        onClick = { priceMenuExpanded = true },
+                                        label = {
+                                            Text(
+                                                text = when (sortByPriceAscending) {
+                                                    true -> "Price ↑"
+                                                    false -> "Price ↓"
+                                                    null -> "Price"
+                                                }
                                             )
-                                            .border(
-                                                width = if (isSelected) 3.5.dp else 2.5.dp,
-                                                color = if (isSelected) Color(0xFF907E36) else Color(0xFFE6E6FA),
-                                                shape = CircleShape
-                                            )
-                                            .padding(1.dp),
-                                        contentScale = ContentScale.Crop
+                                        },
+                                        colors = FilterChipDefaults.filterChipColors(
+                                            selectedContainerColor = Color(0xFF907E36),
+                                            selectedLabelColor = Color.White,
+                                            containerColor = Color(0xFFECECEC),
+                                            labelColor = Color(0xFF907E36)
+                                        )
                                     )
 
-                                    Text(
-                                        text = label,
-                                        color = if (isSelected) Color.Black else Color(0xFF907E36),
-                                        fontSize = if (isSelected) 16.sp else 14.sp,
-                                        modifier = Modifier.padding(top = 8.dp)
-                                    )
+                                    DropdownMenu(
+                                        expanded = priceMenuExpanded,
+                                        onDismissRequest = { priceMenuExpanded = false }
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text("Low to High") },
+                                            onClick = {
+                                                sortByPriceAscending = true
+                                                priceMenuExpanded = false
+                                            }
+                                        )
+                                        DropdownMenuItem(
+                                            text = { Text("High to Low") },
+                                            onClick = {
+                                                sortByPriceAscending = false
+                                                priceMenuExpanded = false
+                                            }
+                                        )
+                                        DropdownMenuItem(
+                                            text = { Text("Without") },
+                                            onClick = {
+                                                sortByPriceAscending = null
+                                                priceMenuExpanded = false
+                                            }
+                                        )
+                                    }
                                 }
+                                FilterChip(
+                                    selected = filterByOfferEndingSoon,
+                                    onClick = { filterByOfferEndingSoon = !filterByOfferEndingSoon },
+                                    label = { Text("Ending Soon") },
+                                    colors = FilterChipDefaults.filterChipColors(
+                                        selectedContainerColor = Color(0xFF907E36),
+                                        selectedLabelColor = Color.White,
+                                        containerColor = Color(0xFFECECEC),
+                                        labelColor = Color(0xFF907E36)
+                                    )
+                                )
                             }
                         }
                     }
-
                     item(span = { GridItemSpan(2) }) {
                         Text(
                             text = "Products for you my lady",
                             color = Color(0xFF907E36),
-                            fontSize = 32.sp,
-                            fontFamily = customFontFamily,
+                            fontSize = 24.sp,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 80.dp, bottom = 25.dp)
+                                .padding(bottom = 20.dp, top = 20.dp)
                         )
                     }
+                    item(span = { GridItemSpan(2) }){
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, start = 8.dp),
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Text(
+                                    text = "Featured Products >",
+                                    fontSize = 25.sp,
+                                    fontFamily = customFontFamily,
+                                    color = Color(0xFF1D0057)
+                                )
+                            }
 
+                            Divider(
+                                color = Color(0xFF1D0057),
+                                thickness = 0.5.dp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                            )
+                        }
+                    }
                     items(filteredProducts) { product ->
                         ProductCard(viewModel = viewModel, product = product, onClick = { onProductClick(product.id) })
                     }
