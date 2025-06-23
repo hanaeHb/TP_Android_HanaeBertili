@@ -94,10 +94,22 @@ fun SynScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp, start = 12.dp, end = 12.dp),
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Category of $brand >",
+                text = "Category >",
+                fontSize = 20.sp,
+                color = Color(0xFF1D0057),
+                modifier = Modifier
+                    .clickable { onBack() }
+                    .padding(end = 8.dp),
+                style = androidx.compose.ui.text.TextStyle(
+                    textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline
+                )
+            )
+            Text(
+                text = "$brand >",
                 fontSize = 25.sp,
                 fontFamily = customFontFamily,
                 color = Color(0xFF1D0057)
@@ -127,7 +139,7 @@ fun SynScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.White, shape = RoundedCornerShape(8.dp))
-                        .clickable { onBack() }
+                        .clickable {  }
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

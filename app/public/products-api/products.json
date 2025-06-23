@@ -11,7 +11,7 @@
     "offerEnd": 1750876800000,
     "brand": "Dr.Althea",
     "imageBrand": "draltheabrand",
-    "imageCategory": "sunscreencategory"
+    "imageCategory": "hydratecreamcategory"
   },
 
   {
@@ -26,7 +26,7 @@
     "offerEnd": 1750946400000,
     "brand": "iUNIK",
     "imageBrand": "iunikbrand",
-    "imageCategory": "sunscreencategory"
+    "imageCategory": "hydratecreamcategory"
   },
 
   {
@@ -41,7 +41,7 @@
     "offerEnd": 1751122200000,
     "brand": "Beauty of joseon",
     "imageBrand": "beautyofjeasonbrand",
-    "imageCategory": "sunscreencategory"
+    "imageCategory": "serumcategory"
   },
 
   {
@@ -56,7 +56,7 @@
     "offerEnd": null,
     "brand" : "Medicube",
     "imageBrand": "medicubebrand",
-    "imageCategory": "sunscreencategory"
+    "imageCategory": "serumcategory"
   },
 
   {
@@ -101,7 +101,7 @@
     "offerEnd": 1751122200000,
     "brand": "I’m From",
     "imageBrand": "imfrombrand",
-    "imageCategory": "sunscreencategory"
+    "imageCategory": "maskcategory"
   },
 
   {
@@ -116,7 +116,7 @@
     "offerEnd": 1751201400000,
     "brand": "I’m From",
     "imageBrand": "imfrombrand",
-    "imageCategory": "sunscreencategory"
+    "imageCategory": "maskcategory"
   },
 
   {
@@ -131,7 +131,7 @@
     "offerEnd": 1751079000000,
     "brand": "COSRX",
     "imageBrand": "cosrxbrand",
-    "imageCategory": "sunscreencategory"
+    "imageCategory": "tonercategory"
   },
 
   {
@@ -146,6 +146,6 @@
     "offerEnd": null,
     "brand": "I’m From",
     "imageBrand": "imfrombrand",
-    "imageCategory": "sunscreencategory"
+    "imageCategory": "tonercategory"
   }
 ]

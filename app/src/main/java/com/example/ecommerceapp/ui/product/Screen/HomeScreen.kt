@@ -242,7 +242,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(47.dp)
+                                                            .size(55.dp)
                                                             .clip(CircleShape)
                                                             .border(0.3.dp, Color.Transparent, CircleShape),
                                                         contentAlignment = Alignment.Center
@@ -251,7 +251,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                                             imageVector = Icons.Default.Star,
                                                             contentDescription = "All",
                                                             tint = Color(0xFF907E36),
-                                                            modifier = Modifier.size(16.dp)
+                                                            modifier = Modifier.size(19.dp)
                                                         )
                                                     }
                                                     Spacer(modifier = Modifier.width(8.dp))
@@ -285,7 +285,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                                                 painter = painterResource(id = imageResId),
                                                                 contentDescription = brand,
                                                                 modifier = Modifier
-                                                                    .size(47.dp)
+                                                                    .size(55.dp)
                                                                     .clip(CircleShape)
                                                                     .border(0.3.dp, Color.Transparent, CircleShape)
                                                             )
