@@ -48,7 +48,7 @@ fun SimilarProductCard(product: Product, onClick: () -> Unit) {
     }
 
     val offerEndsAt = product.offerEnd?.let { timestamp ->
-        val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
         sdf.format(Date(timestamp))
     }
     Card(

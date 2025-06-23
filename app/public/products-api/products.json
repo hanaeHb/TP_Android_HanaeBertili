@@ -20,7 +20,7 @@
     "category": "Hydrate Cream",
     "quantity": "5",
     "discountPercentage": 20,
-    "offerEnd": 1750876800000
+    "offerEnd": 1750946400000
   },
 
   {
@@ -32,7 +32,7 @@
     "category": "Serum",
     "quantity": "20",
     "discountPercentage": 30,
-    "offerEnd": 1750876800000
+    "offerEnd": 1751122200000
   },
 
   {
@@ -43,8 +43,8 @@
     "price": "1500.00",
     "category": "Serum",
     "quantity": "10",
-    "discountPercentage": 10,
-    "offerEnd": 1750876800000
+    "discountPercentage": 0,
+    "offerEnd": null
   },
 
   {
@@ -67,8 +67,8 @@
     "price": "2600.00",
     "category": "Sunscreen",
     "quantity": "19",
-    "discountPercentage": 40,
-    "offerEnd": 1750876800000
+    "discountPercentage": 0,
+    "offerEnd": null
   },
 
   {
@@ -80,7 +80,7 @@
     "category": "Mask",
     "quantity": "25",
     "discountPercentage": 15,
-    "offerEnd": 1750876800000
+    "offerEnd": 1751122200000
   },
 
   {
@@ -92,7 +92,7 @@
     "category": "Mask",
     "quantity": "28",
     "discountPercentage": 25,
-    "offerEnd": 1750876800000
+    "offerEnd": 1751201400000
   },
 
   {
@@ -104,7 +104,7 @@
     "category": "Toner",
     "quantity": "18",
     "discountPercentage": 60,
-    "offerEnd": 1750876800000
+    "offerEnd": 1751079000000
   },
 
   {
@@ -115,7 +115,7 @@
     "price": "1500.00",
     "category": "Toner",
     "quantity": "8",
-    "discountPercentage": 25,
-    "offerEnd": 1750876800000
+    "discountPercentage": 0,
+    "offerEnd": null
   }
 ]

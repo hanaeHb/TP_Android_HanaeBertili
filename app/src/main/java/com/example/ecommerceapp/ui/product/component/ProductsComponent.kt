@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,12 +17,12 @@ import com.example.ecommerceapp.R
 
 @Composable
 fun RatingStars(rating: Int, modifier: Modifier = Modifier, starSize: Dp = 16.dp) {
-    Row(modifier = modifier) {
+    Row {
         repeat(5) { index ->
             Icon(
-                imageVector = Icons.Default.Star,
+                imageVector = if (index < rating) Icons.Default.Star else Icons.Default.StarBorder,
                 contentDescription = null,
-                tint = if (index < rating) Color(0xFF907E36) else Color(0xFF1D0057),
+                tint = Color(0xFF907E36),
                 modifier = Modifier.size(starSize)
             )
         }

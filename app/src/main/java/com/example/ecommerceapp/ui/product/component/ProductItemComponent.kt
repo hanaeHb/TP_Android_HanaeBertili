@@ -54,7 +54,7 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
     }
 
     val offerEndsAt = product.offerEnd?.let { timestamp ->
-        val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
         sdf.format(Date(timestamp))
     }
 

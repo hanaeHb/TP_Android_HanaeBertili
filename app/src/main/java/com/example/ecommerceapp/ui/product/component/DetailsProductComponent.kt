@@ -70,7 +70,7 @@ fun DetailsScreen(
     }
 
     val offerEndsAt = product.offerEnd?.let { timestamp ->
-        val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
         sdf.format(Date(timestamp))
     }
     var userRating by remember { mutableStateOf(product.rating ?: 0f) }
@@ -244,7 +244,7 @@ fun DetailsScreen(
                         }
 
                         Text(
-                            text = "Your rating:",
+                            text = "Your rating >",
                             fontSize = 18.sp,
                             color = Color(0xFF1D0057),
                             fontWeight = FontWeight.Bold,
@@ -258,7 +258,11 @@ fun DetailsScreen(
                                 viewModel.handleIntent(ProductIntent.RateProduct(product.id, newRating))
                             }
                         )
-
+                        Divider(
+                            color = Color(0xFF1D0057),
+                            thickness = 0.5.dp,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
                     }
                 }
 
