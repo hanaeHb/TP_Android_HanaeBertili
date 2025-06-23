@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
+import com.example.ecommerceapp.ui.product.ProductIntent
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -244,17 +245,17 @@ fun DetailsScreen(
 
                         Text(
                             text = "Your rating:",
-                            fontSize = 14.sp,
+                            fontSize = 18.sp,
                             color = Color(0xFF1D0057),
-                            modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 12.dp, bottom = 4.dp, start = 8.dp)
                         )
 
                         StarRating(
                             rating = userRating,
                             onRatingChanged = { newRating ->
                                 userRating = newRating
-
-                                Log.d("RATING", "User rated product ${product.id} with $newRating stars")
+                                viewModel.handleIntent(ProductIntent.RateProduct(product.id, newRating))
                             }
                         )
 

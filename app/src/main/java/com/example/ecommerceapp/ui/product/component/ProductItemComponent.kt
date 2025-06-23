@@ -175,6 +175,7 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        RatingStars(rating = 5)
+        val safeRating = (product.rating ?: 0f).toInt().coerceIn(0, 5)
+        RatingStars(rating = safeRating)
     }
 }

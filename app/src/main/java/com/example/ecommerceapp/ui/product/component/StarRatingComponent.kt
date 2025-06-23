@@ -24,10 +24,10 @@ fun StarRating(
             Icon(
                 imageVector = if (filled) Icons.Filled.Star else Icons.Default.StarBorder,
                 contentDescription = "Star $i",
-                tint = Color(0xFFFFD700),
+                tint = Color(0xFF907E36),
                 modifier = Modifier
-                    .size(28.dp)
-                    .padding(end = 4.dp)
+                    .size(38.dp)
+                    .padding(end = 4.dp, start = 8.dp)
                     .clickable {
                         onRatingChanged(i.toFloat())
                     }

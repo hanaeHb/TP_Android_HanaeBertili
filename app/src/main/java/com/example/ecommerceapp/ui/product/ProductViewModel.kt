@@ -49,6 +49,16 @@ class ProductViewModel @Inject constructor(
                     currentState.copy(products = updatedProducts)
                 }
             }
+            is ProductIntent.RateProduct -> {
+                _state.update { currentState ->
+                    val updatedProducts = currentState.products.map { product ->
+                        if (product.id == intent.productId) {
+                            product.copy(rating = intent.rating)
+                        } else product
+                    }
+                    currentState.copy(products = updatedProducts)
+                }
+            }
         }
     }
 
