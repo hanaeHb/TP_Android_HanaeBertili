@@ -28,11 +28,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 @Composable
 fun DetailsScreen(
     viewModel: ProductViewModel,
@@ -40,7 +45,8 @@ fun DetailsScreen(
     onConfirm: () -> Unit,
     onNavigateCart: () -> Unit,
     onNavigateHome: () -> Unit,
-    onNavigateFavorite: () -> Unit
+    onNavigateFavorite: () -> Unit,
+    onNavigateToProduct: (Product) -> Unit
 ) {
     val imageResId = getImageResIdByName(product.imageResId)
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -50,7 +56,18 @@ fun DetailsScreen(
     val similarProducts = viewModel.state.collectAsState().value.products
         .filter { it.category.equals(product.category, ignoreCase = true) && it.id != product.id }
 
+    val price = product.price.toDoubleOrNull() ?: 0.0
+    val hasDiscount = product.discountPercentage != null && product.discountPercentage > 0
+    val discountedPrice = if (hasDiscount) {
+        price - (price * (product.discountPercentage!! / 100.0))
+    } else {
+        price
+    }
 
+    val offerEndsAt = product.offerEnd?.let { timestamp ->
+        val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        sdf.format(Date(timestamp))
+    }
         Column(modifier = Modifier.fillMaxSize())
         {
 
@@ -109,22 +126,85 @@ fun DetailsScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalAlignment = Alignment.Top
                         ) {
-                            Image(
-                                painter = painterResource(id = imageResId),
-                                contentDescription = null,
+                            Box(
                                 modifier = Modifier
                                     .height(240.dp)
                                     .width(175.dp)
-                                    .clip(RoundedCornerShape(24.dp)),
-                                contentScale = ContentScale.Crop
-                            )
+                                    .clip(RoundedCornerShape(24.dp))
+                            ) {
+                                Image(
+                                    painter = painterResource(id = imageResId),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                if (hasDiscount) {
+                                    Box(
+                                        modifier = Modifier
+                                            .align(Alignment.TopStart)
+                                            .padding(13.dp)
+                                            .background(Color(0xFFC60314), RoundedCornerShape(8.dp))
+                                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                                    ) {
+                                        Text(
+                                            text = "-${product.discountPercentage}%",
+                                            color = Color.White,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                                if (offerEndsAt != null) {
+                                    Box(
+                                        modifier = Modifier
+                                            .align(Alignment.BottomCenter)
+                                            .padding(bottom = 6.dp)
+                                            .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(6.dp))
+                                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                                    ) {
+                                        Text(
+                                            text = "Ends: $offerEndsAt",
+                                            color = Color.White,
+                                            fontSize = 10.sp
+                                        )
+                                    }
+                                }
+                            }
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(8.dp)
                             ) {
                                 Text(product.title, fontSize = 22.sp, color = Color(0xFF1D0057), fontWeight = FontWeight.Bold)
-                                Text("$ ${product.price}", fontSize = 18.sp, color = col, fontWeight = FontWeight.Bold)
+                                if (hasDiscount) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                    ) {
+                                        Text(
+                                            text = "$${String.format("%.2f", discountedPrice)}",
+                                            fontSize = 14.sp,
+                                            color = Color(0xFF907E36),
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = "$${product.price}",
+                                            fontSize = 12.sp,
+                                            color = Color.Gray,
+                                            fontWeight = FontWeight.Normal,
+                                            textDecoration = TextDecoration.LineThrough,
+                                            modifier = Modifier.padding(top = 2.dp),
+                                            maxLines = 1
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        text = "$${product.price}",
+                                        fontSize = 14.sp,
+                                        color = Color(0xFF907E36),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                                 Text("${product.quantity} in stock", style = MaterialTheme.typography.bodyMedium.copy(color = stCol))
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Button(
@@ -183,7 +263,7 @@ fun DetailsScreen(
                             items(similarProducts) { similarProduct ->
                                 SimilarProductCard(
                                     product = similarProduct,
-                                    onClick = { }
+                                    onClick = { onNavigateToProduct(similarProduct) }
                                 )
                             }
                         }

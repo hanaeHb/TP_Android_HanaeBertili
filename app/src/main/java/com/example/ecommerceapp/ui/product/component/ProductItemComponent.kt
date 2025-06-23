@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 import com.example.ecommerceapp.ui.product.ProductIntent
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import java.text.SimpleDateFormat
@@ -89,10 +90,10 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "Favorite",
-                    tint = if (product.isFavorite) Color.Red else Color.Gray,
+                    tint = if (product.isFavorite) Color(0xFFC60314) else Color.Gray,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(8.dp)
+                        .padding(14.dp)
                         .size(24.dp)
                         .clickable {
                             viewModel.handleIntent(ProductIntent.ToggleFavorite(product.id))
@@ -102,9 +103,9 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopStart)
-                            .padding(8.dp)
-                            .background(Color.Red, RoundedCornerShape(8.dp))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                            .padding(13.dp)
+                            .background(Color(0xFFC60314), RoundedCornerShape(8.dp))
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
                     ) {
                         Text(
                             text = "-${product.discountPercentage}%",
@@ -150,7 +151,7 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
                 Text(
                     text = "$${String.format("%.2f", discountedPrice)}",
                     fontSize = 14.sp,
-                    color = Color(0xFF1D0057),
+                    color = Color(0xFF907E36),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
@@ -158,6 +159,7 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
                     fontSize = 12.sp,
                     color = Color.Gray,
                     fontWeight = FontWeight.Normal,
+                    textDecoration = TextDecoration.LineThrough,
                     modifier = Modifier.padding(top = 2.dp),
                     maxLines = 1
                 )
@@ -166,7 +168,7 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
             Text(
                 text = "$${product.price}",
                 fontSize = 14.sp,
-                color = Color(0xFF1D0057),
+                color = Color(0xFF907E36),
                 fontWeight = FontWeight.Bold
             )
         }

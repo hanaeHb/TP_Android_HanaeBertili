@@ -95,6 +95,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Box(modifier = Modifier.weight(1f)) {
+            val totalCartItems = viewModel.state.collectAsState().value.cartItems.size
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -108,11 +109,19 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                                 .background(colM, RoundedCornerShape(8.dp))
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                         ) {
-                            Text(
-                                text = "Total: $${"%.2f".format(total)}",
-                                fontSize = 16.sp,
-                                color = col,
-                            )
+                            Column {
+                                Text(
+                                    text = "Total: $${"%.2f".format(total)}",
+                                    fontSize = 16.sp,
+                                    color = col,
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Items: $totalCartItems",
+                                    fontSize = 16.sp,
+                                    color = col,
+                                )
+                            }
                         }
                     }
                     Divider(
@@ -164,7 +173,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                 }
             }
         }
-        val totalCartItems = cartItems.size
+        val totalCartItems = viewModel.state.collectAsState().value.cartItems.size
         val favoriteCount = viewModel.state.collectAsState().value.products.count { it.isFavorite }
         Row(
             modifier = Modifier
