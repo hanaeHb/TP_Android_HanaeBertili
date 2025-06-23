@@ -39,7 +39,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.asPaddingValues
 
 @Composable
-fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit) {
+fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit) {
     val state by viewModel.state.collectAsState()
 
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -230,13 +230,14 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit) {
                     }
 
                     items(filteredProducts) { product ->
-                        ProductCard(product = product, onClick = { onProductClick(product.id) })
+                        ProductCard(viewModel = viewModel, product = product, onClick = { onProductClick(product.id) })
                     }
                 }
             }
         }
 
-
+        val totalCartItems = viewModel.state.collectAsState().value.cartItems.size
+        val favoriteCount = viewModel.state.collectAsState().value.products.count { it.isFavorite }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -245,10 +246,74 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit) {
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.Default.Home, contentDescription = "Home", tint = Color(0xFF907E36))
-            Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorite", tint = Color(0xFF907E36))
+            val inactiveColor = Color(0xFF1D0057)
+            Box(
+                modifier = Modifier.size(40.dp)
+            ){
+                Icon(imageVector = Icons.Default.Home, contentDescription = "Home",
+                    tint = inactiveColor,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(25.dp))
+            }
+            Box(modifier = Modifier
+                .size(40.dp)
+                .clickable { onNavigateFavorite() }) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Favorite",
+                    tint = Color(0xFF907E36),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+                if (favoriteCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(Color.Red, CircleShape)
+                            .align(Alignment.TopEnd)
+                            .offset(x = 2.dp, y = (-2).dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (favoriteCount > 99) "99+" else "$favoriteCount",
+                            color = Color.White,
+                            fontSize = 10.sp
+                        )
+                    }
+                }
+            }
             Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = Color(0xFF907E36))
-            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Cart", tint = Color(0xFF907E36))
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clickable { onNavigateCart() }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "Cart",
+                    tint = Color(0xFF907E36),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+
+                if (totalCartItems > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(Color.Red, CircleShape)
+                            .align(Alignment.TopEnd)
+                            .offset(x = 2.dp, y = (-2).dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "$totalCartItems",
+                            color = Color.White,
+                            fontSize = 10.sp
+                        )
+                    }
+                }
+            }
         }
     }
 }

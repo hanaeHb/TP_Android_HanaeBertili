@@ -57,12 +57,14 @@ import com.example.ecommerceapp.ui.product.ProductViewModel
 import com.example.ecommerceapp.ui.product.component.CartScreen
 import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.ecommerceapp.ui.product.component.FavoriteScreen
 
 object Routes {
     const val  Greating = "Greating"
     const val  Home = "Home"
     const val  ProductDetails = "ProductDetails"
-    const val Cart = "Cart"
+    const val  Cart = "Cart"
+    const val  Favorite = "Favorite"
 }
 @Composable
 fun AppNav(viewModel: ProductViewModel) {
@@ -81,7 +83,13 @@ fun AppNav(viewModel: ProductViewModel) {
         composable(Routes.Home) {
             HomeScreen(viewModel, onProductClick = { productId ->
                 navController.navigate("${Routes.ProductDetails}/$productId")
-            })
+            },
+                onNavigateCart = {
+                navController.navigate(Routes.Cart)
+            },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                })
         }
 
         composable(
@@ -92,11 +100,20 @@ fun AppNav(viewModel: ProductViewModel) {
             val product = viewModel.getProductById(productId)
 
             if (product != null) {
-                DetailsScreen(
+                DetailsScreen(viewModel = viewModel,
                     product = product,
                     onConfirm = {
                         viewModel.addToCart(product)
                         navController.navigate(Routes.Cart)
+                    },
+                    onNavigateCart = {
+                        navController.navigate(Routes.Cart)
+                    },
+                    onNavigateHome = {
+                        navController.navigate(Routes.Home)
+                    },
+                    onNavigateFavorite = {
+                        navController.navigate(Routes.Favorite)
                     }
                 )
             } else {
@@ -104,8 +121,29 @@ fun AppNav(viewModel: ProductViewModel) {
             }
         }
         composable(Routes.Cart) {
-            CartScreen(viewModel = viewModel)
+            CartScreen(viewModel = viewModel,
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                }
+            )
         }
+        composable(Routes.Favorite) {
+            FavoriteScreen(viewModel = viewModel,
+                onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                },
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                },
+                onClick = { productId ->
+                    navController.navigate("${Routes.ProductDetails}/$productId")
+                }
+            )
+        }
+
     }
 }
 

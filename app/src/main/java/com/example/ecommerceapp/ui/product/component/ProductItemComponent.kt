@@ -26,10 +26,17 @@ import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.example.ecommerceapp.ui.product.ProductIntent
+import com.example.ecommerceapp.ui.product.ProductViewModel
 
 @Composable
-fun ProductCard(product: Product, onClick: () -> Unit) {
+fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewModel) {
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
     val imageResId = getImageResIdByName(product.imageResId)
 
@@ -61,6 +68,18 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
                         .clip(RoundedCornerShape(24.dp)),
                     contentScale = ContentScale.Crop
                 )
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Favorite",
+                    tint = if (product.isFavorite) Color.Red else Color.Gray,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(24.dp)
+                        .clickable {
+                            viewModel.handleIntent(ProductIntent.ToggleFavorite(product.id))
+                        }
+                )
             }
         }
 
@@ -69,7 +88,6 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
         Text(
             text = product.title,
             fontWeight = FontWeight.Bold,
-            fontFamily = customFontFamily,
             fontSize = 16.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

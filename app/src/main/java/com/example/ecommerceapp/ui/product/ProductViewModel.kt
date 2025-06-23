@@ -1,6 +1,7 @@
 package com.example.ecommerceapp.ui.product
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.data.Entities.CartItems
@@ -21,6 +22,9 @@ class ProductViewModel @Inject constructor(
     private val repository: ProductRepository
 ) : ViewModel() {
 
+    private val _favoriteProducts = mutableStateListOf<Product>()
+    val favoriteProducts: List<Product> get() = _favoriteProducts
+
     private val _state = MutableStateFlow(ProductViewState())
     val state: StateFlow<ProductViewState> = _state
     fun getProductById(id: String): Product? {
@@ -32,6 +36,17 @@ class ProductViewModel @Inject constructor(
             is ProductIntent.LoadProducts -> {
                 viewModelScope.launch {
                     loadProducts()
+                }
+            }
+
+            is ProductIntent.ToggleFavorite -> {
+                _state.update { currentState ->
+                    val updatedProducts = currentState.products.map { product ->
+                        if (product.id == intent.productId) {
+                            product.copy(isFavorite = !product.isFavorite)
+                        } else product
+                    }
+                    currentState.copy(products = updatedProducts)
                 }
             }
         }
@@ -69,12 +84,14 @@ class ProductViewModel @Inject constructor(
     }
 
     fun increaseQuantity(productId: String) {
-        _state.update { currentState ->
-            val updatedCart = currentState.cartItems.map {
-                if (it.product.id == productId) it.copy(quantity = it.quantity + 1) else it
-            }
-            currentState.copy(cartItems = updatedCart)
+        val currentState = _state.value
+        val updatedCart = currentState.cartItems.map { item ->
+            val maxStock = item.product.quantity.toIntOrNull() ?: 0
+            if (item.product.id == productId && item.quantity < maxStock) {
+                item.copy(quantity = item.quantity + 1)
+            } else item
         }
+        _state.value = currentState.copy(cartItems = updatedCart)
     }
 
     fun decreaseQuantity(productId: String) {
@@ -85,6 +102,16 @@ class ProductViewModel @Inject constructor(
                 } else it
             }
             currentState.copy(cartItems = updatedCart)
+        }
+    }
+
+    fun toggleFavorite(productId: String) {
+        _state.update { currentState ->
+            val updatedProducts = currentState.products.map {
+                if (it.id == productId) it.copy(isFavorite = !it.isFavorite)
+                else it
+            }
+            currentState.copy(products = updatedProducts)
         }
     }
 

@@ -16,5 +16,7 @@ data class Product(
     @SerializedName("category")
     val category: String,
     @SerializedName("quantity")
-    val quantity: String
+    val quantity: String,
+
+    val isFavorite: Boolean = false
 )

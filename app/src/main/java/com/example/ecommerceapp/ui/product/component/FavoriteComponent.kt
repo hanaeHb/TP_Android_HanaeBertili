@@ -1,0 +1,249 @@
+package com.example.ecommerceapp.ui.product.component
+
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ecommerceapp.R
+import com.example.ecommerceapp.ui.product.ProductIntent
+import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.product.component.ProductCard
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import coil.compose.rememberAsyncImagePainter
+import com.example.ecommerceapp.data.Entities.Product
+@Composable
+fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateHome: () ->  Unit, onClick: (String) -> Unit) {
+    val state by viewModel.state.collectAsState()
+
+    val customFontFamily = FontFamily(Font(R.font.dancingscript))
+
+    LaunchedEffect(Unit) {
+        if (state.products.isEmpty()) {
+            viewModel.handleIntent(ProductIntent.LoadProducts)
+        }
+    }
+
+    val favoriteProducts = state.products.filter { it.isFavorite }
+    val fontFamily = FontFamily(Font(R.font.dancingscript))
+    Column(modifier = Modifier.fillMaxSize()) {
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+                .height(50.dp)
+                .background(Color.White),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "여자_SKIN",
+                fontSize = 22.sp,
+                fontFamily = customFontFamily,
+                color = Color(0xFF907E36),
+                modifier = Modifier.padding(start = 16.dp)
+            )
+
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = "Category",
+                tint = Color(0xFF907E36),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(24.dp)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, start = 12.dp, end = 12.dp),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Text(
+                text = "My Fvorite >",
+                fontSize = 25.sp,
+                fontFamily = fontFamily,
+                color = Color(0xFF1D0057)
+            )
+        }
+        Divider(
+            color = Color(0xFF1D0057),
+            thickness = 0.5.dp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = 15.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(favoriteProducts) { product ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .clickable { onClick(product.id) },
+                    shape = RectangleShape,
+                    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Image(
+                            painter = painterResource(id = getImageResIdByName(product.imageResId)),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(140.dp),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        Text(
+                            text = product.title,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color(0xFF1D0057)
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "$ ${product.price}",
+                                fontSize = 16.sp,
+                                color = Color(0xFF907E36),
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            IconButton(onClick = {
+                                viewModel.toggleFavorite(product.id)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Remove from favorite",
+                                    tint = Color(0xFF1D0057)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        val inactiveColor = Color(0xFF1D0057)
+        val favoriteCount = state.products.count { it.isFavorite }
+        val totalCartItems = viewModel.state.collectAsState().value.cartItems.size
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .padding(bottom = 45.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "Home",
+                    tint = Color(0xFF907E36),
+                    modifier = Modifier
+                        .clickable { onNavigateHome() }
+                )
+            Box(modifier = Modifier.size(40.dp)) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Favorite",
+                    tint = inactiveColor,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(25.dp)
+                )
+                if (favoriteCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(Color.Red, CircleShape)
+                            .align(Alignment.TopEnd)
+                            .offset(x = 2.dp, y = (-2).dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (favoriteCount > 99) "99+" else "$favoriteCount",
+                            color = Color.White,
+                            fontSize = 10.sp
+                        )
+                    }
+                }
+            }
+            Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = Color(0xFF907E36))
+
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clickable { onNavigateCart() }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "Cart",
+                    tint = Color(0xFF907E36),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+                if (totalCartItems > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(Color.Red, CircleShape)
+                            .align(Alignment.TopEnd)
+                            .offset(x = 2.dp, y = (-2).dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "$totalCartItems",
+                            color = Color.White,
+                            fontSize = 10.sp
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
