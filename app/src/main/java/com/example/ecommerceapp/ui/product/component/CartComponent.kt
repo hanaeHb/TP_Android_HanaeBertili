@@ -47,7 +47,6 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
     val col = Color(0xFF907E36)
     val colM = Color(0xFFE6E6FA)
     val fontFamily = FontFamily(Font(R.font.dancingscript))
-
     val total = cartItems.sumOf {
         val price = it.product.price.toDoubleOrNull() ?: 0.0
         val discount = it.product.discountPercentage ?: 0
@@ -78,14 +77,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                 color = col,
                 modifier = Modifier.padding(start = 16.dp)
             )
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "Category",
-                tint = col,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(24.dp)
-            )
+
         }
         Row(
             modifier = Modifier
@@ -315,6 +307,7 @@ fun CartItemRow(
         val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
         sdf.format(Date(timestamp))
     }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()

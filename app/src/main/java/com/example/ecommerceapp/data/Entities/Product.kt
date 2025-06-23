@@ -26,4 +26,6 @@ data class Product(
     val rating: Float? = 0f,
     @SerializedName("brand")
     val brand: String,
+    @SerializedName("imageBrand")
+    val imageBrand: String,
 )

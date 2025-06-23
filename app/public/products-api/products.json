@@ -9,7 +9,8 @@
     "quantity": "12",
     "discountPercentage": 25,
     "offerEnd": 1750876800000,
-    "brand": "Dr.Althea"
+    "brand": "Dr.Althea",
+    "imageBrand": "draltheabrand"
   },
 
   {
@@ -22,7 +23,8 @@
     "quantity": "5",
     "discountPercentage": 20,
     "offerEnd": 1750946400000,
-    "brand": "iUNIK"
+    "brand": "iUNIK",
+    "imageBrand": "iunikbrand"
   },
 
   {
@@ -35,7 +37,8 @@
     "quantity": "20",
     "discountPercentage": 30,
     "offerEnd": 1751122200000,
-    "brand": "Beauty of joseon"
+    "brand": "Beauty of joseon",
+    "imageBrand": "beautyofjeasonbrand"
   },
 
   {
@@ -48,7 +51,8 @@
     "quantity": "10",
     "discountPercentage": 0,
     "offerEnd": null,
-    "brand" : "Medicube"
+    "brand" : "Medicube",
+    "imageBrand": "medicubebrand"
   },
 
   {
@@ -61,7 +65,8 @@
     "quantity": "12",
     "discountPercentage": 50,
     "offerEnd": 1750876800000,
-    "brand": "Beauty of joseon"
+    "brand": "Beauty of joseon",
+    "imageBrand": "beautyofjeasonbrand"
   },
 
   {
@@ -74,7 +79,8 @@
     "quantity": "19",
     "discountPercentage": 0,
     "offerEnd": null,
-    "brand": "Anua"
+    "brand": "Anua",
+    "imageBrand": "anuabrand"
   },
 
   {
@@ -87,7 +93,8 @@
     "quantity": "25",
     "discountPercentage": 15,
     "offerEnd": 1751122200000,
-    "brand": "I’m From"
+    "brand": "I’m From",
+    "imageBrand": "imfrombrand"
   },
 
   {
@@ -100,7 +107,8 @@
     "quantity": "28",
     "discountPercentage": 25,
     "offerEnd": 1751201400000,
-    "brand": "I’m From"
+    "brand": "I’m From",
+    "imageBrand": "imfrombrand"
   },
 
   {
@@ -113,7 +121,8 @@
     "quantity": "18",
     "discountPercentage": 60,
     "offerEnd": 1751079000000,
-    "brand": "COSRX"
+    "brand": "COSRX",
+    "imageBrand": "cosrxbrand"
   },
 
   {
@@ -126,6 +135,7 @@
     "quantity": "8",
     "discountPercentage": 0,
     "offerEnd": null,
-    "brand": "I’m From"
+    "brand": "I’m From",
+    "imageBrand": "imfrombrand"
   }
 ]

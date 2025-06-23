@@ -40,9 +40,12 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.ui.text.font.FontWeight
 import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.ui.product.getEffectivePrice
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextField
+import androidx.compose.material3.*
 
 @Composable
-fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit) {
+fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit) {
     val state by viewModel.state.collectAsState()
 
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -51,9 +54,8 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
     var filterByPromotion by remember { mutableStateOf(false) }
     var sortByPriceAscending by remember { mutableStateOf<Boolean?>(null) }
     var filterByOfferEndingSoon by remember { mutableStateOf(false) }
-    var brandMenuExpanded by remember { mutableStateOf(false) }
     var selectedBrand by remember { mutableStateOf<String?>(null) }
-
+    var brandMenuExpanded by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         if (state.products.isEmpty()) {
             viewModel.handleIntent(ProductIntent.LoadProducts)
@@ -79,50 +81,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
-
-            Box {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Category",
-                    tint = Color(0xFF907E36),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(24.dp)
-                        .clickable {
-                            brandMenuExpanded = true
-                        }
-                )
-
-                DropdownMenu(
-                    expanded = brandMenuExpanded,
-                    onDismissRequest = { brandMenuExpanded = false },
-                    modifier = Modifier.background(Color.White)
-                ) {
-                    val brands = state.products
-                        .map { it.brand }
-                        .distinct()
-
-                    brands.forEach { brand ->
-                        DropdownMenuItem(
-                            text = { Text(brand) },
-                            onClick = {
-                                selectedBrand = brand
-                                brandMenuExpanded = false
-                            }
-                        )
-                    }
-
-                    DropdownMenuItem(
-                        text = { Text("All brands") },
-                        onClick = {
-                            selectedBrand = null
-                            brandMenuExpanded = false
-                        }
-                    )
-                }
-            }
         }
-
 
         when {
             state.isLoading -> {
@@ -151,7 +110,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                     .filter { product ->
                         (selectedCategory == null || product.category == selectedCategory) &&
                                 (searchQuery.isBlank() || product.title.contains(searchQuery, ignoreCase = true)) &&
-                                (!filterByPromotion || (product.discountPercentage ?: 0) > 0)&&
+                                (!filterByPromotion || (product.discountPercentage ?: 0) > 0) &&
                                 (selectedBrand == null || product.brand == selectedBrand)
                     }
                     .sortedWith(
@@ -193,30 +152,117 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                     }
 
                     item(span = { GridItemSpan(2) }) {
-                        OutlinedTextField(
-                            value = searchQuery,
-                            onValueChange = { searchQuery = it },
-                            label = { Text("Search products...") },
+                        var brandMenuExpanded by remember { mutableStateOf(false) }
+
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 15.dp),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "Search Icon",
-                                    tint = Color(0xFF907E36),
-                                    modifier = Modifier.size(20.dp)
+                                .padding(horizontal = 16.dp, vertical = 10.dp)
+                                .border(
+                                    width = 1.5.dp,
+                                    color = Color(0xFF907E36),
+                                    shape = RoundedCornerShape(24.dp)
                                 )
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedLabelColor = Color(0xFF907E36),
-                                unfocusedLabelColor = Color(0xFF907E36).copy(alpha = 0.7f),
-                                focusedBorderColor = Color(0xFF907E36),
-                                unfocusedBorderColor = Color(0xFF907E36).copy(alpha = 0.5f),
-                                cursorColor = Color(0xFF907E36)
-                            )
-                        )
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(Color.White)
+                                .padding(horizontal = 12.dp, vertical = 4.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = "Search Icon",
+                                        tint = Color(0xFF907E36),
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(1.dp))
+                                    TextField(
+                                        value = searchQuery,
+                                        onValueChange = { searchQuery = it },
+                                        placeholder = { Text("Search...", color = Color(0xFF907E36),fontSize = 16.sp,
+                                            fontWeight = FontWeight.Medium) },
+                                        colors = TextFieldDefaults.colors(
+                                            focusedIndicatorColor = Color.Transparent,
+                                            unfocusedIndicatorColor = Color.Transparent,
+                                            disabledIndicatorColor = Color.Transparent,
+                                            focusedContainerColor = Color.Transparent,
+                                            unfocusedContainerColor = Color.Transparent,
+                                            disabledContainerColor = Color.Transparent,
+                                            cursorColor = Color.Black,
+                                            focusedTextColor = Color.Black,
+                                            unfocusedTextColor = Color.Black,
+                                            disabledTextColor = Color.Gray
+                                        ),
+                                        modifier = Modifier.width(180.dp),
+                                        maxLines = 1,
+                                        singleLine = true
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .height(45.dp)
+                                        .width(1.4.dp)
+                                        .background(Color(0xFFE6E6FA))
+                                )
+                                Box {
+                                    Row(
+                                        modifier = Modifier
+                                            .clickable { brandMenuExpanded = true }
+                                            .padding(6.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Tune,
+                                            contentDescription = "Filter Icon",
+                                            tint = Color(0xFF907E36),
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = "Filters",
+                                            color = Color(0xFF907E36),
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
+
+                                    DropdownMenu(
+                                        expanded = brandMenuExpanded,
+                                        onDismissRequest = { brandMenuExpanded = false },
+                                        modifier = Modifier.background(Color.White)
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text("All Brands", color = Color(0xFF907E36)) },
+                                            onClick = {
+                                                selectedBrand = null
+                                                brandMenuExpanded = false
+                                            }
+                                        )
+                                        Divider()
+                                        val brands = state.products.mapNotNull { it.brand }.distinct()
+                                        brands.forEachIndexed { index, brand ->
+                                            DropdownMenuItem(
+                                                text = {
+                                                    Text(
+                                                        brand,
+                                                        color = if (selectedBrand == brand) Color(0xFF907E36) else Color(0xFF1D0057)
+                                                    )
+                                                },
+                                                onClick = {
+                                                    selectedBrand = brand
+                                                    brandMenuExpanded = false
+                                                }
+                                            )
+                                            if (index != brands.lastIndex) Divider()
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     item(span = { GridItemSpan(2) }) {
@@ -228,7 +274,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                 horizontalArrangement = Arrangement.spacedBy(20.dp)
                             ) {
                                 listOf(
-                                    Pair(R.drawable.fav4, "All"),
+                                    Pair(R.drawable.fav6, "All"),
                                     Pair(R.drawable.sunscreen1, "Sunscreen"),
                                     Pair(R.drawable.serumm, "Serum"),
                                     Pair(R.drawable.mask, "Mask"),
@@ -446,7 +492,14 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                     }
                 }
             }
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = Color(0xFF907E36))
+            Icon(
+                painter = painterResource(id = R.drawable.category),
+                contentDescription = "Category",
+                tint = Color(0xFF907E36),
+                modifier = Modifier
+                    .size(28.dp)
+                    .clickable { onNavigateCategory() }
+            )
             Box(
                 modifier = Modifier
                     .size(40.dp)

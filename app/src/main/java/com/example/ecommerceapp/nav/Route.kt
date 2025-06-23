@@ -57,6 +57,7 @@ import com.example.ecommerceapp.ui.product.ProductViewModel
 import com.example.ecommerceapp.ui.product.component.CartScreen
 import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.ecommerceapp.ui.product.component.CategoryScreen
 import com.example.ecommerceapp.ui.product.component.FavoriteScreen
 
 object Routes {
@@ -65,6 +66,7 @@ object Routes {
     const val  ProductDetails = "ProductDetails"
     const val  Cart = "Cart"
     const val  Favorite = "Favorite"
+    const val  Category = "Category"
 }
 @Composable
 fun AppNav(viewModel: ProductViewModel) {
@@ -83,13 +85,17 @@ fun AppNav(viewModel: ProductViewModel) {
         composable(Routes.Home) {
             HomeScreen(viewModel, onProductClick = { productId ->
                 navController.navigate("${Routes.ProductDetails}/$productId")
-            },
-                onNavigateCart = {
-                navController.navigate(Routes.Cart)
-            },
-                onNavigateFavorite = {
+                },
+                    onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                },
+                    onNavigateFavorite = {
                     navController.navigate(Routes.Favorite)
-                })
+                },
+                    onNavigateCategory = {
+                    navController.navigate(Routes.Category)
+                }
+            )
         }
 
         composable(
@@ -146,6 +152,21 @@ fun AppNav(viewModel: ProductViewModel) {
                         navController.navigate("${Routes.ProductDetails}/$productId")
                     }
                 )
+        }
+
+        composable(Routes.Category) {
+            CategoryScreen(
+                viewModel = viewModel,
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                },
+                onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                }
+            )
         }
 
     }

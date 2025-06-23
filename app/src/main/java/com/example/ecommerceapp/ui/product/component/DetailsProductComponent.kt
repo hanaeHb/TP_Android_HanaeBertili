@@ -94,14 +94,6 @@ fun DetailsScreen(
                     color = col,
                     modifier = Modifier.padding(start = 16.dp)
                 )
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Category",
-                    tint = col,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(24.dp)
-                )
             }
 
             Row(
