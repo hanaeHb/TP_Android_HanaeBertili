@@ -43,6 +43,7 @@ import com.example.ecommerceapp.ui.product.getEffectivePrice
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.material3.*
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit) {
@@ -235,28 +236,74 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                         onDismissRequest = { brandMenuExpanded = false },
                                         modifier = Modifier.background(Color.White)
                                     ) {
+
                                         DropdownMenuItem(
-                                            text = { Text("All Brands", color = Color(0xFF907E36)) },
+                                            text = {
+                                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .size(47.dp)
+                                                            .clip(CircleShape)
+                                                            .border(0.3.dp, Color.Transparent, CircleShape),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Star,
+                                                            contentDescription = "All",
+                                                            tint = Color(0xFF907E36),
+                                                            modifier = Modifier.size(16.dp)
+                                                        )
+                                                    }
+                                                    Spacer(modifier = Modifier.width(8.dp))
+                                                    Text("All Brands", color = Color(0xFF907E36), fontSize = 17.sp)
+                                                }
+                                            },
                                             onClick = {
                                                 selectedBrand = null
                                                 brandMenuExpanded = false
                                             }
                                         )
+
                                         Divider()
+
+
                                         val brands = state.products.mapNotNull { it.brand }.distinct()
                                         brands.forEachIndexed { index, brand ->
+                                            val productWithBrand = state.products.find { it.brand == brand }
+                                            val imageResId = productWithBrand?.imageBrand?.let { imageName ->
+                                                val context = LocalContext.current
+                                                remember(imageName) {
+                                                    context.resources.getIdentifier(imageName, "drawable", context.packageName)
+                                                }
+                                            }
+
                                             DropdownMenuItem(
                                                 text = {
-                                                    Text(
-                                                        brand,
-                                                        color = if (selectedBrand == brand) Color(0xFF907E36) else Color(0xFF1D0057)
-                                                    )
+                                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                                        if (imageResId != null && imageResId != 0) {
+                                                            Image(
+                                                                painter = painterResource(id = imageResId),
+                                                                contentDescription = brand,
+                                                                modifier = Modifier
+                                                                    .size(47.dp)
+                                                                    .clip(CircleShape)
+                                                                    .border(0.3.dp, Color.Transparent, CircleShape)
+                                                            )
+                                                        }
+                                                        Spacer(modifier = Modifier.width(8.dp))
+                                                        Text(
+                                                            text = brand,
+                                                            color = if (selectedBrand == brand) Color(0xFF907E36) else Color(0xFF1D0057),
+                                                            fontSize = 17.sp
+                                                        )
+                                                    }
                                                 },
                                                 onClick = {
                                                     selectedBrand = brand
                                                     brandMenuExpanded = false
                                                 }
                                             )
+
                                             if (index != brands.lastIndex) Divider()
                                         }
                                     }
@@ -264,7 +311,31 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                             }
                         }
                     }
+                    item(span = { GridItemSpan(2) }){
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, start = 8.dp),
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Text(
+                                    text = "Skin Care >",
+                                    fontSize = 25.sp,
+                                    fontFamily = customFontFamily,
+                                    color = Color(0xFF1D0057)
+                                )
+                            }
 
+                            Divider(
+                                color = Color(0xFF1D0057),
+                                thickness = 0.5.dp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                            )
+                        }
+                    }
                     item(span = { GridItemSpan(2) }) {
                         Column {
                             Row(

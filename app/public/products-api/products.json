@@ -10,7 +10,8 @@
     "discountPercentage": 25,
     "offerEnd": 1750876800000,
     "brand": "Dr.Althea",
-    "imageBrand": "draltheabrand"
+    "imageBrand": "draltheabrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -24,7 +25,8 @@
     "discountPercentage": 20,
     "offerEnd": 1750946400000,
     "brand": "iUNIK",
-    "imageBrand": "iunikbrand"
+    "imageBrand": "iunikbrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -38,7 +40,8 @@
     "discountPercentage": 30,
     "offerEnd": 1751122200000,
     "brand": "Beauty of joseon",
-    "imageBrand": "beautyofjeasonbrand"
+    "imageBrand": "beautyofjeasonbrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -52,7 +55,8 @@
     "discountPercentage": 0,
     "offerEnd": null,
     "brand" : "Medicube",
-    "imageBrand": "medicubebrand"
+    "imageBrand": "medicubebrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -66,7 +70,8 @@
     "discountPercentage": 50,
     "offerEnd": 1750876800000,
     "brand": "Beauty of joseon",
-    "imageBrand": "beautyofjeasonbrand"
+    "imageBrand": "beautyofjeasonbrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -80,7 +85,8 @@
     "discountPercentage": 0,
     "offerEnd": null,
     "brand": "Anua",
-    "imageBrand": "anuabrand"
+    "imageBrand": "anuabrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -94,7 +100,8 @@
     "discountPercentage": 15,
     "offerEnd": 1751122200000,
     "brand": "I’m From",
-    "imageBrand": "imfrombrand"
+    "imageBrand": "imfrombrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -108,7 +115,8 @@
     "discountPercentage": 25,
     "offerEnd": 1751201400000,
     "brand": "I’m From",
-    "imageBrand": "imfrombrand"
+    "imageBrand": "imfrombrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -122,7 +130,8 @@
     "discountPercentage": 60,
     "offerEnd": 1751079000000,
     "brand": "COSRX",
-    "imageBrand": "cosrxbrand"
+    "imageBrand": "cosrxbrand",
+    "imageCategory": "sunscreencategory"
   },
 
   {
@@ -136,6 +145,7 @@
     "discountPercentage": 0,
     "offerEnd": null,
     "brand": "I’m From",
-    "imageBrand": "imfrombrand"
+    "imageBrand": "imfrombrand",
+    "imageCategory": "sunscreencategory"
   }
 ]

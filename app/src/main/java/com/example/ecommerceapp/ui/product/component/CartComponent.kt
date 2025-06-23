@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DrawerDefaults.shape
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -36,13 +36,13 @@ import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.CartItems
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import kotlinx.coroutines.delay
-import java.sql.Driver
+
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNavigateFavorite: () -> Unit) {
+fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit) {
     val cartItems = viewModel.state.collectAsState().value.cartItems
     val col = Color(0xFF907E36)
     val colM = Color(0xFFE6E6FA)
@@ -218,7 +218,14 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                     }
                 }
             }
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = col)
+            Icon(
+                painter = painterResource(id = R.drawable.category),
+                contentDescription = "Category",
+                tint = Color(0xFF907E36),
+                modifier = Modifier
+                    .size(28.dp)
+                    .clickable { onNavigateCategory() }
+            )
             Box(
                 modifier = Modifier.size(40.dp)
             ) {

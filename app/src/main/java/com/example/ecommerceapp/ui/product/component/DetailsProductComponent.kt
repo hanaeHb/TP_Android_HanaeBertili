@@ -51,7 +51,8 @@ fun DetailsScreen(
     onNavigateCart: () -> Unit,
     onNavigateHome: () -> Unit,
     onNavigateFavorite: () -> Unit,
-    onNavigateToProduct: (Product) -> Unit
+    onNavigateToProduct: (Product) -> Unit,
+    onNavigateCategory: () -> Unit
 ) {
     val imageResId = getImageResIdByName(product.imageResId)
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -330,7 +331,14 @@ fun DetailsScreen(
                         }
                     }
                 }
-                Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = col)
+                Icon(
+                    painter = painterResource(id = R.drawable.category),
+                    contentDescription = "Category",
+                    tint = Color(0xFF907E36),
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable { onNavigateCategory() }
+                )
                 Box(
                     modifier = Modifier
                         .size(40.dp)

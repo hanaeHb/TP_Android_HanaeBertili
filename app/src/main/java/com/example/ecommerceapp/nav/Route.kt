@@ -2,6 +2,7 @@ package com.example.ecommerceapp.nav
 
 
 
+import android.net.Uri
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -59,6 +60,7 @@ import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.ui.product.component.CategoryScreen
 import com.example.ecommerceapp.ui.product.component.FavoriteScreen
+import com.example.ecommerceapp.ui.product.component.SynScreen
 
 object Routes {
     const val  Greating = "Greating"
@@ -67,6 +69,7 @@ object Routes {
     const val  Cart = "Cart"
     const val  Favorite = "Favorite"
     const val  Category = "Category"
+    const val SynScreen = "syn_screen"
 }
 @Composable
 fun AppNav(viewModel: ProductViewModel) {
@@ -123,6 +126,9 @@ fun AppNav(viewModel: ProductViewModel) {
                     },
                     onNavigateToProduct = { selectedProduct ->
                         navController.navigate("${Routes.ProductDetails}/${selectedProduct.id}")
+                    },
+                    onNavigateCategory = {
+                        navController.navigate(Routes.Category)
                     }
                 )
             } else {
@@ -136,6 +142,9 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onNavigateFavorite = {
                     navController.navigate(Routes.Favorite)
+                },
+                onNavigateCategory = {
+                    navController.navigate(Routes.Category)
                 }
             )
         }
@@ -150,6 +159,9 @@ fun AppNav(viewModel: ProductViewModel) {
                     },
                     onClick = { productId ->
                         navController.navigate("${Routes.ProductDetails}/$productId")
+                    },
+                    onNavigateCategory = {
+                        navController.navigate(Routes.Category)
                     }
                 )
         }
@@ -165,7 +177,34 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onNavigateCart = {
                     navController.navigate(Routes.Cart)
+                },
+                onBrandClick = { brand ->
+                    navController.navigate("${Routes.SynScreen}/${Uri.encode(brand)}")
                 }
+            )
+        }
+        composable(
+            route = "${Routes.SynScreen}/{brand}",
+            arguments = listOf(navArgument("brand") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val brand = backStackEntry.arguments?.getString("brand") ?: ""
+
+            val state by viewModel.state.collectAsState()
+            SynScreen(
+                viewModel = viewModel,
+                brand = brand,
+                products = state.products,
+                onBack = { navController.popBackStack() }
+                ,
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                },
+                onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                },
             )
         }
 

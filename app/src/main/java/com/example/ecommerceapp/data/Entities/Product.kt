@@ -28,4 +28,6 @@ data class Product(
     val brand: String,
     @SerializedName("imageBrand")
     val imageBrand: String,
+    @SerializedName("imageCategory")
+    val imageCategory: String,
 )

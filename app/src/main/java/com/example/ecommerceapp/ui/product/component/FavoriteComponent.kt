@@ -47,7 +47,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateHome: () ->  Unit, onClick: (String) -> Unit) {
+fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateHome: () ->  Unit, onClick: (String) -> Unit, onNavigateCategory: () -> Unit) {
     val state by viewModel.state.collectAsState()
 
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -78,15 +78,6 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 fontFamily = customFontFamily,
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
-            )
-
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "Category",
-                tint = Color(0xFF907E36),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(24.dp)
             )
         }
 
@@ -289,8 +280,14 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     }
                 }
             }
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Me", tint = Color(0xFF907E36))
-
+            Icon(
+                painter = painterResource(id = R.drawable.category),
+                contentDescription = "Category",
+                tint = Color(0xFF907E36),
+                modifier = Modifier
+                    .size(28.dp)
+                    .clickable { onNavigateCategory() }
+            )
             Box(
                 modifier = Modifier
                     .size(40.dp)
