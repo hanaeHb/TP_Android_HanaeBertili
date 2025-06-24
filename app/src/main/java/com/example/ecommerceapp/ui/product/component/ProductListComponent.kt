@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
+import com.example.ecommerceapp.data.Entities.routineSteps
 import com.example.ecommerceapp.ui.product.ProductViewModel
 
 @Composable
@@ -42,7 +45,8 @@ fun ProductsByCategoryScreen(
     onBack: () -> Unit,
     onNavigateHome: () -> Unit,
     onNavigateFavorite: () -> Unit,
-    onNavigateCart: () -> Unit
+    onNavigateCart: () -> Unit,
+    onNavigateCategory: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -103,7 +107,7 @@ fun ProductsByCategoryScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(products) { product ->
@@ -112,6 +116,52 @@ fun ProductsByCategoryScreen(
                     onClick = { onProductClick(product.id) },
                     viewModel = viewModel
                 )
+            }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 75.dp),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "The right skin care routine",
+                        fontSize = 25.sp,
+                        color = Color(0xFF1D0057),
+                    )
+                }
+                Divider(
+                    color = Color(0xFF1D0057),
+                    thickness = 0.5.dp,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            item {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    itemsIndexed(routineSteps) { index, step ->
+                        RoutineStepCard(step, onClick = {
+                            onNavigateCategory()})
+
+                        if (index < routineSteps.lastIndex) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                imageVector = Icons.Default.ArrowForward,
+                                contentDescription = "Arrow",
+                                tint = Color(0xFF1D0057),
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
+                    }
+                }
             }
         }
 

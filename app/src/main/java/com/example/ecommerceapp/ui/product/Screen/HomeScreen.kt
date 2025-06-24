@@ -37,6 +37,8 @@ import com.example.ecommerceapp.ui.product.component.ProductCard
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.text.font.FontWeight
 import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.ui.product.getEffectivePrice
@@ -44,6 +46,10 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.material3.*
 import androidx.compose.ui.platform.LocalContext
+import com.example.ecommerceapp.data.Entities.routineSteps
+import com.example.ecommerceapp.ui.product.component.AutoImageSlider
+import com.example.ecommerceapp.ui.product.component.RoutineStepCard
+import com.example.ecommerceapp.ui.product.component.SocialMediaSection
 
 @Composable
 fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit) {
@@ -141,17 +147,14 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                 ) {
 
                     item(span = { GridItemSpan(2) }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.bestskincare),
-                            contentDescription = "Intro",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(195.dp)
-                                .padding(top = 0.dp),
-                            contentScale = ContentScale.Fit
+                        AutoImageSlider(
+                            images = listOf(
+                                R.drawable.bestskincare,
+                                R.drawable.bestskincare2,
+                                R.drawable.bestskincare3
+                            )
                         )
                     }
-
                     item(span = { GridItemSpan(2) }) {
                         var brandMenuExpanded by remember { mutableStateOf(false) }
 
@@ -358,7 +361,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         modifier = Modifier
-                                            .padding(top = 30.dp)
+                                            .padding(top = 30.dp, start= 7.dp)
                                             .scale(scale)
                                             .clickable {
                                                 selectedCategory = if (label == "All") null else label
@@ -375,7 +378,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                                     shape = CircleShape
                                                 )
                                                 .border(
-                                                    width = if (isSelected) 3.5.dp else 2.5.dp,
+                                                    width = if (isSelected) 2.6.dp else 2.3.dp,
                                                     color = if (isSelected) Color(0xFF907E36) else Color(0xFFE6E6FA),
                                                     shape = CircleShape
                                                 )
@@ -393,37 +396,82 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                 }
                             }
 
-
-                            Row(
+                            LazyRow(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 20.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                    .padding(horizontal = 8.dp, vertical = 20.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                FilterChip(
-                                    selected = filterByPromotion,
-                                    onClick = { filterByPromotion = !filterByPromotion },
-                                    label = { Text("Offers products")},
+                                item {
+                                    FilterChip(
+                                        selected = filterByPromotion,
+                                        onClick = { filterByPromotion = !filterByPromotion },
+                                        label = { Text("Offers products") },
                                         colors = FilterChipDefaults.filterChipColors(
                                             selectedContainerColor = Color(0xFF907E36),
                                             selectedLabelColor = Color.White,
                                             containerColor = Color(0xFFECECEC),
                                             labelColor = Color(0xFF907E36)
                                         )
-                                )
-                                Box {
-                                    FilterChip(
-                                        selected = sortByPriceAscending != null,
-                                        onClick = { priceMenuExpanded = true },
-                                        label = {
-                                            Text(
-                                                text = when (sortByPriceAscending) {
-                                                    true -> "Price ↑"
-                                                    false -> "Price ↓"
-                                                    null -> "Price"
+                                    )
+                                }
+
+                                item {
+                                    Box {
+                                        FilterChip(
+                                            selected = sortByPriceAscending != null,
+                                            onClick = { priceMenuExpanded = true },
+                                            label = {
+                                                Text(
+                                                    text = when (sortByPriceAscending) {
+                                                        true -> "Price ↑"
+                                                        false -> "Price ↓"
+                                                        null -> "Sort with Price"
+                                                    }
+                                                )
+                                            },
+                                            colors = FilterChipDefaults.filterChipColors(
+                                                selectedContainerColor = Color(0xFF907E36),
+                                                selectedLabelColor = Color.White,
+                                                containerColor = Color(0xFFECECEC),
+                                                labelColor = Color(0xFF907E36)
+                                            )
+                                        )
+
+                                        DropdownMenu(
+                                            expanded = priceMenuExpanded,
+                                            onDismissRequest = { priceMenuExpanded = false }
+                                        ) {
+                                            DropdownMenuItem(
+                                                text = { Text("Low to High") },
+                                                onClick = {
+                                                    sortByPriceAscending = true
+                                                    priceMenuExpanded = false
                                                 }
                                             )
-                                        },
+                                            DropdownMenuItem(
+                                                text = { Text("High to Low") },
+                                                onClick = {
+                                                    sortByPriceAscending = false
+                                                    priceMenuExpanded = false
+                                                }
+                                            )
+                                            DropdownMenuItem(
+                                                text = { Text("Without") },
+                                                onClick = {
+                                                    sortByPriceAscending = null
+                                                    priceMenuExpanded = false
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+
+                                item {
+                                    FilterChip(
+                                        selected = filterByOfferEndingSoon,
+                                        onClick = { filterByOfferEndingSoon = !filterByOfferEndingSoon },
+                                        label = { Text("Ending Soon") },
                                         colors = FilterChipDefaults.filterChipColors(
                                             selectedContainerColor = Color(0xFF907E36),
                                             selectedLabelColor = Color.White,
@@ -431,46 +479,9 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                             labelColor = Color(0xFF907E36)
                                         )
                                     )
-
-                                    DropdownMenu(
-                                        expanded = priceMenuExpanded,
-                                        onDismissRequest = { priceMenuExpanded = false }
-                                    ) {
-                                        DropdownMenuItem(
-                                            text = { Text("Low to High") },
-                                            onClick = {
-                                                sortByPriceAscending = true
-                                                priceMenuExpanded = false
-                                            }
-                                        )
-                                        DropdownMenuItem(
-                                            text = { Text("High to Low") },
-                                            onClick = {
-                                                sortByPriceAscending = false
-                                                priceMenuExpanded = false
-                                            }
-                                        )
-                                        DropdownMenuItem(
-                                            text = { Text("Without") },
-                                            onClick = {
-                                                sortByPriceAscending = null
-                                                priceMenuExpanded = false
-                                            }
-                                        )
-                                    }
                                 }
-                                FilterChip(
-                                    selected = filterByOfferEndingSoon,
-                                    onClick = { filterByOfferEndingSoon = !filterByOfferEndingSoon },
-                                    label = { Text("Ending Soon") },
-                                    colors = FilterChipDefaults.filterChipColors(
-                                        selectedContainerColor = Color(0xFF907E36),
-                                        selectedLabelColor = Color.White,
-                                        containerColor = Color(0xFFECECEC),
-                                        labelColor = Color(0xFF907E36)
-                                    )
-                                )
                             }
+
                         }
                     }
                     item(span = { GridItemSpan(2) }) {
@@ -511,6 +522,78 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                     }
                     items(filteredProducts) { product ->
                         ProductCard(viewModel = viewModel, product = product, onClick = { onProductClick(product.id) })
+                    }
+
+                    item(span = { GridItemSpan(2) }) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 75.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "The right skin care routine",
+                                fontSize = 25.sp,
+                                color = Color(0xFF1D0057),
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Divider(
+                                color = Color(0xFF1D0057),
+                                thickness = 0.5.dp
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+                    }
+
+
+                    item(span = { GridItemSpan(2) }){
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            itemsIndexed(routineSteps) { index, step ->
+                                RoutineStepCard(step, onClick = {
+                                    onNavigateCategory()})
+
+                                if (index < routineSteps.lastIndex) {
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowForward,
+                                        contentDescription = "Arrow",
+                                        tint = Color(0xFF1D0057),
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    item(span = { GridItemSpan(2) }) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 75.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "MORE OF OUR SOCIALS",
+                                fontSize = 25.sp,
+                                color = Color(0xFF1D0057),
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Divider(
+                                color = Color(0xFF1D0057),
+                                thickness = 0.5.dp
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+                    }
+
+                    item(span = { GridItemSpan(2) }) {
+                        SocialMediaSection()
                     }
                 }
             }

@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
+import com.example.ecommerceapp.data.Entities.routineSteps
 import com.example.ecommerceapp.ui.product.ProductIntent
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import java.text.SimpleDateFormat
@@ -61,7 +64,8 @@ fun DetailsScreen(
     val colM = Color(0xFFE6E6FA)
     val similarProducts = viewModel.state.collectAsState().value.products
         .filter { it.category.equals(product.category, ignoreCase = true) && it.id != product.id }
-
+    val brandProducts = viewModel.state.collectAsState().value.products
+        .filter { it.brand.equals(product.brand, ignoreCase = true) && it.id != product.id }
     val price = product.price.toDoubleOrNull() ?: 0.0
     val hasDiscount = product.discountPercentage != null && product.discountPercentage > 0
     val discountedPrice = if (hasDiscount) {
@@ -262,11 +266,11 @@ fun DetailsScreen(
                 if (similarProducts.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Similar Products >",
+                            text = "You Might Like >",
                             fontSize = 25.sp,
                             fontFamily = customFontFamily,
                             color = Color(0xFF1D0057),
-                            modifier = Modifier.padding(top = 8.dp, start = 12.dp, end = 12.dp)
+                            modifier = Modifier.padding(top = 40.dp, start = 12.dp, end = 12.dp)
                         )
                         Divider(
                             color = Color(0xFF1D0057),
@@ -290,7 +294,91 @@ fun DetailsScreen(
                         }
                     }
                 }
+
+                if (brandProducts.isNotEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 75.dp, start = 12.dp, end = 12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "${product.brand}",
+                                fontSize = 25.sp,
+                                color = Color(0xFF1D0057)
+                            )
+                        }
+                        Divider(
+                            color = Color(0xFF1D0057),
+                            thickness = 0.5.dp,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+                    item {
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp)
+                        ) {
+                            items(brandProducts) { brandProduct ->
+                                ProductCard(
+                                    product = brandProduct,
+                                    onClick = { onNavigateToProduct(brandProduct) },
+                                    viewModel = viewModel
+                                )
+                            }
+                        }
+                    }
+                }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 75.dp, start = 12.dp, end = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text(
+                            text = "The right skin care routine",
+                            fontSize = 25.sp,
+                            color = Color(0xFF1D0057),
+                        )
+                    }
+                    Divider(
+                        color = Color(0xFF1D0057),
+                        thickness = 0.5.dp,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                item {
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        itemsIndexed(routineSteps) { index, step ->
+                            RoutineStepCard(step, onClick = {
+                                onNavigateCategory()})
+
+                            if (index < routineSteps.lastIndex) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(
+                                    imageVector = Icons.Default.ArrowForward,
+                                    contentDescription = "Arrow",
+                                    tint = Color(0xFF1D0057),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                        }
+                    }
+                }
             }
+
             val favoriteCount = viewModel.state.collectAsState().value.products.count { it.isFavorite }
             val totalCartItems = viewModel.state.collectAsState().value.cartItems.size
             Row(

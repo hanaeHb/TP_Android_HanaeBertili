@@ -14,7 +14,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Button
 
+import androidx.compose.material.Divider
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -42,7 +47,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit) {
+fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit, onNavigateCheckout: () -> Unit) {
     val cartItems = viewModel.state.collectAsState().value.cartItems
     val col = Color(0xFF907E36)
     val colM = Color(0xFFE6E6FA)
@@ -159,17 +164,17 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
 
                     item {
                         Button(
-                            onClick = {  },
+                            onClick = { onNavigateCheckout() },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(50.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colM,
-                                contentColor = col
-                            ),
-                            shape = RoundedCornerShape(16.dp)
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF907E36))
                         ) {
-                            Text("Confirm Order", fontSize = 16.sp)
+                            Text(
+                                "Checkout",
+                                color = Color.White,
+                                fontSize = 18.sp
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(24.dp))
@@ -337,15 +342,17 @@ fun CartItemRow(
         ) {
             Box(
                 modifier = Modifier
-                    .height(150.dp)
-                    .weight(0.8f)
+                    .height(130.dp)
+                    .weight(0.4f)
                     .clip(RoundedCornerShape(8.dp)),
             ) {
                 Image(
                     painter = painterResource(id = imageResId),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    modifier = Modifier.fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp))
+                        .fillMaxSize(),
+                    contentScale = ContentScale.Fit
                 )
                 if (hasDiscount) {
                     Box(

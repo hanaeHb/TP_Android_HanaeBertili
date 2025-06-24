@@ -59,6 +59,7 @@ import com.example.ecommerceapp.ui.product.component.CartScreen
 import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.ui.product.component.CategoryScreen
+import com.example.ecommerceapp.ui.product.component.CheckoutScreen
 import com.example.ecommerceapp.ui.product.component.FavoriteScreen
 import com.example.ecommerceapp.ui.product.component.ProductsByCategoryScreen
 import com.example.ecommerceapp.ui.product.component.SynScreen
@@ -72,6 +73,7 @@ object Routes {
     const val  Category = "Category"
     const val  SynScreen = "syn_screen"
     const val  ProductsByCategory = "products_by_category"
+    const val  Checkout = "Checkout"
 
 }
 @Composable
@@ -148,6 +150,9 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onNavigateCategory = {
                     navController.navigate(Routes.Category)
+                },
+                onNavigateCheckout = {
+                    navController.navigate(Routes.Checkout)
                 }
             )
         }
@@ -248,10 +253,31 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onNavigateFavorite = {
                     navController.navigate(Routes.Favorite)
+                },
+                onNavigateCategory = {
+                    navController.navigate(Routes.Category)
                 }
             )
         }
 
+
+        composable(Routes.Checkout) {
+            CheckoutScreen(
+                viewModel = viewModel,
+                onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                },
+                onNavigateCategory = {
+                    navController.navigate(Routes.Category)
+                },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                },
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                }
+            )
+        }
 
     }
 }
