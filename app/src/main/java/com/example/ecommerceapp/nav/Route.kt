@@ -60,6 +60,7 @@ import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.ui.product.component.CategoryScreen
 import com.example.ecommerceapp.ui.product.component.FavoriteScreen
+import com.example.ecommerceapp.ui.product.component.ProductsByCategoryScreen
 import com.example.ecommerceapp.ui.product.component.SynScreen
 
 object Routes {
@@ -69,7 +70,9 @@ object Routes {
     const val  Cart = "Cart"
     const val  Favorite = "Favorite"
     const val  Category = "Category"
-    const val SynScreen = "syn_screen"
+    const val  SynScreen = "syn_screen"
+    const val  ProductsByCategory = "products_by_category"
+
 }
 @Composable
 fun AppNav(viewModel: ProductViewModel) {
@@ -205,8 +208,50 @@ fun AppNav(viewModel: ProductViewModel) {
                 onNavigateCart = {
                     navController.navigate(Routes.Cart)
                 },
+                onCategoryClick = { category, brand ->
+                    navController.navigate("${Routes.ProductsByCategory}/${Uri.encode(brand)}/${Uri.encode(category)}")
+                }
             )
         }
+
+        composable(
+            route = "${Routes.ProductsByCategory}/{brand}/{category}",
+            arguments = listOf(
+                navArgument("brand") { type = NavType.StringType },
+                navArgument("category") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val brand = backStackEntry.arguments?.getString("brand") ?: ""
+            val category = backStackEntry.arguments?.getString("category") ?: ""
+
+            val state by viewModel.state.collectAsState()
+
+            val filteredProducts = state.products.filter {
+                it.brand == brand && it.category == category
+            }
+            ProductsByCategoryScreen(
+                viewModel = viewModel,
+                brand = brand,
+                category = category,
+                products = filteredProducts,
+                onProductClick = { productId ->
+                    navController.navigate("${Routes.ProductDetails}/$productId")
+                },
+                onBack = {
+                    navController.popBackStack()
+                },
+                onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                },
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                }
+            )
+        }
+
 
     }
 }
