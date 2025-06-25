@@ -46,6 +46,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 
 
 @Composable
@@ -61,7 +63,8 @@ fun SynScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
-
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
     val categoriesWithImages = products
         .filter { it.brand == brand }
         .distinctBy { it.category }
@@ -70,7 +73,8 @@ fun SynScreen(
             val imageName = product.imageCategory
             if (category.isNotBlank() && imageName.isNotBlank()) category to imageName else null
         }
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),) {
 
 
         Row(
@@ -78,7 +82,7 @@ fun SynScreen(
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -89,12 +93,44 @@ fun SynScreen(
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Theme Menu",
+                        tint = Color(0xFF907E36),
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 12.dp, end = 12.dp),
+                .padding(top = 8.dp, start = 12.dp, end = 12.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {

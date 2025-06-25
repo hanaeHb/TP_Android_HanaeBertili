@@ -41,7 +41,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 
 @Composable
 fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit) {
@@ -57,7 +60,10 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
         Triple(R.drawable.gift4, R.drawable.package4, "Pink")
     )
     val totalQuantity = cartItems.size
-    Column(modifier = Modifier.fillMaxSize()) {
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),) {
 
 
         Row(
@@ -65,7 +71,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -76,11 +82,43 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Theme Menu",
+                        tint = Color(0xFF907E36),
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 12.dp, end = 12.dp),
+                .padding(top = 8.dp, start = 12.dp, end = 12.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
@@ -200,7 +238,9 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                     val (giftRes, packageRes, colorName) = options[selectedIndex]
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .background(Color.White, shape = RoundedCornerShape(8.dp))
+                            .padding(top = 10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Row(
@@ -226,12 +266,12 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Divider(
-                            color = Color(0xFF1D0057),
-                            thickness = 0.5.dp,
-                            modifier = Modifier.padding(vertical = 6.dp)
-                        )
                     }
+                    Divider(
+                        color = Color(0xFF1D0057),
+                        thickness = 0.5.dp,
+                        modifier = Modifier.padding(vertical = 6.dp)
+                    )
                 }
             }
             item {
@@ -247,7 +287,8 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                 val discountedPrice = price * (1 - discount / 100.0)
                 val imageResId = getImageResIdByName(item.product.imageResId)
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .background(Color.White, shape = RoundedCornerShape(4.dp)),
                     )
                 {
                     Row(
@@ -278,12 +319,12 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                             )
                         }
                     }
-                    Divider(
-                        color = Color(0xFF1D0057),
-                        thickness = 0.5.dp,
-                        modifier = Modifier.padding(vertical = 6.dp)
-                    )
                 }
+                Divider(
+                    color = Color(0xFF1D0057),
+                    thickness = 0.5.dp,
+                    modifier = Modifier.padding(vertical = 6.dp)
+                )
             }
 
             item {

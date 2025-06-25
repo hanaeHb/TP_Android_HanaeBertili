@@ -50,6 +50,9 @@ import com.example.ecommerceapp.data.Entities.routineSteps
 import com.example.ecommerceapp.ui.product.component.AutoImageSlider
 import com.example.ecommerceapp.ui.product.component.RoutineStepCard
 import com.example.ecommerceapp.ui.product.component.SocialMediaSection
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
+import com.example.ecommerceapp.ui.theme.ThemeState
 
 @Composable
 fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit) {
@@ -63,13 +66,17 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
     var filterByOfferEndingSoon by remember { mutableStateOf(false) }
     var selectedBrand by remember { mutableStateOf<String?>(null) }
     var brandMenuExpanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
+
     LaunchedEffect(Unit) {
         if (state.products.isEmpty()) {
             viewModel.handleIntent(ProductIntent.LoadProducts)
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),) {
 
 
         Row(
@@ -77,7 +84,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.surface),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -88,12 +95,47 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Theme Menu",
+                        tint = Color(0xFF907E36),
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
+
         }
 
         when {
             state.isLoading -> {
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -103,7 +145,8 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
 
             state.error != null -> {
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -140,7 +183,8 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
+                        .background(MaterialTheme.colorScheme.background),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(bottom = 64.dp)
@@ -550,7 +594,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                         LazyRow(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 12.dp),
+                                .padding(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             itemsIndexed(routineSteps) { index, step ->
@@ -560,7 +604,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                 if (index < routineSteps.lastIndex) {
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Icon(
-                                        imageVector = Icons.Default.ArrowForward,
+                                        painter = painterResource(id = R.drawable.arrow),
                                         contentDescription = "Arrow",
                                         tint = Color(0xFF1D0057),
                                         modifier = Modifier.size(24.dp)
@@ -575,18 +619,19 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 75.dp),
+                                .padding(top = 50.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = "MORE OF OUR SOCIALS",
                                 fontSize = 20.sp,
-                                color = Color(0xFF1D0057),
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Divider(
-                                color = Color(0xFF1D0057),
-                                thickness = 0.5.dp
+                                color = Color.Black,
+                                thickness = 1.2.dp
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                         }
@@ -605,7 +650,8 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(bottom = 45.dp),
+                .padding(bottom = 45.dp)
+                .background(MaterialTheme.colorScheme.surface),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

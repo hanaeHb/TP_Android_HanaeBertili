@@ -38,13 +38,19 @@ import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Client
 import androidx.compose.animation.core.*
 import androidx.compose.material.IconButton
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 import kotlinx.coroutines.launch
 
 @Composable
@@ -87,6 +93,8 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 nameOnCard.isNotBlank() &&
                 selectedIndex != -1
     }
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
     viewModel.setClientInfo(
         Client(
             email = email,
@@ -115,13 +123,14 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
         return true
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -132,11 +141,43 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                androidx.compose.material3.IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Theme Menu",
+                        tint = Color(0xFF907E36),
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 12.dp, end = 12.dp),
+                .padding(top = 8.dp, start = 12.dp, end = 12.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
@@ -172,6 +213,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     isError = emailError,
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = if (emailError) Color.Red else Color(0xFF907E36),
                         unfocusedBorderColor = if (emailError) Color.Red else Color(0xFFCCCCCC),
                         focusedLabelColor = if (emailError) Color.Red else Color(0xFF1D0057),
@@ -206,6 +248,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
                         focusedLabelColor = Color(0xFF1D0057),
@@ -220,6 +263,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
                         focusedLabelColor = Color(0xFF1D0057),
@@ -234,6 +278,22 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
+                        focusedBorderColor = Color(0xFF907E36),
+                        unfocusedBorderColor = Color(0xFFCCCCCC),
+                        focusedLabelColor = Color(0xFF1D0057),
+                        cursorColor = Color(0xFF1D0057)
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                OutlinedTextField(
+                    value = lastName,
+                    onValueChange = { lastName = it },
+                    label = { Text("Phone", fontSize = 13.sp) },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
+                    colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
                         focusedLabelColor = Color(0xFF1D0057),
@@ -248,6 +308,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
                         focusedLabelColor = Color(0xFF1D0057),
@@ -262,6 +323,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
                         focusedLabelColor = Color(0xFF1D0057),
@@ -285,7 +347,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                                     .clip(RoundedCornerShape(10.dp))
                                     .background(
                                         if (selectedIndex == index) Color(0xFF907E36).copy(alpha = 0.1f)
-                                        else Color.Transparent
+                                        else Color.White
                                     )
                                     .border(
                                         width = 1.dp,
@@ -355,6 +417,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
                         focusedLabelColor = Color(0xFF1D0057),
@@ -373,6 +436,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     isError = expiryError,
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = if (expiryError) Color.Red else Color(0xFF907E36),
                         unfocusedBorderColor = if (expiryError) Color.Red else Color(0xFFCCCCCC),
                         focusedLabelColor = if (expiryError) Color.Red else Color(0xFF1D0057),
@@ -404,6 +468,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                         }
                     },
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
                         focusedLabelColor = Color(0xFF1D0057),
@@ -418,6 +483,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.White,
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
                         focusedLabelColor = Color(0xFF1D0057),
@@ -448,7 +514,9 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 if (selectedIndex != -1) {
                     val (giftRes, packageRes, colorName) = options[selectedIndex]
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
+                            .background(Color.White, shape = RoundedCornerShape(8.dp))
+                            .padding(top = 10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -480,16 +548,13 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                             modifier = Modifier.padding(top = 8.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Divider(
-                            color = Color(0xFF1D0057),
-                            thickness = 0.5.dp,
-                            modifier = Modifier.padding(vertical = 6.dp)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
+
+
             item{
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "Your products",
                     fontSize = 18.sp,
@@ -509,7 +574,8 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp)
+                            .background(Color.White, shape = RoundedCornerShape(4.dp)),
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -637,7 +703,8 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(bottom = 45.dp),
+                .padding(bottom = 45.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

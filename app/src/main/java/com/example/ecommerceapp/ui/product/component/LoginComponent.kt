@@ -168,11 +168,14 @@ fun LoginScreen(
                             .fillMaxWidth()
                             .height(50.dp),
                         shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF907E36))
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1D0057))
                     ) {
                         Text("Login", color = Color.White, fontSize = 18.sp)
                     }
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    LoginDividerWithText()
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     SocialRegisterButtons()
 

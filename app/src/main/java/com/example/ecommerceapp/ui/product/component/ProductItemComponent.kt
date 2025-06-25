@@ -29,6 +29,7 @@ import com.example.ecommerceapp.data.Entities.Product
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -94,7 +95,9 @@ fun ProductCard(product: Product, onClick: () -> Unit, viewModel: ProductViewMod
                 .width(160.dp)
                 .height(200.dp),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFE6E6FA)),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondary
+            ),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Box(

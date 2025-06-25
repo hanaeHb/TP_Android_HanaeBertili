@@ -13,12 +13,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +40,8 @@ import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.data.Entities.routineSteps
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 
 @Composable
 fun ProductsByCategoryScreen(
@@ -50,15 +58,17 @@ fun ProductsByCategoryScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
-
-    Column(modifier = Modifier.fillMaxSize()) {
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -69,12 +79,44 @@ fun ProductsByCategoryScreen(
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Theme Menu",
+                        tint = Color(0xFF907E36),
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 12.dp, end = 12.dp),
+                .padding(top = 8.dp, start = 12.dp, end = 12.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -144,7 +186,7 @@ fun ProductsByCategoryScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     itemsIndexed(routineSteps) { index, step ->
                         RoutineStepCard(step, onClick = {
@@ -153,7 +195,7 @@ fun ProductsByCategoryScreen(
                         if (index < routineSteps.lastIndex) {
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
-                                imageVector = Icons.Default.ArrowForward,
+                                painter = painterResource(id = R.drawable.arrow),
                                 contentDescription = "Arrow",
                                 tint = Color(0xFF1D0057),
                                 modifier = Modifier.size(24.dp)
@@ -172,7 +214,8 @@ fun ProductsByCategoryScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(bottom = 45.dp),
+                .padding(bottom = 45.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

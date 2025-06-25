@@ -15,7 +15,7 @@ fun PaymentOptionIcon(drawableResId: Int, contentDescription: String) {
         painter = painterResource(id = drawableResId),
         contentDescription = contentDescription,
         modifier = Modifier
-            .size(48.dp)
+            .size(58.dp)
             .background(Color.LightGray.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
             .padding(8.dp)
     )

@@ -71,6 +71,11 @@ import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.ui.product.ProductIntent
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 
 @Composable
 fun CategoryScreen(
@@ -88,15 +93,18 @@ fun CategoryScreen(
             viewModel.handleIntent(ProductIntent.LoadProducts)
         }
     }
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -107,11 +115,43 @@ fun CategoryScreen(
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Theme Menu",
+                        tint = Color(0xFF907E36),
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 12.dp, end = 12.dp),
+                .padding(top = 8.dp, start = 12.dp, end = 12.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
@@ -158,7 +198,7 @@ fun CategoryScreen(
                             modifier = Modifier
                                 .size(60.dp)
                                 .clip(RoundedCornerShape(8.dp))
-                                .border(0.5.dp, Color(0xFFCCCCCC), RoundedCornerShape(2.dp)),
+                                .border(0.5.dp, Color(0xFF1D0057), RoundedCornerShape(2.dp)),
                             contentScale = ContentScale.Crop
                         )
                     }
@@ -188,7 +228,8 @@ fun CategoryScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(bottom = 45.dp),
+                .padding(bottom = 45.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-
 @Composable
 fun OrderStatusTracker() {
     val stages = listOf(
@@ -31,15 +30,16 @@ fun OrderStatusTracker() {
     var progress by remember { mutableStateOf(0f) }
     var finished by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        if (finished) return@LaunchedEffect
-        progress = 0f
-        repeat(steps) {
-            delay(stepDelayMs)
-            progress += increment
+    LaunchedEffect(finished) {
+        if (!finished) {
+            progress = 0f
+            repeat(steps) {
+                delay(stepDelayMs)
+                progress += increment
+            }
+            progress = 1f
+            finished = true
         }
-        progress = 1f
-        finished = true
     }
 
     val currentStageIndex = (progress * totalStages).toInt().coerceIn(0, totalStages - 1)

@@ -4,8 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,37 +24,52 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.RoutineStep
-
 @Composable
-fun RoutineStepCard(step: RoutineStep, onClick: () -> Unit) {
-    Column(
+fun RoutineStepCard(
+    step: RoutineStep,
+    onClick: () -> Unit
+) {
+    val customFontFamily = FontFamily(Font(R.font.dancingscript))
+    Box(
         modifier = Modifier
-            .width(110.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFF8F8F8))
+            .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
-            .padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color.White)
+            .width(310.dp)
+            .height(348.dp)
+            .border(1.dp, Color(0xFFD1C8B5), RoundedCornerShape(16.dp))
     ) {
-        Image(
-            painter = painterResource(id = step.imageRes),
-            contentDescription = step.name,
-            modifier = Modifier
-                .size(60.dp)
-                .border(width = 1.dp, color = Color(0xFF907E36), shape = CircleShape)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = step.name,
-            fontSize = 14.sp,
-            color = Color(0xFF1D0057),
-            fontWeight = FontWeight.Medium
-        )
+        Column {
+            Image(
+                painter = painterResource(id = step.imageRes),
+                contentDescription = step.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                contentScale = ContentScale.Fit
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = step.name,
+                    fontSize = 18.sp,
+                    color = Color(0xFF1D0057),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = customFontFamily
+                )
+            }
+        }
     }
 }

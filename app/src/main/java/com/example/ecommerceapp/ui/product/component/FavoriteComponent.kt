@@ -44,6 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.ecommerceapp.data.Entities.routineSteps
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -52,7 +54,8 @@ import java.util.Locale
 @Composable
 fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateHome: () ->  Unit, onClick: (String) -> Unit, onNavigateCategory: () -> Unit) {
     val state by viewModel.state.collectAsState()
-
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
     LaunchedEffect(Unit) {
         if (state.products.isEmpty()) {
@@ -63,7 +66,9 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
     val favoriteProducts = state.products.filter { it.isFavorite }
     val fontFamily = FontFamily(Font(R.font.dancingscript))
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background))
+    {
 
 
         Row(
@@ -71,7 +76,7 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -82,12 +87,44 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Theme Menu",
+                        tint = Color(0xFF907E36),
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 12.dp, end = 12.dp),
+                .padding(top = 8.dp, start = 12.dp, end = 12.dp)
+            .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
@@ -106,7 +143,8 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
             columns = GridCells.Fixed(2),
             modifier = Modifier
                 .weight(1f)
-                .padding(top = 15.dp),
+                .padding(top = 15.dp)
+                .background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -246,7 +284,8 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(bottom = 45.dp),
+                .padding(bottom = 45.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

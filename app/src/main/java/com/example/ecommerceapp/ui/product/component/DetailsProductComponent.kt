@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
@@ -42,6 +43,8 @@ import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.data.Entities.routineSteps
 import com.example.ecommerceapp.ui.product.ProductIntent
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -73,14 +76,16 @@ fun DetailsScreen(
     } else {
         price
     }
-
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
     val offerEndsAt = product.offerEnd?.let { timestamp ->
         val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
         sdf.format(Date(timestamp))
     }
     var userRating by remember { mutableStateOf(product.rating ?: 0f) }
 
-    Column(modifier = Modifier.fillMaxSize())
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),)
         {
 
             Row(
@@ -88,7 +93,7 @@ fun DetailsScreen(
                     .fillMaxWidth()
                     .padding(top = 32.dp)
                     .height(50.dp)
-                    .background(Color.White),
+                    .background(MaterialTheme.colorScheme.background),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -99,6 +104,37 @@ fun DetailsScreen(
                     color = col,
                     modifier = Modifier.padding(start = 16.dp)
                 )
+                Box(
+                    modifier = Modifier.padding(end = 16.dp)
+                ) {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36),
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
+                }
             }
 
             Row(
@@ -214,7 +250,10 @@ fun DetailsScreen(
                                 Button(
                                     onClick = { onConfirm() },
                                     modifier = Modifier.fillMaxWidth(),
-                                    colors = ButtonDefaults.buttonColors(containerColor = colM, contentColor = col)
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary
+                                    )
                                 ) {
                                     Icon(Icons.Default.ShoppingCart, contentDescription = "cart")
                                     Spacer(modifier = Modifier.width(8.dp))

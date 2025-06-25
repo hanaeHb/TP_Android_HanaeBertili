@@ -40,8 +40,11 @@ import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.CartItems
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 import kotlinx.coroutines.delay
-
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -62,8 +65,11 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
         }
         finalPrice * it.quantity
     }
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
     Column(modifier = Modifier
         .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),
     )  {
 
         Row(
@@ -71,7 +77,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                 .fillMaxWidth()
                 .padding(top = 32.dp)
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -82,12 +88,43 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                 color = col,
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Theme Menu",
+                        tint = Color(0xFF907E36),
+                    )
+                }
 
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { androidx.compose.material3.Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 12.dp, end = 12.dp),
+                .padding(top = 8.dp, start = 12.dp, end = 12.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
@@ -115,7 +152,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                         .fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                         Box(
                             modifier = Modifier
-                                .background(colM, RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
                                 .padding(horizontal = 8.dp, vertical = 8.dp)
                         ) {
                             Column {
@@ -188,7 +225,8 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(bottom = 45.dp),
+                .padding(bottom = 45.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -324,20 +362,22 @@ fun CartItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .border(width = 0.6.dp,
-            color = Color(0xFF907E36),
-            shape = RoundedCornerShape(5.dp)
+            .border(
+                width = 0.6.dp,
+                color = Color(0xFF907E36),
+                shape = RoundedCornerShape(5.dp)
             ),
         shape = RoundedCornerShape(0.dp),
         elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
+            containerColor = Color.White
         )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp),
+                .padding(10.dp)
+                .background(Color.White),
             verticalAlignment = Alignment.Top
         ) {
             Box(

@@ -24,6 +24,7 @@ import com.example.ecommerceapp.ui.product.component.OrderTrackingScreen
 import com.example.ecommerceapp.ui.product.component.ProductsByCategoryScreen
 import com.example.ecommerceapp.ui.product.component.RegisterScreen
 import com.example.ecommerceapp.ui.product.component.SynScreen
+import com.example.ecommerceapp.ui.theme.ThemeState
 
 object Routes {
     const val  Register = "Register"
@@ -58,7 +59,8 @@ fun AppNav(viewModel: ProductViewModel) {
         }
 
         composable(Routes.Home) {
-            HomeScreen(viewModel, onProductClick = { productId ->
+            HomeScreen(viewModel,
+                onProductClick = { productId ->
                 navController.navigate("${Routes.ProductDetails}/$productId")
                 },
                     onNavigateCart = {

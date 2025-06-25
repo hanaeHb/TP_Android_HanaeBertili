@@ -4,6 +4,7 @@ data class Client(val email: String = "",
                   val country: String = "",
                   val firstName: String = "",
                   val lastName: String = "",
+                  val phone: String="",
                   val address: String = "",
                   val postalCode: String = ""
 )
