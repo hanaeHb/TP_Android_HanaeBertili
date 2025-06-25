@@ -533,7 +533,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                         ) {
                             Text(
                                 text = "The right skin care routine",
-                                fontSize = 25.sp,
+                                fontSize = 20.sp,
                                 color = Color(0xFF1D0057),
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -580,7 +580,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                         ) {
                             Text(
                                 text = "MORE OF OUR SOCIALS",
-                                fontSize = 25.sp,
+                                fontSize = 20.sp,
                                 color = Color(0xFF1D0057),
                             )
                             Spacer(modifier = Modifier.height(8.dp))

@@ -61,6 +61,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.ui.product.component.CategoryScreen
 import com.example.ecommerceapp.ui.product.component.CheckoutScreen
 import com.example.ecommerceapp.ui.product.component.FavoriteScreen
+import com.example.ecommerceapp.ui.product.component.OrderTrackingScreen
 import com.example.ecommerceapp.ui.product.component.ProductsByCategoryScreen
 import com.example.ecommerceapp.ui.product.component.SynScreen
 
@@ -74,6 +75,7 @@ object Routes {
     const val  SynScreen = "syn_screen"
     const val  ProductsByCategory = "products_by_category"
     const val  Checkout = "Checkout"
+    const val  Tracking = "Tracking"
 
 }
 @Composable
@@ -264,6 +266,25 @@ fun AppNav(viewModel: ProductViewModel) {
         composable(Routes.Checkout) {
             CheckoutScreen(
                 viewModel = viewModel,
+                onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                },
+                onNavigateCategory = {
+                    navController.navigate(Routes.Category)
+                },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                },
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                },
+                onNavigateTrack = {
+                    navController.navigate(Routes.Tracking)
+                }
+            )
+        }
+        composable(Routes.Tracking){
+            OrderTrackingScreen(viewModel = viewModel,
                 onNavigateCart = {
                     navController.navigate(Routes.Cart)
                 },

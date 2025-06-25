@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.data.Entities.CartItems
+import com.example.ecommerceapp.data.Entities.Client
 import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.data.Repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -122,6 +123,35 @@ class ProductViewModel @Inject constructor(
                 else it
             }
             currentState.copy(products = updatedProducts)
+        }
+    }
+    fun checkoutAndClearCart() {
+        _state.update { currentState ->
+            val updatedProducts = currentState.products.map { product ->
+                val cartItem = currentState.cartItems.find { it.product.id == product.id }
+                if (cartItem != null) {
+                    val currentStock = product.quantity.toIntOrNull() ?: 0
+                    val newStock = (currentStock - cartItem.quantity).coerceAtLeast(0)
+                    product.copy(quantity = newStock.toString())
+                } else product
+            }
+            currentState.copy(
+                products = updatedProducts,
+                orderItems = currentState.cartItems,
+                cartItems = emptyList()
+            )
+        }
+    }
+
+    fun setClientInfo(info: Client) {
+        _state.update { currentState ->
+            currentState.copy(client = info)
+        }
+    }
+
+    fun setSelectedGiftIndex(index: Int) {
+        _state.update { current ->
+            current.copy(selectedGiftIndex = index)
         }
     }
 }

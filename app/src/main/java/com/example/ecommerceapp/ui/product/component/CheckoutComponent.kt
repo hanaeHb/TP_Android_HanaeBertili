@@ -2,6 +2,7 @@ package com.example.ecommerceapp.ui.product.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,10 +19,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -29,20 +33,30 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.R
-
+import com.example.ecommerceapp.data.Entities.Client
+import androidx.compose.animation.core.*
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit) {
+fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit, onNavigateTrack: () -> Unit) {
 
     val cartItems = viewModel.state.collectAsState().value.cartItems
     var email by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf(false) }
     var newsChecked by remember { mutableStateOf(true) }
     var country by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
-    var company by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var postalCode by remember { mutableStateOf("") }
 
@@ -52,12 +66,53 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
     var nameOnCard by remember { mutableStateOf("") }
     var billingSameAsShipping by remember { mutableStateOf(true) }
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
-    val totalQuantity = cartItems.sumOf { it.quantity }
+    val totalQuantity = cartItems.size
     val totalPrice = cartItems.sumOf { item ->
         val price = item.product.price.toDoubleOrNull() ?: 0.0
         val discount = item.product.discountPercentage ?: 0
         val discountedPrice = price * (1 - discount / 100.0)
         discountedPrice * item.quantity
+    }
+    var selectedIndex by remember { mutableStateOf(-1) }
+    var showSecurityCode by remember { mutableStateOf(false) }
+    fun isFormValid(): Boolean {
+        return email.isNotBlank() &&
+                firstName.isNotBlank() &&
+                lastName.isNotBlank() &&
+                address.isNotBlank() &&
+                postalCode.isNotBlank() &&
+                cardNumber.isNotBlank() &&
+                expiry.isNotBlank() &&
+                securityCode.isNotBlank() &&
+                nameOnCard.isNotBlank() &&
+                selectedIndex != -1
+    }
+    viewModel.setClientInfo(
+        Client(
+            email = email,
+            country = country,
+            firstName = firstName,
+            lastName = lastName,
+            address = address,
+            postalCode = postalCode
+        )
+    )
+    val options = listOf(
+        Triple(R.drawable.gift1, R.drawable.package1, "Beige"),
+        Triple(R.drawable.gift2, R.drawable.package2, "Black"),
+        Triple(R.drawable.gift3, R.drawable.package3, "Purple"),
+        Triple(R.drawable.gift4, R.drawable.package4, "Pink")
+    )
+    fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    var expiryError by remember { mutableStateOf(false) }
+
+    fun isValidExpiryDate(expiry: String): Boolean {
+        val regex = Regex("""^(0[1-9]|1[0-2])\s?/\s?([0-9]{2})$""")
+        if (!regex.matches(expiry)) return false
+        return true
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -108,18 +163,31 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 Text("Contact", fontSize = 18.sp)
                 OutlinedTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        email = it
+                        emailError = !isValidEmail(email)
+                    },
                     label = { Text("Email", fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
+                    isError = emailError,
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color(0xFF907E36),
-                        unfocusedBorderColor = Color(0xFFCCCCCC),
-                        focusedLabelColor = Color(0xFF1D0057),
-                        cursorColor = Color(0xFF1D0057)
+                        focusedBorderColor = if (emailError) Color.Red else Color(0xFF907E36),
+                        unfocusedBorderColor = if (emailError) Color.Red else Color(0xFFCCCCCC),
+                        focusedLabelColor = if (emailError) Color.Red else Color(0xFF1D0057),
+                        cursorColor = if (emailError) Color.Red else Color(0xFF1D0057)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 )
+
+                if (emailError) {
+                    Text(
+                        text = "Please enter a valid email address",
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                    )
+                }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = newsChecked, onCheckedChange = { newsChecked = it })
                     Spacer(modifier = Modifier.width(8.dp))
@@ -174,20 +242,6 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     shape = RoundedCornerShape(8.dp)
                 )
                 OutlinedTextField(
-                    value = company,
-                    onValueChange = { company = it },
-                    label = { Text("Company (optional)", fontSize = 13.sp) },
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
-                    colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color(0xFF907E36),
-                        unfocusedBorderColor = Color(0xFFCCCCCC),
-                        focusedLabelColor = Color(0xFF1D0057),
-                        cursorColor = Color(0xFF1D0057)
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                )
-                OutlinedTextField(
                     value = address,
                     onValueChange = { address = it },
                     label = { Text("Address", fontSize = 13.sp) },
@@ -217,6 +271,53 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 )
             }
 
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Select the gift and the package you want", fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    options.forEachIndexed { index, (giftRes, packageRes, colorName) ->
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(
+                                        if (selectedIndex == index) Color(0xFF907E36).copy(alpha = 0.1f)
+                                        else Color.Transparent
+                                    )
+                                    .border(
+                                        width = 1.dp,
+                                        color = if (selectedIndex == index) Color(0xFF907E36) else Color.Gray,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                                    .clickable {
+                                        selectedIndex = index
+                                        viewModel.setSelectedGiftIndex(selectedIndex)
+                                    }
+                                    .padding(12.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                ImageWithLabel(imageResId = giftRes)
+                                ImageWithLabel(imageResId = packageRes)
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = "$colorName Gift and Package",
+                                fontSize = 18.sp,
+                                color = if (selectedIndex == index) Color(0xFF907E36) else Color.Black,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Divider(color = Color(0xFFCCCCCC), thickness = 0.5.dp)
+                        }
+                    }
+                }
+            }
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -263,24 +364,45 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 )
                 OutlinedTextField(
                     value = expiry,
-                    onValueChange = { expiry = it },
+                    onValueChange = {
+                        expiry = it
+                        expiryError = !isValidExpiryDate(expiry)
+                    },
                     label = { Text("Expiration date (MM / YY)", fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
+                    isError = expiryError,
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color(0xFF907E36),
-                        unfocusedBorderColor = Color(0xFFCCCCCC),
-                        focusedLabelColor = Color(0xFF1D0057),
-                        cursorColor = Color(0xFF1D0057)
+                        focusedBorderColor = if (expiryError) Color.Red else Color(0xFF907E36),
+                        unfocusedBorderColor = if (expiryError) Color.Red else Color(0xFFCCCCCC),
+                        focusedLabelColor = if (expiryError) Color.Red else Color(0xFF1D0057),
+                        cursorColor = if (expiryError) Color.Red else Color(0xFF1D0057)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 )
+
+                if (expiryError) {
+                    Text(
+                        text = "Enter a valid expiry date (MM / YY)",
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                    )
+                }
+
                 OutlinedTextField(
                     value = securityCode,
                     onValueChange = { securityCode = it },
                     label = { Text("Security code", fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
+                    visualTransformation = if (showSecurityCode) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        val icon = if (showSecurityCode) Icons.Default.VisibilityOff else Icons.Default.Visibility
+                        IconButton(onClick = { showSecurityCode = !showSecurityCode }) {
+                            Icon(imageVector = icon, contentDescription = if (showSecurityCode) "Hide" else "Show")
+                        }
+                    },
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color(0xFF907E36),
                         unfocusedBorderColor = Color(0xFFCCCCCC),
@@ -314,58 +436,197 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
             item {
                 Spacer(modifier = Modifier.height(20.dp))
                 Text("Order Summary", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
-
-            items(cartItems) { cartItem ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    val imageResId = getImageResIdByName(cartItem.product.imageResId)
-                    Image(
-                        painter = painterResource(id = imageResId),
-                        contentDescription = cartItem.product.title,
-                        modifier = Modifier
-                            .size(90.dp)
-                            .padding(end = 12.dp)
-                    )
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(cartItem.product.title, fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        val price = cartItem.product.price.toDoubleOrNull() ?: 0.0
-                        val discount = cartItem.product.discountPercentage ?: 0
-                        val discountedPrice = price * (1 - discount / 100.0)
-                        Text("${cartItem.quantity} x $${"%.2f".format(discountedPrice)}", fontSize = 14.sp)
-                    }
-                }
-            }
-
-            item {
                 Divider(
                     color = Color(0xFF1D0057),
                     thickness = 0.5.dp,
                     modifier = Modifier.padding(vertical = 6.dp)
                 )
-                Text("$totalQuantity items", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color(0xFF1D0057))
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Total: $${"%.2f".format(totalPrice)}", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color(0xFF1D0057))
             }
 
             item {
+                if (selectedIndex != -1) {
+                    val (giftRes, packageRes, colorName) = options[selectedIndex]
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Your package and gift",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color(0xFF1D0057),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(20.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = giftRes),
+                                contentDescription = "Selected Gift",
+                                modifier = Modifier.size(150.dp)
+                            )
+                            Image(
+                                painter = painterResource(id = packageRes),
+                                contentDescription = "Selected Package",
+                                modifier = Modifier.size(150.dp)
+                            )
+                        }
+                        Text(
+                            text = "$colorName Gift and Package",
+                            fontSize = 16.sp,
+                            color = Color(0xFF907E36),
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Divider(
+                            color = Color(0xFF1D0057),
+                            thickness = 0.5.dp,
+                            modifier = Modifier.padding(vertical = 6.dp)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
+            }
+            item{
+                Text(
+                    text = "Your products",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF1D0057),
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
+
+            items(cartItems) { cartItem ->
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val imageResId = getImageResIdByName(cartItem.product.imageResId)
+                        Image(
+                            painter = painterResource(id = imageResId),
+                            contentDescription = cartItem.product.title,
+                            modifier = Modifier
+                                .size(90.dp)
+                                .padding(end = 12.dp)
+                        )
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                cartItem.product.title,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            val price = cartItem.product.price.toDoubleOrNull() ?: 0.0
+                            val discount = cartItem.product.discountPercentage ?: 0
+                            val discountedPrice = price * (1 - discount / 100.0)
+                            Text(
+                                "${cartItem.quantity} x $${"%.2f".format(discountedPrice)}",
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                    Divider(
+                        color = Color(0xFF1D0057),
+                        thickness = 0.5.dp,
+                        modifier = Modifier.padding(vertical = 6.dp)
+                    )
+                }
+            }
+
+            item {
+                Text("$totalQuantity items", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color(0xFF1D0057))
+            }
+            item {
+                Card(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F2F2)),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(2.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                    ) {
+                        Text(
+                            "Total: $${"%.2f".format(totalPrice)}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = Color(0xFF1D0057)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Delivery: $5.50",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = Color(0xFF1D0057)
+                        )
+                    }
+                }
+            }
+
+            item {
+                var showValidationError by remember { mutableStateOf(false) }
+
+                val shakeOffset = remember { Animatable(0f) }
+
+                LaunchedEffect(showValidationError) {
+                    if (showValidationError) {
+                        shakeOffset.animateTo(
+                            targetValue = 10f,
+                            animationSpec = repeatable(
+                                iterations = 3,
+                                animation = tween(durationMillis = 100, easing = LinearEasing),
+                                repeatMode = RepeatMode.Reverse
+                            )
+                        )
+                        shakeOffset.snapTo(0f)
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Button(
-                    onClick = {  },
+                    onClick = {
+                        if (isFormValid()) {
+                            viewModel.checkoutAndClearCart()
+                            onNavigateTrack()
+                        } else {
+                            showValidationError = true
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
+                        .height(50.dp)
+
+                        .offset(x = shakeOffset.value.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF907E36))
                 ) {
                     Text("Pay", color = Color.White, fontSize = 18.sp)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (showValidationError) {
+                    Text(
+                        text = "Please fill in all required fields.",
+                        color = Color.Red,
+                        modifier = Modifier.padding(8.dp)
+                    )
                 }
             }
         }
@@ -459,3 +720,14 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
         }
     }
 }
+@Composable
+fun ImageWithLabel(imageResId: Int) {
+    Image(
+        painter = painterResource(id = imageResId),
+        contentDescription = null,
+        modifier = Modifier
+            .size(140.dp)
+            .clip(RoundedCornerShape(10.dp))
+    )
+}
+
