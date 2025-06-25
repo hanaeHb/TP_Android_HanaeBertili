@@ -1,9 +1,6 @@
 package com.example.ecommerceapp.ui.product.component
 
-
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,45 +19,35 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Repository.UserRepository
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.ui.text.style.TextAlign
-
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+fun RegisterScreen(
+    onRegisterSuccess: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
-
     Column(modifier = Modifier.fillMaxSize()) {
 
         Row(
@@ -87,7 +74,6 @@ fun LoginScreen(
             contentPadding = PaddingValues(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
             item {
                 AutoBannerSlider(
                     images = listOf(
@@ -97,9 +83,9 @@ fun LoginScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 0.dp)
                 )
             }
-
             item {
                 Column(
                     modifier = Modifier
@@ -109,14 +95,16 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Login",
+                        "Register",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF1D0057),
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
 
-                    OutlinedTextField(
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    androidx.compose.material.OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email") },
@@ -135,7 +123,7 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
+                    androidx.compose.material.OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
                         label = { Text("Password") },
@@ -153,15 +141,16 @@ fun LoginScreen(
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
                         onClick = {
-                            if (UserRepository.isValidUser(email, password)) {
+                            val success = UserRepository.registerUser(email, password)
+                            if (success) {
                                 errorMessage = null
-                                onLoginSuccess()
+                                onRegisterSuccess()
                             } else {
-                                errorMessage = "Invalid email or password."
+                                errorMessage = "This email is already registered."
                             }
                         },
                         modifier = Modifier
@@ -170,9 +159,14 @@ fun LoginScreen(
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF907E36))
                     ) {
-                        Text("Login", color = Color.White, fontSize = 18.sp)
+                        Text("Register", color = Color.White, fontSize = 18.sp)
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    SocialRegisterButtons()
+
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     errorMessage?.let { error ->
                         Text(
@@ -181,25 +175,9 @@ fun LoginScreen(
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .padding(bottom = 45.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextButton(onClick = onNavigateToRegister) {
-                        Text("Don't have an account? Register", color = Color(0xFF907E36))
-                    }
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
-
-
         }
 
         Row(
@@ -220,5 +198,51 @@ fun LoginScreen(
                     textAlign = TextAlign.Center)
             }
         }
+
     }
 }
+
+@Composable
+fun SocialRegisterButtons(
+    onGoogleRegister: () -> Unit = {},
+    onFacebookRegister: () -> Unit = {}
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = onGoogleRegister,
+            modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4))
+        ) {
+            Text(
+                text = "Google",
+                color = Color.White,
+                fontSize = 16.sp
+            )
+        }
+
+        Button(
+            onClick = onFacebookRegister,
+            modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1877F2))
+        ) {
+            Text(
+                text = "Facebook",
+                color = Color.White,
+                fontSize = 16.sp
+            )
+        }
+    }
+}
+

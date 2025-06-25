@@ -1,51 +1,12 @@
 package com.example.ecommerceapp.nav
 
-
-
 import android.net.Uri
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.Box
-
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -53,20 +14,20 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ecommerceapp.ui.product.component.DetailsScreen
 import com.example.ecommerceapp.ui.product.Screen.HomeScreen
-import com.example.ecommerceapp.R
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import com.example.ecommerceapp.ui.product.component.CartScreen
-import kotlinx.coroutines.delay
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ecommerceapp.ui.product.component.CategoryScreen
 import com.example.ecommerceapp.ui.product.component.CheckoutScreen
 import com.example.ecommerceapp.ui.product.component.FavoriteScreen
+import com.example.ecommerceapp.ui.product.component.LoginScreen
 import com.example.ecommerceapp.ui.product.component.OrderTrackingScreen
 import com.example.ecommerceapp.ui.product.component.ProductsByCategoryScreen
+import com.example.ecommerceapp.ui.product.component.RegisterScreen
 import com.example.ecommerceapp.ui.product.component.SynScreen
 
 object Routes {
-    const val  Greating = "Greating"
+    const val  Register = "Register"
+    const val  Login = "Login"
     const val  Home = "Home"
     const val  ProductDetails = "ProductDetails"
     const val  Cart = "Cart"
@@ -83,13 +44,17 @@ fun AppNav(viewModel: ProductViewModel) {
     val navController = rememberNavController()
 
 
-    NavHost(navController = navController, startDestination = Routes.Greating) {
-        composable(Routes.Greating) {
-            GreetingScreen(onNavigateToHome = {
-                navController.navigate(Routes.Home) {
-                    popUpTo(Routes.Greating) { inclusive = true }
-                }
-            })
+    NavHost(navController = navController, startDestination = Routes.Login) {
+        composable(Routes.Login) {
+            LoginScreen(
+                onLoginSuccess = { navController.navigate(Routes.Home) },
+                onNavigateToRegister = { navController.navigate(Routes.Register) }
+            )
+        }
+        composable(Routes.Register) {
+            RegisterScreen(
+                onRegisterSuccess = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.Home) {
@@ -301,66 +266,4 @@ fun AppNav(viewModel: ProductViewModel) {
         }
 
     }
-}
-
-@Composable
-fun GreetingScreen(onNavigateToHome: () -> Unit) {
-    val alphaAnim = remember { Animatable(0f) }
-    val progressAnim = remember { Animatable(0f) }
-    val col = Color(0xFFBE9FEF)
-
-    val customFontFamily = FontFamily(Font(R.font.dancingscript))
-
-    LaunchedEffect(Unit) {
-        alphaAnim.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(2000)
-        )
-        progressAnim.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(5000)
-        )
-        delay(5000)
-        onNavigateToHome()
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(col)
-    ) {
-
-        Image(
-            painter = painterResource(id = R.drawable.fav8),
-            contentDescription = "Welcome Image",
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(alphaAnim.value),
-            
-            contentScale = ContentScale.Crop
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-        ) {
-            LoadingText(progressAnim)
-        }
-    }
-}
-
-@Composable
-fun LoadingText(progressAnim: Animatable<Float, *>) {
-    Text(
-        text = ".....",
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(Alignment.CenterHorizontally)
-            .alpha(progressAnim.value),
-        color = Color(0xFF5C5122),
-        fontSize = 40.sp,
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Bold
-    )
 }
