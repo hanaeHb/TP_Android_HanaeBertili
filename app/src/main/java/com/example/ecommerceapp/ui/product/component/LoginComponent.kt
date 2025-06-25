@@ -172,8 +172,11 @@ fun LoginScreen(
                     ) {
                         Text("Login", color = Color.White, fontSize = 18.sp)
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
+                    SocialRegisterButtons()
+
+                    Spacer(modifier = Modifier.height(16.dp))
                     errorMessage?.let { error ->
                         Text(
                             text = error,

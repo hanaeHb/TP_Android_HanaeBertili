@@ -164,10 +164,6 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    SocialRegisterButtons()
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     errorMessage?.let { error ->
                         Text(
                             text = error,
@@ -219,8 +215,8 @@ fun SocialRegisterButtons(
             modifier = Modifier
                 .weight(1f)
                 .height(50.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4))
+            shape = RoundedCornerShape(1.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
         ) {
             Text(
                 text = "Google",
@@ -234,8 +230,8 @@ fun SocialRegisterButtons(
             modifier = Modifier
                 .weight(1f)
                 .height(50.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1877F2))
+            shape = RoundedCornerShape(1.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0861FA))
         ) {
             Text(
                 text = "Facebook",
