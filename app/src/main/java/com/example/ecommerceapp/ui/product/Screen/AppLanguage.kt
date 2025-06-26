@@ -255,7 +255,7 @@ object AppLanguage {
                 "Country: " to "الدولة: ",
                 "Postal Code: " to "الرمز البريدي: ",
                 "Address: " to "العنوان: ",
-                "Your order will arrive within 48 hours" to "Votre commande arrivera sous 48 heures"
+                "Your order will arrive within 48 hours" to "سيصل طلبك خلال 48 ساعة"
 
             )
 
