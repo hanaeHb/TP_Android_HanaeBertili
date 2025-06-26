@@ -9,10 +9,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.ecommerceapp.nav.AppNav
 import com.example.ecommerceapp.ui.product.ProductViewModel
+
 import com.example.ecommerceapp.ui.theme.EcommerceAPPTheme
 import com.example.ecommerceapp.ui.theme.LocalThemeState
 import com.example.ecommerceapp.ui.theme.ThemeState
@@ -28,6 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val themeState = remember { ThemeState() }
+
             CompositionLocalProvider(LocalThemeState provides themeState) {
                 EcommerceAPPTheme(themeState = themeState) {
                     AppNav(viewModel)

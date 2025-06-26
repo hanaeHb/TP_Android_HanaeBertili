@@ -1,5 +1,11 @@
 package com.example.ecommerceapp.ui.product.component
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,13 +47,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.TwoWheeler
 import androidx.compose.material3.*
+import androidx.compose.ui.draw.scale
+import com.example.ecommerceapp.ui.product.Screen.AppLanguage
 import com.example.ecommerceapp.ui.theme.LocalThemeState
 import com.example.ecommerceapp.ui.theme.Mode
+import kotlinx.coroutines.delay
 
 @Composable
-fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit) {
+fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit,
+                        onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit, languageState: AppLanguage.Instance,) {
     val state = viewModel.state.collectAsState().value
     val client = state.client
     val cartItems = viewModel.state.collectAsState().value.orderItems
@@ -62,6 +77,42 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
     val totalQuantity = cartItems.size
     var expanded by remember { mutableStateOf(false) }
     val themeState = LocalThemeState.current
+    var expandedLang by remember { mutableStateOf(false) }
+
+    val stages = listOf(
+        Pair(Icons.Filled.CheckCircle, "Order Placed"),
+        Pair(Icons.Filled.Build, "Preparing your order"),
+        Pair(Icons.Filled.LocalShipping, "Shipped"),
+        Pair(Icons.Filled.TwoWheeler, "Out for Delivery")
+    )
+
+    val totalStages = stages.size
+    val totalDurationMs = totalStages * 10_000L
+    val stepDelayMs = 100L
+    val steps = (totalDurationMs / stepDelayMs).toInt()
+    val increment = 1f / steps
+    val totalPrice = cartItems.sumOf {
+        val price = it.product.price.toDoubleOrNull() ?: 0.0
+        val discount = it.product.discountPercentage ?: 0
+        val discounted = price * (1 - discount / 100.0)
+        discounted * it.quantity
+    }
+    var progress by remember { mutableStateOf(0f) }
+    var finished by remember { mutableStateOf(false) }
+
+    LaunchedEffect(finished) {
+        if (!finished) {
+            progress = 0f
+            repeat(steps) {
+                delay(stepDelayMs)
+                progress += increment
+            }
+            progress = 1f
+            finished = true
+        }
+    }
+
+    val currentStageIndex = (progress * totalStages).toInt().coerceIn(0, totalStages - 1)
     Column(modifier = Modifier.fillMaxSize()
         .background(MaterialTheme.colorScheme.background),) {
 
@@ -82,35 +133,78 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
-            Box(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(end = 16.dp)
             ) {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Theme Menu",
-                        tint = Color(0xFF907E36),
-                    )
+                Box {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
                 }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { androidx.compose.material3.Text("Light Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Light
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { androidx.compose.material3.Text("Calme Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Calme
-                            expanded = false
-                        }
-                    )
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box {
+                    IconButton(onClick = { expandedLang = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Language Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expandedLang,
+                        onDismissRequest = { expandedLang = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("English") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.EN)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Français") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.FR)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("العربية") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.AR)
+                                expandedLang = false
+                            }
+                        )
+
+                    }
                 }
             }
         }
@@ -122,7 +216,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
-                text = "Tracking >",
+                text = languageState.get("Tracking >"),
                 fontSize = 25.sp,
                 fontFamily = customFontFamily,
                 color = Color(0xFF1D0057)
@@ -153,7 +247,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
                         Text(
-                            "Your Informations:",
+                            languageState.get("Your Informations:"),
                             fontSize = 20.sp,
                             color = Color.Black,
                             fontWeight = FontWeight.Bold
@@ -173,7 +267,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(buildAnnotatedString {
                             withStyle(SpanStyle(color = labelStyle.color, fontSize = labelStyle.fontSize)) {
-                                append("Email: ")
+                                append(languageState.get("Email: "))
                             }
                             withStyle(SpanStyle(color = valueStyle.color, fontSize = valueStyle.fontSize)) {
                                 append(client.email)
@@ -183,7 +277,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(buildAnnotatedString {
                             withStyle(SpanStyle(color = labelStyle.color, fontSize = labelStyle.fontSize)) {
-                                append("Name: ")
+                                append(languageState.get("Name: "))
                             }
                             withStyle(SpanStyle(color = valueStyle.color, fontSize = valueStyle.fontSize)) {
                                 append("${client.firstName} ${client.lastName}")
@@ -193,7 +287,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(buildAnnotatedString {
                             withStyle(SpanStyle(color = labelStyle.color, fontSize = labelStyle.fontSize)) {
-                                append("Country: ")
+                                append(languageState.get("Country: "))
                             }
                             withStyle(SpanStyle(color = valueStyle.color, fontSize = valueStyle.fontSize)) {
                                 append(client.country)
@@ -203,7 +297,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(buildAnnotatedString {
                             withStyle(SpanStyle(color = labelStyle.color, fontSize = labelStyle.fontSize)) {
-                                append("Address: ")
+                                append(languageState.get("Address: "))
                             }
                             withStyle(SpanStyle(color = valueStyle.color, fontSize = valueStyle.fontSize)) {
                                 append(client.address)
@@ -213,7 +307,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(buildAnnotatedString {
                             withStyle(SpanStyle(color = labelStyle.color, fontSize = labelStyle.fontSize)) {
-                                append("Postal Code: ")
+                                append(languageState.get("Postal Code: "))
                             }
                             withStyle(SpanStyle(color = valueStyle.color, fontSize = valueStyle.fontSize)) {
                                 append(client.postalCode)
@@ -227,46 +321,71 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                     modifier = Modifier.padding(vertical = 6.dp)
                 )
             }
-            item{
-                Text("Your Package and your gift",  modifier = Modifier.padding(vertical = 8.dp),
+            item {
+                Text(languageState.get("Order Tracking"),  modifier = Modifier.padding(vertical = 8.dp),
                     fontSize = 20.sp,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold)
             }
             item {
-                if (selectedIndex != -1) {
-                    val (giftRes, packageRes, colorName) = options[selectedIndex]
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White, shape = RoundedCornerShape(8.dp))
-                            .padding(top = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Image(
-                                painter = painterResource(id = giftRes),
-                                contentDescription = "Gift",
-                                modifier = Modifier.size(150.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (!finished) {
+                        Icon(
+                            imageVector = stages[currentStageIndex].first,
+                            contentDescription = stages[currentStageIndex].second,
+                            tint = Color(0xFF1D0057),
+                            modifier = Modifier.size(60.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        androidx.compose.material3.Text(
+                            text = stages[currentStageIndex].second,
+                            fontSize = 19.sp,
+                            color = Color(0xFF1D0057)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        LinearProgressIndicator(
+                            progress = progress.coerceIn(0f, 1f),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(8.dp),
+                            color = Color(0xFF907E36),
+                            trackColor = Color(0xFFD7CDAF)
+                        )
+                    } else {
+                        val infiniteTransition = rememberInfiniteTransition()
+                        val scale by infiniteTransition.animateFloat(
+                            initialValue = 1f,
+                            targetValue = 1.2f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(600, easing = LinearEasing),
+                                repeatMode = RepeatMode.Reverse
                             )
-                            Image(
-                                painter = painterResource(id = packageRes),
-                                contentDescription = "Package",
-                                modifier = Modifier.size(150.dp)
+                        )
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "\uD83E\uDD73",
+                                fontSize = 48.sp,
+                                modifier = Modifier.scale(scale)
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            androidx.compose.material3.Text(
+                                text = languageState.get("Your order will arrive within 48 hours"),
+                                fontSize = 18.sp,
+                                color = Color(0xFF907E36)
                             )
                         }
-                        Text(
-                            text = "$colorName Gift and Package",
-                            fontSize = 16.sp,
-                            color = Color(0xFF907E36),
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
+
                     Divider(
                         color = Color(0xFF1D0057),
                         thickness = 0.5.dp,
@@ -275,68 +394,6 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                 }
             }
             item {
-                Text("Your products:",  modifier = Modifier.padding(vertical = 8.dp),
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold)
-            }
-
-            items(cartItems) { item ->
-                val price = item.product.price.toDoubleOrNull() ?: 0.0
-                val discount = item.product.discountPercentage ?: 0
-                val discountedPrice = price * (1 - discount / 100.0)
-                val imageResId = getImageResIdByName(item.product.imageResId)
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                        .background(Color.White, shape = RoundedCornerShape(4.dp)),
-                    )
-                {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = imageResId),
-                            contentDescription = item.product.title,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .padding(end = 12.dp)
-                        )
-
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                item.product.title,
-                                fontSize = 16.sp
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "${item.quantity} x $${"%.2f".format(discountedPrice)}",
-                                fontSize = 14.sp,
-                                color = Color(0xFF1D0057)
-                            )
-                        }
-                    }
-                }
-                Divider(
-                    color = Color(0xFF1D0057),
-                    thickness = 0.5.dp,
-                    modifier = Modifier.padding(vertical = 6.dp)
-                )
-            }
-
-            item {
-                Text("$totalQuantity items", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color(0xFF1D0057))
-            }
-            item {
-                val totalPrice = cartItems.sumOf {
-                    val price = it.product.price.toDoubleOrNull() ?: 0.0
-                    val discount = it.product.discountPercentage ?: 0
-                    val discounted = price * (1 - discount / 100.0)
-                    discounted * it.quantity
-                }
                 Card(
                     modifier = Modifier
                         .padding(vertical = 16.dp)
@@ -346,38 +403,150 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                     elevation = CardDefaults.cardElevation(2.dp)
                 ) {
                     Column(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            "Total: $${"%.2f".format(totalPrice)}",
-                            fontWeight = FontWeight.Bold,
+                            languageState.get("Your Package and your gift"),
                             fontSize = 20.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        if (selectedIndex != -1) {
+                            val (giftRes, packageRes, colorName) = options[selectedIndex]
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White, shape = RoundedCornerShape(8.dp))
+                                    .padding(top = 10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = giftRes),
+                                        contentDescription = "Gift",
+                                        modifier = Modifier.size(150.dp)
+                                    )
+                                    Image(
+                                        painter = painterResource(id = packageRes),
+                                        contentDescription = "Package",
+                                        modifier = Modifier.size(150.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "$colorName Gift and Package",
+                                    fontSize = 16.sp,
+                                    color = Color(0xFF907E36),
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
+                            }
+                        }
+
+                        Text(
+                            languageState.get("Your products"),
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        cartItems.forEach { item ->
+                            val price = item.product.price.toDoubleOrNull() ?: 0.0
+                            val discount = item.product.discountPercentage ?: 0
+                            val discountedPrice = price * (1 - discount / 100.0)
+                            val imageResId = getImageResIdByName(item.product.imageResId)
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White, shape = RoundedCornerShape(4.dp))
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = imageResId),
+                                        contentDescription = item.product.title,
+                                        modifier = Modifier
+                                            .size(100.dp)
+                                            .padding(end = 12.dp)
+                                    )
+
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(item.product.title, fontSize = 16.sp)
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = "${item.quantity} x $${"%.2f".format(discountedPrice)}",
+                                            fontSize = 14.sp,
+                                            color = Color(0xFF1D0057)
+                                        )
+                                    }
+                                }
+                            }
+                            Divider(
+                                color = Color(0xFF1D0057),
+                                thickness = 0.5.dp,
+                                modifier = Modifier.padding(vertical = 6.dp)
+                            )
+                        }
+
+                        Text(
+                            "$totalQuantity items",
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 18.sp,
                             color = Color(0xFF1D0057)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "Delivery: $5.50",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
+                            "Price total of products: $${"%.2f".format(totalPrice)}",
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 18.sp,
                             color = Color(0xFF1D0057)
                         )
+
+                        val deliveryFee = 5.50
+                        val totalWithDelivery = totalPrice + deliveryFee
+
+                        Card(
+                            modifier = Modifier
+                                .padding(vertical = 16.dp)
+                                .fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F2F2)),
+                            shape = RoundedCornerShape(12.dp),
+                            elevation = CardDefaults.cardElevation(2.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                            ) {
+                                Text(
+                                    languageState.get("Delivery: $5.50"),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = Color(0xFF1D0057)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    "Total: $${"%.2f".format(totalWithDelivery)}",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = Color(0xFF1D0057)
+                                )
+                            }
+                        }
                     }
                 }
-                Divider(
-                    color = Color(0xFF1D0057),
-                    thickness = 0.5.dp,
-                    modifier = Modifier.padding(vertical = 6.dp)
-                )
             }
-            item {
-                Text("Order Tracking",  modifier = Modifier.padding(vertical = 8.dp),
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold)
-            }
-            item {
-                OrderStatusTracker()
-            }
+
             item {
                 Column(
                     modifier = Modifier
@@ -386,7 +555,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     androidx.compose.material3.Text(
-                        text = "MORE OF OUR SOCIALS",
+                        text = languageState.get("MORE OF OUR SOCIALS"),
                         fontSize = 20.sp,
                         color = Color(0xFF1D0057),
                     )

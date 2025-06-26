@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,7 +34,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -45,10 +53,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Repository.UserRepository
+import com.example.ecommerceapp.ui.product.Screen.AppLanguage
+
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
+
 
 @Composable
 fun RegisterScreen(
-    onRegisterSuccess: () -> Unit
+    onRegisterSuccess: () -> Unit,
+    languageState: AppLanguage.Instance,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -58,7 +72,11 @@ fun RegisterScreen(
     var lastName by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
+    var expandedLang by remember { mutableStateOf(false) }
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),) {
 
         Row(
             modifier = Modifier
@@ -76,6 +94,80 @@ fun RegisterScreen(
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                Box {
+                    IconButton(onClick = { expanded = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box {
+                    IconButton(onClick = { expandedLang = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Language Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expandedLang,
+                        onDismissRequest = { expandedLang = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("English") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.EN)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Français") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.FR)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("العربية") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.AR)
+                                expandedLang = false
+                            }
+                        )
+
+                    }
+                }
+            }
         }
         LazyColumn(
             modifier = Modifier
@@ -105,7 +197,7 @@ fun RegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Register",
+                        languageState.get("register"),
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF1D0057),
@@ -123,7 +215,7 @@ fun RegisterScreen(
                         androidx.compose.material.OutlinedTextField(
                             value = firstName,
                             onValueChange = { firstName = it },
-                            label = { Text("First Name") },
+                            label = { Text(languageState.get("first_name")) },
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight(),
@@ -140,7 +232,7 @@ fun RegisterScreen(
                         androidx.compose.material.OutlinedTextField(
                             value = lastName,
                             onValueChange = { lastName = it },
-                            label = { Text("Last Name") },
+                            label = { Text(languageState.get("last_name")) },
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight(),
@@ -160,7 +252,7 @@ fun RegisterScreen(
                     androidx.compose.material.OutlinedTextField(
                         value = phone,
                         onValueChange = { phone = it },
-                        label = { Text("Phone Number") },
+                        label = { Text(languageState.get("phone")) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -179,7 +271,7 @@ fun RegisterScreen(
                     androidx.compose.material.OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email") },
+                        label = { Text(languageState.get("email")) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -198,7 +290,7 @@ fun RegisterScreen(
                     androidx.compose.material.OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password") },
+                        label = { Text(languageState.get("password"))},
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -218,11 +310,11 @@ fun RegisterScreen(
                     Button(
                         onClick = {
                             if (firstName.isBlank() || lastName.isBlank() || phone.isBlank() || email.isBlank() || password.isBlank()) {
-                                errorMessage = "Please fill in all fields."
+                                errorMessage = languageState.get("empty_fields")
                             } else if (!isValidEmail(email)) {
-                                errorMessage = "Please enter a valid email address."
+                                errorMessage = languageState.get("invalid_email")
                             } else if (password.length < 8) {
-                                errorMessage = "Password must be at least 8 characters."
+                                errorMessage = languageState.get("password_too_short")
                             } else {
                                 val success = UserRepository.registerUser(
                                     email = email,
@@ -235,7 +327,7 @@ fun RegisterScreen(
                                     errorMessage = null
                                     onRegisterSuccess()
                                 } else {
-                                    errorMessage = "This email is already registered."
+                                    errorMessage = languageState.get("email_used")
                                 }
                             }
                         },
@@ -245,7 +337,7 @@ fun RegisterScreen(
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1D0057))
                     ) {
-                        Text("Register", color = Color.White, fontSize = 18.sp)
+                        Text(languageState.get("register"), color = Color.White, fontSize = 18.sp)
                     }
 
 
@@ -272,7 +364,7 @@ fun RegisterScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(onClick = onRegisterSuccess) {
-                        Text("You have an account? Login", color = Color(0xFF907E36))
+                        Text(languageState.get("already_registered"), color = Color(0xFF907E36))
                     }
                 }
             }
@@ -288,10 +380,10 @@ fun RegisterScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text("By creating an account, you agree to our", color = Color(0xFFF5F4F8),
+                Text(languageState.get("accept_terms"), color = Color(0xFFF5F4F8),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center)
-                Text("Privacy Policy", color = Color(0xFFF5F4F8),
+                Text(languageState.get("privacy_policy"), color = Color(0xFFF5F4F8),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center)
             }
@@ -331,7 +423,7 @@ fun SocialRegisterButtons(
                 Icon(
                     painter = painterResource(id = R.drawable.facebook),
                     contentDescription = "Facebook",
-                    tint = Color.Unspecified,
+                    tint = Color.White,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(20.dp)

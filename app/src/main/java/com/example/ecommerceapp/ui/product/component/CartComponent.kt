@@ -45,12 +45,14 @@ import com.example.ecommerceapp.ui.theme.Mode
 import kotlinx.coroutines.delay
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import com.example.ecommerceapp.ui.product.Screen.AppLanguage
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit, onNavigateCheckout: () -> Unit) {
+fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNavigateFavorite: () -> Unit,
+               onNavigateCategory: () -> Unit, onNavigateCheckout: () -> Unit,  languageState: AppLanguage.Instance) {
     val cartItems = viewModel.state.collectAsState().value.cartItems
     val col = Color(0xFF907E36)
     val colM = Color(0xFFE6E6FA)
@@ -65,6 +67,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
         }
         finalPrice * it.quantity
     }
+    var expandedLang by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
     val themeState = LocalThemeState.current
     Column(modifier = Modifier
@@ -88,35 +91,77 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                 color = col,
                 modifier = Modifier.padding(start = 16.dp)
             )
-            Box(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(end = 16.dp)
             ) {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Theme Menu",
-                        tint = Color(0xFF907E36),
-                    )
+                Box {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
                 }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { androidx.compose.material3.Text("Light Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Light
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { androidx.compose.material3.Text("Calme Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Calme
-                            expanded = false
-                        }
-                    )
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box {
+                    IconButton(onClick = { expandedLang = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Language Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expandedLang,
+                        onDismissRequest = { expandedLang = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("English") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.EN)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Français") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.FR)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("العربية") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.AR)
+                                expandedLang = false
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -128,7 +173,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
-                text = "My Cart >",
+                text = languageState.get("My Cart >"),
                 fontSize = 25.sp,
                 fontFamily = fontFamily,
                 color = Color(0xFF1D0057)
@@ -184,7 +229,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Your cart is empty.",
+                                text = languageState.get("Your cart is empty."),
                                 color = Color.Gray
                             )
                         }
@@ -208,7 +253,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF907E36))
                         ) {
                             Text(
-                                "Checkout",
+                                languageState.get("Checkout"),
                                 color = Color.White,
                                 fontSize = 18.sp
                             )

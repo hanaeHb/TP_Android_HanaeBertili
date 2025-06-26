@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -48,20 +49,37 @@ import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Repository.UserRepository
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.style.TextAlign
+import com.example.ecommerceapp.ui.product.Screen.AppLanguage
+
+import com.example.ecommerceapp.ui.theme.LocalThemeState
+import com.example.ecommerceapp.ui.theme.Mode
 
 
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    languageState: AppLanguage.Instance,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    var expanded by remember { mutableStateOf(false) }
+    val themeState = LocalThemeState.current
+    var expandedLang by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),) {
 
         Row(
             modifier = Modifier
@@ -79,6 +97,79 @@ fun LoginScreen(
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                Box {
+                    IconButton(onClick = { expanded = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box {
+                    IconButton(onClick = { expandedLang = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Language Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expandedLang,
+                        onDismissRequest = { expandedLang = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("English") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.EN)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Français") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.FR)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("العربية") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.AR)
+                                expandedLang = false
+                            }
+                        )
+                    }
+                }
+            }
         }
         LazyColumn(
             modifier = Modifier
@@ -109,7 +200,7 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Login",
+                        languageState.get("login"),
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF1D0057),
@@ -119,7 +210,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email") },
+                        label = { Text(languageState.get("email")) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -138,7 +229,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password") },
+                        label = { Text(languageState.get("password")) },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -161,7 +252,7 @@ fun LoginScreen(
                                 errorMessage = null
                                 onLoginSuccess()
                             } else {
-                                errorMessage = "Invalid email or password."
+                                errorMessage = languageState.get("invalid_credentials")
                             }
                         },
                         modifier = Modifier
@@ -170,7 +261,7 @@ fun LoginScreen(
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1D0057))
                     ) {
-                        Text("Login", color = Color.White, fontSize = 18.sp)
+                        Text(languageState.get("login"), color = Color.White, fontSize = 18.sp)
                     }
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -200,7 +291,7 @@ fun LoginScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(onClick = onNavigateToRegister) {
-                        Text("Don't have an account? Register", color = Color(0xFF907E36))
+                        Text(languageState.get("no_account_register"), color = Color(0xFF907E36))
                     }
                 }
             }
@@ -218,10 +309,10 @@ fun LoginScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text("By creating an account, you agree to our", color = Color(0xFFF5F4F8),
+                Text(languageState.get("accept_terms"), color = Color(0xFFF5F4F8),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center)
-                Text("Privacy Policy", color = Color(0xFFF5F4F8),
+                Text(languageState.get("privacy_policy"), color = Color(0xFFF5F4F8),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center)
             }

@@ -55,7 +55,7 @@ import com.example.ecommerceapp.ui.theme.Mode
 import com.example.ecommerceapp.ui.theme.ThemeState
 
 @Composable
-fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit) {
+fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit,  languageState: AppLanguage.Instance,) {
     val state by viewModel.state.collectAsState()
 
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -68,6 +68,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
     var brandMenuExpanded by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
     val themeState = LocalThemeState.current
+    var expandedLang by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (state.products.isEmpty()) {
@@ -96,35 +97,78 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                 modifier = Modifier.padding(start = 16.dp)
             )
 
-            Box(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(end = 16.dp)
             ) {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Theme Menu",
-                        tint = Color(0xFF907E36),
-                    )
+                Box {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
                 }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Light Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Light
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Calme Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Calme
-                            expanded = false
-                        }
-                    )
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box {
+                    IconButton(onClick = { expandedLang = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Language Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expandedLang,
+                        onDismissRequest = { expandedLang = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("English") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.EN)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Français") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.FR)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("العربية") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.AR)
+                                expandedLang = false
+                            }
+                        )
+
+                    }
                 }
             }
 
@@ -231,7 +275,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                     TextField(
                                         value = searchQuery,
                                         onValueChange = { searchQuery = it },
-                                        placeholder = { Text("Search...", color = Color(0xFF907E36),fontSize = 16.sp,
+                                        placeholder = { Text(languageState.get("search"), color = Color(0xFF907E36),fontSize = 16.sp,
                                             fontWeight = FontWeight.Medium) },
                                         colors = TextFieldDefaults.colors(
                                             focusedIndicatorColor = Color.Transparent,
@@ -271,7 +315,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
-                                            text = "Filters",
+                                            text = languageState.get("filters"),
                                             color = Color(0xFF907E36),
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Medium
@@ -367,7 +411,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 Text(
-                                    text = "Skin Care >",
+                                    text = languageState.get("skin_care"),
                                     fontSize = 25.sp,
                                     fontFamily = customFontFamily,
                                     color = Color(0xFF1D0057)
@@ -392,14 +436,14 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                 horizontalArrangement = Arrangement.spacedBy(20.dp)
                             ) {
                                 listOf(
-                                    Pair(R.drawable.fav6, "All"),
+                                    Pair(R.drawable.fav6, languageState.get("all")),
                                     Pair(R.drawable.sunscreen1, "Sunscreen"),
                                     Pair(R.drawable.serumm, "Serum"),
                                     Pair(R.drawable.mask, "Mask"),
                                     Pair(R.drawable.cream, "Hydrate Cream"),
                                     Pair(R.drawable.toner2, "Toner"),
                                 ).forEach { (iconRes, label) ->
-                                    val isSelected = selectedCategory == label || (label == "All" && selectedCategory == null)
+                                    val isSelected = selectedCategory == label || (label == languageState.get("all") && selectedCategory == null)
                                     val scale by animateFloatAsState(if (isSelected) 1.1f else 1f)
 
                                     Column(
@@ -408,7 +452,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                             .padding(top = 30.dp, start= 7.dp)
                                             .scale(scale)
                                             .clickable {
-                                                selectedCategory = if (label == "All") null else label
+                                                selectedCategory = if (label == languageState.get("all")) null else label
                                             }
                                     ) {
                                         Image(
@@ -450,7 +494,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                     FilterChip(
                                         selected = filterByPromotion,
                                         onClick = { filterByPromotion = !filterByPromotion },
-                                        label = { Text("Offers products") },
+                                        label = { Text(languageState.get("offers")) },
                                         colors = FilterChipDefaults.filterChipColors(
                                             selectedContainerColor = Color(0xFF907E36),
                                             selectedLabelColor = Color.White,
@@ -468,9 +512,9 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                             label = {
                                                 Text(
                                                     text = when (sortByPriceAscending) {
-                                                        true -> "Price ↑"
-                                                        false -> "Price ↓"
-                                                        null -> "Sort with Price"
+                                                        true -> languageState.get("Priceh")
+                                                        false -> languageState.get("Priceb")
+                                                        null -> languageState.get("Sort")
                                                     }
                                                 )
                                             },
@@ -487,21 +531,21 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                             onDismissRequest = { priceMenuExpanded = false }
                                         ) {
                                             DropdownMenuItem(
-                                                text = { Text("Low to High") },
+                                                text = { Text(languageState.get("Low")) },
                                                 onClick = {
                                                     sortByPriceAscending = true
                                                     priceMenuExpanded = false
                                                 }
                                             )
                                             DropdownMenuItem(
-                                                text = { Text("High to Low") },
+                                                text = { Text(languageState.get("High")) },
                                                 onClick = {
                                                     sortByPriceAscending = false
                                                     priceMenuExpanded = false
                                                 }
                                             )
                                             DropdownMenuItem(
-                                                text = { Text("Without") },
+                                                text = { Text(languageState.get("Without")) },
                                                 onClick = {
                                                     sortByPriceAscending = null
                                                     priceMenuExpanded = false
@@ -515,7 +559,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                     FilterChip(
                                         selected = filterByOfferEndingSoon,
                                         onClick = { filterByOfferEndingSoon = !filterByOfferEndingSoon },
-                                        label = { Text("Ending Soon") },
+                                        label = { Text(languageState.get("Ending Soon")) },
                                         colors = FilterChipDefaults.filterChipColors(
                                             selectedContainerColor = Color(0xFF907E36),
                                             selectedLabelColor = Color.White,
@@ -530,7 +574,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                     }
                     item(span = { GridItemSpan(2) }) {
                         Text(
-                            text = "Products for you my lady",
+                            text = languageState.get("Products for you my lady"),
                             color = Color(0xFF907E36),
                             fontSize = 24.sp,
                             textAlign = TextAlign.Center,
@@ -548,7 +592,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 Text(
-                                    text = "Featured Products >",
+                                    text = languageState.get("Featured Products >"),
                                     fontSize = 25.sp,
                                     fontFamily = customFontFamily,
                                     color = Color(0xFF1D0057)
@@ -576,7 +620,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "The right skin care routine",
+                                text = languageState.get("The right skin care routine"),
                                 fontSize = 20.sp,
                                 color = Color(0xFF1D0057),
                             )
@@ -623,7 +667,7 @@ fun HomeScreen(viewModel: ProductViewModel, onProductClick: (String) -> Unit, on
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "MORE OF OUR SOCIALS",
+                                text = languageState.get("MORE OF OUR SOCIALS"),
                                 fontSize = 20.sp,
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold

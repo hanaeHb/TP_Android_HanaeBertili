@@ -1,6 +1,6 @@
 package com.example.ecommerceapp.ui.product.component
 
-import androidx.compose.animation.core.animateFloatAsState
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.ecommerceapp.data.Entities.routineSteps
+import com.example.ecommerceapp.ui.product.Screen.AppLanguage
 import com.example.ecommerceapp.ui.theme.LocalThemeState
 import com.example.ecommerceapp.ui.theme.Mode
 
@@ -52,7 +53,8 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateHome: () ->  Unit, onClick: (String) -> Unit, onNavigateCategory: () -> Unit) {
+fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateHome: () ->  Unit, onClick: (String) -> Unit,
+                   onNavigateCategory: () -> Unit,  languageState: AppLanguage.Instance,) {
     val state by viewModel.state.collectAsState()
     var expanded by remember { mutableStateOf(false) }
     val themeState = LocalThemeState.current
@@ -63,6 +65,7 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
         }
     }
 
+    var expandedLang by remember { mutableStateOf(false) }
     val favoriteProducts = state.products.filter { it.isFavorite }
     val fontFamily = FontFamily(Font(R.font.dancingscript))
 
@@ -87,35 +90,77 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
-            Box(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(end = 16.dp)
             ) {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Theme Menu",
-                        tint = Color(0xFF907E36),
-                    )
+                Box {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
                 }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Light Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Light
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Calme Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Calme
-                            expanded = false
-                        }
-                    )
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box {
+                    IconButton(onClick = { expandedLang = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Language Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expandedLang,
+                        onDismissRequest = { expandedLang = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("English") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.EN)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Français") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.FR)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("العربية") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.AR)
+                                expandedLang = false
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -128,7 +173,7 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
-                text = "My Fvorite >",
+                text = languageState.get("My Fvorite >"),
                 fontSize = 25.sp,
                 fontFamily = fontFamily,
                 color = Color(0xFF1D0057)

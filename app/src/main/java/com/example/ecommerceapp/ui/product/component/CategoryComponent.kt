@@ -71,9 +71,11 @@ import com.example.ecommerceapp.data.Entities.Product
 import com.example.ecommerceapp.ui.product.ProductIntent
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import com.example.ecommerceapp.ui.product.Screen.AppLanguage
 import com.example.ecommerceapp.ui.theme.LocalThemeState
 import com.example.ecommerceapp.ui.theme.Mode
 
@@ -83,7 +85,8 @@ fun CategoryScreen(
     onNavigateCart: () -> Unit,
     onNavigateFavorite: () -> Unit,
     onNavigateHome: () -> Unit,
-    onBrandClick: (String) -> Unit
+    onBrandClick: (String) -> Unit,
+    languageState: AppLanguage.Instance,
 ) {
     val state by viewModel.state.collectAsState()
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -95,6 +98,7 @@ fun CategoryScreen(
     }
     var expanded by remember { mutableStateOf(false) }
     val themeState = LocalThemeState.current
+    var expandedLang by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()
         .background(MaterialTheme.colorScheme.background)) {
@@ -115,35 +119,77 @@ fun CategoryScreen(
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
-            Box(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(end = 16.dp)
             ) {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Theme Menu",
-                        tint = Color(0xFF907E36),
-                    )
+                Box {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
                 }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Light Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Light
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Calme Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Calme
-                            expanded = false
-                        }
-                    )
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box {
+                    IconButton(onClick = { expandedLang = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Language Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expandedLang,
+                        onDismissRequest = { expandedLang = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("English") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.EN)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Français") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.FR)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("العربية") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.AR)
+                                expandedLang = false
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -155,7 +201,7 @@ fun CategoryScreen(
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
-                text = "Ctegory >",
+                text = languageState.get("Ctegory >"),
                 fontSize = 25.sp,
                 fontFamily = fontFamily,
                 color = Color(0xFF1D0057)

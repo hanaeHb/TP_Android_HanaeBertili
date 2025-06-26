@@ -38,6 +38,7 @@ import com.example.ecommerceapp.R
 import com.example.ecommerceapp.data.Entities.Client
 import androidx.compose.animation.core.*
 import androidx.compose.material.IconButton
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -49,12 +50,15 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.product.Screen.AppLanguage
+
 import com.example.ecommerceapp.ui.theme.LocalThemeState
 import com.example.ecommerceapp.ui.theme.Mode
 import kotlinx.coroutines.launch
 
 @Composable
-fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit, onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit, onNavigateTrack: () -> Unit) {
+fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit,
+                   onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit, onNavigateTrack: () -> Unit,  languageState: AppLanguage.Instance,) {
 
     val cartItems = viewModel.state.collectAsState().value.cartItems
     var email by remember { mutableStateOf("") }
@@ -63,6 +67,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
     var country by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var postalCode by remember { mutableStateOf("") }
 
@@ -95,6 +100,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
     }
     var expanded by remember { mutableStateOf(false) }
     val themeState = LocalThemeState.current
+    var expandedLang by remember { mutableStateOf(false) }
     viewModel.setClientInfo(
         Client(
             email = email,
@@ -141,35 +147,77 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 color = Color(0xFF907E36),
                 modifier = Modifier.padding(start = 16.dp)
             )
-            Box(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(end = 16.dp)
             ) {
-                androidx.compose.material3.IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Theme Menu",
-                        tint = Color(0xFF907E36),
-                    )
+                Box {
+                    androidx.compose.material3.IconButton(onClick = { expanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Theme Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Light Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Light
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Calme Theme") },
+                            onClick = {
+                                themeState.mode = Mode.Calme
+                                expanded = false
+                            }
+                        )
+                    }
                 }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { androidx.compose.material3.Text("Light Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Light
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { androidx.compose.material3.Text("Calme Theme") },
-                        onClick = {
-                            themeState.mode = Mode.Calme
-                            expanded = false
-                        }
-                    )
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box {
+                    androidx.compose.material3.IconButton(onClick = { expandedLang = true }) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Language Menu",
+                            tint = Color(0xFF907E36)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expandedLang,
+                        onDismissRequest = { expandedLang = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("English") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.EN)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Français") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.FR)
+                                expandedLang = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("العربية") },
+                            onClick = {
+                                languageState.onChange(AppLanguage.AppLanguage.AR)
+                                expandedLang = false
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -181,7 +229,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
-                text = "Checkout >",
+                text = languageState.get("Checkout >"),
                 fontSize = 25.sp,
                 fontFamily = customFontFamily,
                 color = Color(0xFF1D0057)
@@ -201,14 +249,14 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
         ) {
 
             item {
-                Text("Contact", fontSize = 18.sp)
+                Text(languageState.get("Contact"), fontSize = 18.sp)
                 OutlinedTextField(
                     value = email,
                     onValueChange = {
                         email = it
                         emailError = !isValidEmail(email)
                     },
-                    label = { Text("Email", fontSize = 13.sp) },
+                    label = { Text(languageState.get("email"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = emailError,
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
@@ -224,7 +272,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
 
                 if (emailError) {
                     Text(
-                        text = "Please enter a valid email address",
+                        text = languageState.get("Please enter a valid email address"),
                         color = Color.Red,
                         fontSize = 12.sp,
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
@@ -233,18 +281,18 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = newsChecked, onCheckedChange = { newsChecked = it })
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Email me with news and offers")
+                    Text(languageState.get("Email me with news and offers"))
                 }
             }
 
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Delivery", fontSize = 18.sp)
+                Text(languageState.get("Delivery"), fontSize = 18.sp)
                 OutlinedTextField(
                     value = country,
                     onValueChange = { country = it },
-                    label = { Text("Country/Region", fontSize = 13.sp) },
+                    label = { Text(languageState.get("Country/Region"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
@@ -259,7 +307,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 OutlinedTextField(
                     value = firstName,
                     onValueChange = { firstName = it },
-                    label = { Text("First name", fontSize = 13.sp) },
+                    label = { Text(languageState.get("first_name"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
@@ -274,7 +322,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 OutlinedTextField(
                     value = lastName,
                     onValueChange = { lastName = it },
-                    label = { Text("Last name", fontSize = 13.sp) },
+                    label = { Text(languageState.get("last_name"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
@@ -287,9 +335,9 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     shape = RoundedCornerShape(8.dp)
                 )
                 OutlinedTextField(
-                    value = lastName,
-                    onValueChange = { lastName = it },
-                    label = { Text("Phone", fontSize = 13.sp) },
+                    value = phone,
+                    onValueChange = { phone = it },
+                    label = { Text(languageState.get("phone"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
@@ -304,7 +352,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 OutlinedTextField(
                     value = address,
                     onValueChange = { address = it },
-                    label = { Text("Address", fontSize = 13.sp) },
+                    label = { Text(languageState.get("Address"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
@@ -319,7 +367,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 OutlinedTextField(
                     value = postalCode,
                     onValueChange = { postalCode = it },
-                    label = { Text("Postal Code", fontSize = 13.sp) },
+                    label = { Text(languageState.get("Postal Code"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
@@ -335,7 +383,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Select the gift and the package you want", fontSize = 18.sp)
+                Text(languageState.get("Select the gift and the package you want"), fontSize = 18.sp)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -383,21 +431,21 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Shipping Method", fontSize = 18.sp)
+                Text(languageState.get("Shipping Method"), fontSize = 18.sp)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.LightGray.copy(alpha = 0.3f), RoundedCornerShape(6.dp))
                         .padding(12.dp)
                 ) {
-                    Text("Enter your shipping address to view available shipping methods.")
+                    Text(languageState.get("Enter your shipping address to view available shipping methods."))
                 }
             }
 
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Payment", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(languageState.get("Payment"), fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
                 Row(
                     modifier = Modifier
@@ -413,7 +461,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 OutlinedTextField(
                     value = cardNumber,
                     onValueChange = { cardNumber = it },
-                    label = { Text("Card number", fontSize = 13.sp) },
+                    label = { Text(languageState.get("Card number"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
@@ -431,7 +479,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                         expiry = it
                         expiryError = !isValidExpiryDate(expiry)
                     },
-                    label = { Text("Expiration date (MM / YY)", fontSize = 13.sp) },
+                    label = { Text(languageState.get("Expiration date (MM / YY)"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = expiryError,
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
@@ -447,7 +495,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
 
                 if (expiryError) {
                     Text(
-                        text = "Enter a valid expiry date (MM / YY)",
+                        text = languageState.get("Enter a valid expiry date (MM / YY)"),
                         color = Color.Red,
                         fontSize = 12.sp,
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
@@ -457,7 +505,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 OutlinedTextField(
                     value = securityCode,
                     onValueChange = { securityCode = it },
-                    label = { Text("Security code", fontSize = 13.sp) },
+                    label = { Text(languageState.get("Security code"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     visualTransformation = if (showSecurityCode) VisualTransformation.None else PasswordVisualTransformation(),
@@ -479,7 +527,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 OutlinedTextField(
                     value = nameOnCard,
                     onValueChange = { nameOnCard = it },
-                    label = { Text("Name on card", fontSize = 13.sp) },
+                    label = { Text(languageState.get("Name on card"), fontSize = 13.sp) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
                     colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
@@ -494,14 +542,14 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = billingSameAsShipping, onCheckedChange = { billingSameAsShipping = it })
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Use shipping address as billing address")
+                    Text(languageState.get("Use shipping address as billing address"))
                 }
             }
 
 
             item {
                 Spacer(modifier = Modifier.height(20.dp))
-                Text("Order Summary", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(languageState.get("Order Summary"), fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Divider(
                     color = Color(0xFF1D0057),
                     thickness = 0.5.dp,
@@ -520,7 +568,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Your package and gift",
+                            text = languageState.get("Your Package and your gift"),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color(0xFF1D0057),
@@ -556,7 +604,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
             item{
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Your products",
+                    text = languageState.get("Your products"),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color(0xFF1D0057),
@@ -615,6 +663,13 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
 
             item {
                 Text("$totalQuantity items", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color(0xFF1D0057))
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "Price total of products: $${"%.2f".format(totalPrice)}",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 18.sp,
+                    color = Color(0xFF1D0057)
+                )
             }
             item {
                 Card(
@@ -628,15 +683,18 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     Column(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
+                        val deliveryFee = 5.50
+                        val totalWithDelivery = totalPrice + deliveryFee
+
                         Text(
-                            "Total: $${"%.2f".format(totalPrice)}",
+                            languageState.get("Delivery: $5.50"),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                             color = Color(0xFF1D0057)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "Delivery: $5.50",
+                            "Total: $${"%.2f".format(totalWithDelivery) + 5.50}",
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                             color = Color(0xFF1D0057)
@@ -682,14 +740,14 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                         .offset(x = shakeOffset.value.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF907E36))
                 ) {
-                    Text("Pay", color = Color.White, fontSize = 18.sp)
+                    Text(languageState.get("Pay"), color = Color.White, fontSize = 18.sp)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (showValidationError) {
                     Text(
-                        text = "Please fill in all required fields.",
+                        text = languageState.get("empty_fields"),
                         color = Color.Red,
                         modifier = Modifier.padding(8.dp)
                     )

@@ -15,6 +15,7 @@ import androidx.navigation.navArgument
 import com.example.ecommerceapp.ui.product.component.DetailsScreen
 import com.example.ecommerceapp.ui.product.Screen.HomeScreen
 import com.example.ecommerceapp.ui.product.ProductViewModel
+import com.example.ecommerceapp.ui.product.Screen.AppLanguage
 import com.example.ecommerceapp.ui.product.component.CartScreen
 import com.example.ecommerceapp.ui.product.component.CategoryScreen
 import com.example.ecommerceapp.ui.product.component.CheckoutScreen
@@ -43,18 +44,20 @@ object Routes {
 @Composable
 fun AppNav(viewModel: ProductViewModel) {
     val navController = rememberNavController()
-
+    val lang = AppLanguage.rememberLanguage()
 
     NavHost(navController = navController, startDestination = Routes.Login) {
         composable(Routes.Login) {
             LoginScreen(
                 onLoginSuccess = { navController.navigate(Routes.Home) },
-                onNavigateToRegister = { navController.navigate(Routes.Register) }
+                onNavigateToRegister = { navController.navigate(Routes.Register) },
+                languageState = lang
             )
         }
         composable(Routes.Register) {
             RegisterScreen(
-                onRegisterSuccess = { navController.popBackStack() }
+                onRegisterSuccess = { navController.popBackStack() },
+                languageState = lang
             )
         }
 
@@ -71,7 +74,8 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                     onNavigateCategory = {
                     navController.navigate(Routes.Category)
-                }
+                },
+                languageState = lang
             )
         }
 
@@ -103,7 +107,8 @@ fun AppNav(viewModel: ProductViewModel) {
                     },
                     onNavigateCategory = {
                         navController.navigate(Routes.Category)
-                    }
+                    },
+                    languageState = lang
                 )
             } else {
                 Text("Product not found", color = Color.Red, modifier = Modifier.padding(16.dp))
@@ -122,7 +127,8 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onNavigateCheckout = {
                     navController.navigate(Routes.Checkout)
-                }
+                },
+                languageState = lang
             )
         }
         composable(Routes.Favorite) {
@@ -139,7 +145,8 @@ fun AppNav(viewModel: ProductViewModel) {
                     },
                     onNavigateCategory = {
                         navController.navigate(Routes.Category)
-                    }
+                    },
+                    languageState = lang
                 )
         }
 
@@ -157,7 +164,8 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onBrandClick = { brand ->
                     navController.navigate("${Routes.SynScreen}/${Uri.encode(brand)}")
-                }
+                },
+                languageState = lang
             )
         }
         composable(
@@ -184,7 +192,8 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onCategoryClick = { category, brand ->
                     navController.navigate("${Routes.ProductsByCategory}/${Uri.encode(brand)}/${Uri.encode(category)}")
-                }
+                },
+                languageState = lang
             )
         }
 
@@ -225,7 +234,8 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onNavigateCategory = {
                     navController.navigate(Routes.Category)
-                }
+                },
+                languageState = lang
             )
         }
 
@@ -247,7 +257,8 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onNavigateTrack = {
                     navController.navigate(Routes.Tracking)
-                }
+                },
+                languageState = lang
             )
         }
         composable(Routes.Tracking){
@@ -263,7 +274,8 @@ fun AppNav(viewModel: ProductViewModel) {
                 },
                 onNavigateHome = {
                     navController.navigate(Routes.Home)
-                }
+                },
+                languageState = lang
             )
         }
 
