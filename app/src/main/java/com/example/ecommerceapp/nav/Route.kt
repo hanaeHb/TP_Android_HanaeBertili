@@ -25,7 +25,9 @@ import com.example.ecommerceapp.ui.product.component.OrderTrackingScreen
 import com.example.ecommerceapp.ui.product.component.ProductsByCategoryScreen
 import com.example.ecommerceapp.ui.product.component.RegisterScreen
 import com.example.ecommerceapp.ui.product.component.SynScreen
-import com.example.ecommerceapp.ui.theme.ThemeState
+import com.example.ecommerceapp.ui.product.component.AdminScreen
+import com.example.ecommerceapp.ui.product.component.CustomersScreen
+import com.example.ecommerceapp.ui.product.component.UserOrdersScreen
 
 object Routes {
     const val  Register = "Register"
@@ -39,6 +41,7 @@ object Routes {
     const val  ProductsByCategory = "products_by_category"
     const val  Checkout = "Checkout"
     const val  Tracking = "Tracking"
+    const val  Admin = "Admin"
 
 }
 @Composable
@@ -51,13 +54,45 @@ fun AppNav(viewModel: ProductViewModel) {
             LoginScreen(
                 onLoginSuccess = { navController.navigate(Routes.Home) },
                 onNavigateToRegister = { navController.navigate(Routes.Register) },
-                languageState = lang
+                languageState = lang,
+                onNavigateToAdmin = {
+                    navController.navigate(Routes.Admin)
+                },
+                viewModel = viewModel,
             )
         }
         composable(Routes.Register) {
             RegisterScreen(
                 onRegisterSuccess = { navController.popBackStack() },
                 languageState = lang
+            )
+        }
+        composable(Routes.Admin) {
+            AdminScreen(
+                viewModel = viewModel,
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                },
+                onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                },
+                onNavigateCategory = {
+                    navController.navigate(Routes.Category)
+                },
+                languageState = lang,
+                showUserOrders = { userEmail ->
+                    navController.navigate("userOrders/$userEmail")
+                },
+                showCustomer = { productId, productTitle ->
+                    val encodedTitle = Uri.encode(productTitle)
+                    navController.navigate("customers/$productId/$encodedTitle")
+                },
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
             )
         }
 
@@ -75,7 +110,10 @@ fun AppNav(viewModel: ProductViewModel) {
                     onNavigateCategory = {
                     navController.navigate(Routes.Category)
                 },
-                languageState = lang
+                languageState = lang,
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
             )
         }
 
@@ -108,7 +146,10 @@ fun AppNav(viewModel: ProductViewModel) {
                     onNavigateCategory = {
                         navController.navigate(Routes.Category)
                     },
-                    languageState = lang
+                    languageState = lang,
+                    onNavigateLogin = {
+                        navController.navigate(Routes.Login)
+                    }
                 )
             } else {
                 Text("Product not found", color = Color.Red, modifier = Modifier.padding(16.dp))
@@ -128,7 +169,10 @@ fun AppNav(viewModel: ProductViewModel) {
                 onNavigateCheckout = {
                     navController.navigate(Routes.Checkout)
                 },
-                languageState = lang
+                languageState = lang,
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
             )
         }
         composable(Routes.Favorite) {
@@ -146,7 +190,10 @@ fun AppNav(viewModel: ProductViewModel) {
                     onNavigateCategory = {
                         navController.navigate(Routes.Category)
                     },
-                    languageState = lang
+                    languageState = lang,
+                    onNavigateLogin = {
+                        navController.navigate(Routes.Login)
+                    }
                 )
         }
 
@@ -165,7 +212,10 @@ fun AppNav(viewModel: ProductViewModel) {
                 onBrandClick = { brand ->
                     navController.navigate("${Routes.SynScreen}/${Uri.encode(brand)}")
                 },
-                languageState = lang
+                languageState = lang,
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
             )
         }
         composable(
@@ -193,7 +243,10 @@ fun AppNav(viewModel: ProductViewModel) {
                 onCategoryClick = { category, brand ->
                     navController.navigate("${Routes.ProductsByCategory}/${Uri.encode(brand)}/${Uri.encode(category)}")
                 },
-                languageState = lang
+                languageState = lang,
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
             )
         }
 
@@ -235,11 +288,64 @@ fun AppNav(viewModel: ProductViewModel) {
                 onNavigateCategory = {
                     navController.navigate(Routes.Category)
                 },
-                languageState = lang
+                languageState = lang,
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
             )
         }
 
+        composable(
+            route = "customers/{productId}/{productTitle}",
+            arguments = listOf(
+                navArgument("productId") { type = NavType.StringType },
+                navArgument("productTitle") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            val productTitle = backStackEntry.arguments?.getString("productTitle") ?: ""
+            CustomersScreen(
+                productId = productId,
+                productTitle = productTitle,
+                viewModel = viewModel,
+                onNavigateCart = { navController.navigate(Routes.Cart) },
+                onNavigateCategory = { navController.navigate(Routes.Category) },
+                onNavigateFavorite = { navController.navigate(Routes.Favorite) },
+                onNavigateHome = { navController.navigate(Routes.Home) },
+                onBack = { navController.navigate(Routes.Admin) },
+                languageState = lang,
+                showUserOrders = { userEmail ->
+                    navController.navigate("userOrders/$userEmail")
+                },
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
+            )
+        }
 
+        composable("userOrders/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            UserOrdersScreen(email = email, viewModel = viewModel, languageState = lang,
+                onNavigateCart = {
+                    navController.navigate(Routes.Cart)
+                },
+                onNavigateCategory = {
+                    navController.navigate(Routes.Category)
+                },
+                onNavigateFavorite = {
+                    navController.navigate(Routes.Favorite)
+                },
+                onNavigateHome = {
+                    navController.navigate(Routes.Home)
+                },
+                onBack = {
+                    navController.navigate(Routes.Admin)
+                },
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
+            )
+        }
         composable(Routes.Checkout) {
             CheckoutScreen(
                 viewModel = viewModel,
@@ -258,7 +364,10 @@ fun AppNav(viewModel: ProductViewModel) {
                 onNavigateTrack = {
                     navController.navigate(Routes.Tracking)
                 },
-                languageState = lang
+                languageState = lang,
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
             )
         }
         composable(Routes.Tracking){
@@ -275,7 +384,10 @@ fun AppNav(viewModel: ProductViewModel) {
                 onNavigateHome = {
                     navController.navigate(Routes.Home)
                 },
-                languageState = lang
+                languageState = lang,
+                onNavigateLogin = {
+                    navController.navigate(Routes.Login)
+                }
             )
         }
 

@@ -58,7 +58,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit,
-                   onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit, onNavigateTrack: () -> Unit,  languageState: AppLanguage.Instance,) {
+                   onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit, onNavigateTrack: () -> Unit,
+                   languageState: AppLanguage.Instance, onNavigateLogin: () -> Unit) {
 
     val cartItems = viewModel.state.collectAsState().value.cartItems
     var email by remember { mutableStateOf("") }
@@ -101,16 +102,6 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
     var expanded by remember { mutableStateOf(false) }
     val themeState = LocalThemeState.current
     var expandedLang by remember { mutableStateOf(false) }
-    viewModel.setClientInfo(
-        Client(
-            email = email,
-            country = country,
-            firstName = firstName,
-            lastName = lastName,
-            address = address,
-            postalCode = postalCode
-        )
-    )
     val options = listOf(
         Triple(R.drawable.gift1, R.drawable.package1, "Beige"),
         Triple(R.drawable.gift2, R.drawable.package2, "Black"),
@@ -155,7 +146,7 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     androidx.compose.material3.IconButton(onClick = { expanded = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Theme Menu",
+                            contentDescription = "Menu",
                             tint = Color(0xFF907E36)
                         )
                     }
@@ -164,6 +155,31 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
+
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Se connecter") },
+                            onClick = {
+                                expanded = false
+                                onNavigateLogin()
+                            }
+                        )
+
+                        androidx.compose.material.Divider(
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+
+                        DropdownMenuItem(
+                            enabled = false,
+                            text = {
+                                androidx.compose.material3.Text(
+                                    "Theme",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Gray
+                                )
+                            },
+                            onClick = {}
+                        )
+
                         DropdownMenuItem(
                             text = { androidx.compose.material3.Text("Light Theme") },
                             onClick = {
@@ -724,9 +740,21 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+
                 Button(
                     onClick = {
                         if (isFormValid()) {
+                            viewModel.setClientInfo(
+                                Client(
+                                    email = email,
+                                    country = country,
+                                    firstName = firstName,
+                                    lastName = lastName,
+                                    address = address,
+                                    postalCode = postalCode,
+                                    phone = phone
+                                )
+                            )
                             viewModel.checkoutAndClearCart()
                             onNavigateTrack()
                         } else {
@@ -736,12 +764,12 @@ fun CheckoutScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
-
                         .offset(x = shakeOffset.value.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF907E36))
                 ) {
                     Text(languageState.get("Pay"), color = Color.White, fontSize = 18.sp)
                 }
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 

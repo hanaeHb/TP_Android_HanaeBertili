@@ -52,7 +52,8 @@ import java.util.Locale
 
 @Composable
 fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNavigateFavorite: () -> Unit,
-               onNavigateCategory: () -> Unit, onNavigateCheckout: () -> Unit,  languageState: AppLanguage.Instance) {
+               onNavigateCategory: () -> Unit, onNavigateCheckout: () -> Unit,
+               languageState: AppLanguage.Instance, onNavigateLogin: () -> Unit) {
     val cartItems = viewModel.state.collectAsState().value.cartItems
     val col = Color(0xFF907E36)
     val colM = Color(0xFFE6E6FA)
@@ -99,7 +100,7 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                     IconButton(onClick = { expanded = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Theme Menu",
+                            contentDescription = "Menu",
                             tint = Color(0xFF907E36)
                         )
                     }
@@ -108,6 +109,31 @@ fun CartScreen(viewModel: ProductViewModel, onNavigateHome: () -> Unit, onNaviga
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
+
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Se connecter") },
+                            onClick = {
+                                expanded = false
+                                onNavigateLogin()
+                            }
+                        )
+
+                        androidx.compose.material.Divider(
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+
+                        DropdownMenuItem(
+                            enabled = false,
+                            text = {
+                                androidx.compose.material3.Text(
+                                    "Theme",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Gray
+                                )
+                            },
+                            onClick = {}
+                        )
+
                         DropdownMenuItem(
                             text = { androidx.compose.material3.Text("Light Theme") },
                             onClick = {

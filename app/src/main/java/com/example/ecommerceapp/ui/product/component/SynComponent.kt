@@ -45,6 +45,7 @@ import com.example.ecommerceapp.R
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import com.example.ecommerceapp.ui.product.ProductViewModel
 import com.example.ecommerceapp.ui.product.Screen.AppLanguage
 import com.example.ecommerceapp.ui.theme.LocalThemeState
@@ -62,6 +63,7 @@ fun SynScreen(
     onNavigateCart: () -> Unit,
     onCategoryClick: (String, String) -> Unit,
     languageState: AppLanguage.Instance,
+    onNavigateLogin: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -105,7 +107,7 @@ fun SynScreen(
                     IconButton(onClick = { expanded = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Theme Menu",
+                            contentDescription = "Menu",
                             tint = Color(0xFF907E36)
                         )
                     }
@@ -114,6 +116,31 @@ fun SynScreen(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
+
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Se connecter") },
+                            onClick = {
+                                expanded = false
+                                onNavigateLogin()
+                            }
+                        )
+
+                        androidx.compose.material.Divider(
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+
+                        DropdownMenuItem(
+                            enabled = false,
+                            text = {
+                                androidx.compose.material3.Text(
+                                    "Theme",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Gray
+                                )
+                            },
+                            onClick = {}
+                        )
+
                         DropdownMenuItem(
                             text = { androidx.compose.material3.Text("Light Theme") },
                             onClick = {
@@ -128,7 +155,6 @@ fun SynScreen(
                                 expanded = false
                             }
                         )
-
                     }
                 }
 

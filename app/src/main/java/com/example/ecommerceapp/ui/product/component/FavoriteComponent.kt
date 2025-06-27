@@ -54,7 +54,7 @@ import java.util.Locale
 
 @Composable
 fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateHome: () ->  Unit, onClick: (String) -> Unit,
-                   onNavigateCategory: () -> Unit,  languageState: AppLanguage.Instance,) {
+                   onNavigateCategory: () -> Unit,  languageState: AppLanguage.Instance, onNavigateLogin: () -> Unit) {
     val state by viewModel.state.collectAsState()
     var expanded by remember { mutableStateOf(false) }
     val themeState = LocalThemeState.current
@@ -98,7 +98,7 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                     IconButton(onClick = { expanded = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Theme Menu",
+                            contentDescription = "Menu",
                             tint = Color(0xFF907E36)
                         )
                     }
@@ -107,6 +107,31 @@ fun FavoriteScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNa
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
+
+                        DropdownMenuItem(
+                            text = { Text("Se connecter") },
+                            onClick = {
+                                expanded = false
+                                onNavigateLogin()
+                            }
+                        )
+
+                        androidx.compose.material.Divider(
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+
+                        DropdownMenuItem(
+                            enabled = false,
+                            text = {
+                                Text(
+                                    "Theme",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Gray
+                                )
+                            },
+                            onClick = {}
+                        )
+
                         DropdownMenuItem(
                             text = { Text("Light Theme") },
                             onClick = {

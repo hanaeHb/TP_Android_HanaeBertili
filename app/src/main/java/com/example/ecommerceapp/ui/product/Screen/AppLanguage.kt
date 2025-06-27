@@ -103,8 +103,24 @@ object AppLanguage {
                 "Postal Code: " to "Postal Code: ",
                 "Address: " to "Address: ",
                 "Email: " to "Email: ",
-                "Your order will arrive within 48 hours" to "Your order will arrive within 48 hours"
-            ),
+                "Your order will arrive within 48 hours" to "Your order will arrive within 48 hours",
+                "👥 Users" to "👥 Users",
+                "🛍️ Products" to "🛍️ Products",
+                "No users registered yet." to "No users registered yet.",
+                "No products available." to "No products available.",
+                "This account has been blocked and cannot log in." to "This account has been blocked and cannot log in.",
+                "This account has been blocked and cannot register again." to "This account has been blocked and cannot register again.",
+                "Delete" to "Delete",
+                "Name:  " to "Name:  ",
+                "Phone: " to "Phone: ",
+                "Category:  " to "Category:  ",
+                "Stock:  " to "Stock:  ",
+                "Brand:  " to "Brand:  ",
+                "Admin page >" to "Admin page >",
+                "Details" to "Details",
+                "Orders for: " to "Orders for: ",
+
+                ),
 
             AppLanguage.FR to mapOf(
                 "register" to "S'inscrire",
@@ -180,7 +196,21 @@ object AppLanguage {
                 "Postal Code: " to "Code postal :",
                 "Address: " to "Adresse :",
                 "Email: " to "Email: ",
-                "Your order will arrive within 48 hours" to "Votre commande arrivera sous 48 heures"
+                "Your order will arrive within 48 hours" to "Votre commande arrivera sous 48 heures",
+                "👥 Users" to "👥 Utilisateurs",
+                 "🛍️ Products" to "🛍️ Produits",
+                "No users registered yet." to "Aucun utilisateur enregistré pour le moment.",
+                "No products available." to "Aucun produit disponible.",
+                "This account has been blocked and cannot log in." to "Ce compte a été bloqué et ne peut pas se connecter.",
+                "This account has been blocked and cannot register again." to "Ce compte a été bloqué et ne peut pas s'enregistrer à nouveau.",
+                "Delete" to "Supprimer",
+                "Name:  " to "Nom :  ",
+                "Phone: " to "Téléphone: ",
+                "Category:  " to "Catégorie :  ",
+                "Stock:  " to "Stock :  ",
+                "Brand:  " to "Marque :  ",
+                "Admin page >" to "Page Admin >"
+
 
             ),
             AppLanguage.AR to mapOf(
@@ -255,8 +285,20 @@ object AppLanguage {
                 "Country: " to "الدولة: ",
                 "Postal Code: " to "الرمز البريدي: ",
                 "Address: " to "العنوان: ",
-                "Your order will arrive within 48 hours" to "سيصل طلبك خلال 48 ساعة"
-
+                "Your order will arrive within 48 hours" to "سيصل طلبك خلال 48 ساعة",
+                "👥 Users" to "👥 المستخدمون",
+                "🛍️ Products" to "🛍️ المنتجات",
+                "No users registered yet."  to "لم يتم تسجيل أي مستخدم بعد.",
+                "No products available."  to "لا توجد منتجات متاحة.",
+                "This account has been blocked and cannot log in."  to "تم حظر هذا الحساب ولا يمكنه تسجيل الدخول.",
+                "This account has been blocked and cannot register again."  to "تم حظر هذا الحساب ولا يمكنه التسجيل مرة أخرى.",
+                "Delete" to "حذف",
+                "Name:  " to "الاسم:  ",
+                "Phone: " to "الهاتف: ",
+                "Category:  " to "الفئة:  ",
+                "Stock:  " to "المخزون:  ",
+                "Brand:  " to "العلامة التجارية:  ",
+                "Admin page >" to "صفحة المدير >",
             )
 
         )

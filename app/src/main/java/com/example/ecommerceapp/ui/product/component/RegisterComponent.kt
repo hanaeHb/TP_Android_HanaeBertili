@@ -83,7 +83,7 @@ fun RegisterScreen(
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -316,18 +316,23 @@ fun RegisterScreen(
                             } else if (password.length < 8) {
                                 errorMessage = languageState.get("password_too_short")
                             } else {
-                                val success = UserRepository.registerUser(
+                                when (val result = UserRepository.registerUser(
                                     email = email,
                                     password = password,
                                     firstName = firstName,
                                     lastName = lastName,
                                     phone = phone
-                                )
-                                if (success) {
-                                    errorMessage = null
-                                    onRegisterSuccess()
-                                } else {
-                                    errorMessage = languageState.get("email_used")
+                                )) {
+                                    is UserRepository.RegisterResult.Success -> {
+                                        errorMessage = null
+                                        onRegisterSuccess()
+                                    }
+                                    is UserRepository.RegisterResult.AlreadyRegistered -> {
+                                        errorMessage = languageState.get("email_used")
+                                    }
+                                    is UserRepository.RegisterResult.Blocked -> {
+                                        errorMessage = languageState.get("This account has been blocked and cannot register again.")
+                                    }
                                 }
                             }
                         },
@@ -339,6 +344,7 @@ fun RegisterScreen(
                     ) {
                         Text(languageState.get("register"), color = Color.White, fontSize = 18.sp)
                     }
+
 
 
                     Spacer(modifier = Modifier.height(16.dp))

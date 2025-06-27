@@ -57,6 +57,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.style.TextAlign
+import com.example.ecommerceapp.ui.product.ProductViewModel
 import com.example.ecommerceapp.ui.product.Screen.AppLanguage
 
 import com.example.ecommerceapp.ui.theme.LocalThemeState
@@ -65,9 +66,11 @@ import com.example.ecommerceapp.ui.theme.Mode
 
 @Composable
 fun LoginScreen(
+    viewModel: ProductViewModel,
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit,
     languageState: AppLanguage.Instance,
+    onNavigateToAdmin: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -86,7 +89,7 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                 .height(50.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -248,8 +251,17 @@ fun LoginScreen(
 
                     Button(
                         onClick = {
-                            if (UserRepository.isValidUser(email, password)) {
+                            if (email == "admin@gmail.com" && password == "adminadmin") {
                                 errorMessage = null
+                                onNavigateToAdmin()
+                            } else if (UserRepository.isBlocked(email)) {
+                                errorMessage = languageState.get("This account has been blocked and cannot log in.")
+                            } else if (UserRepository.isValidUser(email, password)) {
+                                errorMessage = null
+                                val user = UserRepository.getUserByEmailAndPassword(email, password)
+                                if (user != null) {
+                                    viewModel.onUserLoggedIn(user)
+                                }
                                 onLoginSuccess()
                             } else {
                                 errorMessage = languageState.get("invalid_credentials")
@@ -263,6 +275,7 @@ fun LoginScreen(
                     ) {
                         Text(languageState.get("login"), color = Color.White, fontSize = 18.sp)
                     }
+
                     Spacer(modifier = Modifier.height(16.dp))
 
                     LoginDividerWithText()

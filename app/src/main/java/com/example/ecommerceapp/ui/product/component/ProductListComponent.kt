@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ecommerceapp.R
@@ -56,7 +57,8 @@ fun ProductsByCategoryScreen(
     onNavigateFavorite: () -> Unit,
     onNavigateCart: () -> Unit,
     onNavigateCategory: () -> Unit,
-    languageState: AppLanguage.Instance
+    languageState: AppLanguage.Instance,
+    onNavigateLogin: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -88,9 +90,9 @@ fun ProductsByCategoryScreen(
             ) {
                 Box {
                     IconButton(onClick = { expanded = true }) {
-                        androidx.compose.material3.Icon(
+                        Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Theme Menu",
+                            contentDescription = "Menu",
                             tint = Color(0xFF907E36)
                         )
                     }
@@ -99,6 +101,31 @@ fun ProductsByCategoryScreen(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
+
+                        DropdownMenuItem(
+                            text = { Text("Se connecter") },
+                            onClick = {
+                                expanded = false
+                                onNavigateLogin()
+                            }
+                        )
+
+                        androidx.compose.material.Divider(
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+
+                        DropdownMenuItem(
+                            enabled = false,
+                            text = {
+                                Text(
+                                    "Theme",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Gray
+                                )
+                            },
+                            onClick = {}
+                        )
+
                         DropdownMenuItem(
                             text = { Text("Light Theme") },
                             onClick = {

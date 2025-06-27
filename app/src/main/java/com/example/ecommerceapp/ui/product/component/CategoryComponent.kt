@@ -87,6 +87,7 @@ fun CategoryScreen(
     onNavigateHome: () -> Unit,
     onBrandClick: (String) -> Unit,
     languageState: AppLanguage.Instance,
+    onNavigateLogin: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -124,34 +125,59 @@ fun CategoryScreen(
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 Box {
-                    IconButton(onClick = { expanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Theme Menu",
-                            tint = Color(0xFF907E36)
-                        )
-                    }
-
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Light Theme") },
-                            onClick = {
-                                themeState.mode = Mode.Light
-                                expanded = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Calme Theme") },
-                            onClick = {
-                                themeState.mode = Mode.Calme
-                                expanded = false
-                            }
-                        )
-                    }
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Menu",
+                        tint = Color(0xFF907E36)
+                    )
                 }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+
+                    DropdownMenuItem(
+                        text = { Text("Se connecter") },
+                        onClick = {
+                            expanded = false
+                            onNavigateLogin()
+                        }
+                    )
+
+                    androidx.compose.material.Divider(
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+
+                    DropdownMenuItem(
+                        enabled = false,
+                        text = {
+                            Text(
+                                "Theme",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Gray
+                            )
+                        },
+                        onClick = {}
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text("Light Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Light
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Calme Theme") },
+                        onClick = {
+                            themeState.mode = Mode.Calme
+                            expanded = false
+                        }
+                    )
+                }
+            }
 
                 Spacer(modifier = Modifier.width(8.dp))
 

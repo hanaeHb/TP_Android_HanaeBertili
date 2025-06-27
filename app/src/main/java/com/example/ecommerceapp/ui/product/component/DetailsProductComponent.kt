@@ -62,6 +62,7 @@ fun DetailsScreen(
     onNavigateToProduct: (Product) -> Unit,
     onNavigateCategory: () -> Unit,
     languageState: AppLanguage.Instance,
+    onNavigateLogin: () -> Unit
 ) {
     val imageResId = getImageResIdByName(product.imageResId)
     val customFontFamily = FontFamily(Font(R.font.dancingscript))
@@ -115,7 +116,7 @@ fun DetailsScreen(
                         IconButton(onClick = { expanded = true }) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
-                                contentDescription = "Theme Menu",
+                                contentDescription = "Menu",
                                 tint = Color(0xFF907E36)
                             )
                         }
@@ -124,15 +125,40 @@ fun DetailsScreen(
                             expanded = expanded,
                             onDismissRequest = { expanded = false }
                         ) {
+
                             DropdownMenuItem(
-                                text = { androidx.compose.material3.Text("Light Theme") },
+                                text = { Text("Se connecter") },
+                                onClick = {
+                                    expanded = false
+                                    onNavigateLogin()
+                                }
+                            )
+
+                            androidx.compose.material.Divider(
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+
+                            DropdownMenuItem(
+                                enabled = false,
+                                text = {
+                                    Text(
+                                        "Theme",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Gray
+                                    )
+                                },
+                                onClick = {}
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text("Light Theme") },
                                 onClick = {
                                     themeState.mode = Mode.Light
                                     expanded = false
                                 }
                             )
                             DropdownMenuItem(
-                                text = { androidx.compose.material3.Text("Calme Theme") },
+                                text = { Text("Calme Theme") },
                                 onClick = {
                                     themeState.mode = Mode.Calme
                                     expanded = false

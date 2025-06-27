@@ -62,7 +62,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit, onNavigateFavorite: () -> Unit,
-                        onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit, languageState: AppLanguage.Instance,) {
+                        onNavigateCategory: () -> Unit, onNavigateHome: () -> Unit, languageState: AppLanguage.Instance,onNavigateLogin: () -> Unit) {
     val state = viewModel.state.collectAsState().value
     val client = state.client
     val cartItems = viewModel.state.collectAsState().value.orderItems
@@ -141,7 +141,7 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                     IconButton(onClick = { expanded = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Theme Menu",
+                            contentDescription = "Menu",
                             tint = Color(0xFF907E36)
                         )
                     }
@@ -150,6 +150,31 @@ fun OrderTrackingScreen(viewModel: ProductViewModel, onNavigateCart: () -> Unit,
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
+
+                        DropdownMenuItem(
+                            text = { androidx.compose.material3.Text("Se connecter") },
+                            onClick = {
+                                expanded = false
+                                onNavigateLogin()
+                            }
+                        )
+
+                        androidx.compose.material.Divider(
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+
+                        DropdownMenuItem(
+                            enabled = false,
+                            text = {
+                                androidx.compose.material3.Text(
+                                    "Theme",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Gray
+                                )
+                            },
+                            onClick = {}
+                        )
+
                         DropdownMenuItem(
                             text = { androidx.compose.material3.Text("Light Theme") },
                             onClick = {

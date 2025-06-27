@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.ecommerceapp.data.Entities.CartItems
 import com.example.ecommerceapp.data.Entities.Client
 import com.example.ecommerceapp.data.Entities.Product
+import com.example.ecommerceapp.data.Entities.User
+import com.example.ecommerceapp.data.Repository.ClientRepository
+import com.example.ecommerceapp.data.Repository.OrderRepository
 import com.example.ecommerceapp.data.Repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +53,7 @@ class ProductViewModel @Inject constructor(
                     currentState.copy(products = updatedProducts)
                 }
             }
+
             is ProductIntent.RateProduct -> {
                 _state.update { currentState ->
                     val updatedProducts = currentState.products.map { product ->
@@ -60,8 +64,13 @@ class ProductViewModel @Inject constructor(
                     currentState.copy(products = updatedProducts)
                 }
             }
+
+            is ProductIntent.Checkout -> {
+                checkoutAndClearCart()
+            }
         }
     }
+
 
     private suspend fun loadProducts() {
         _state.value = _state.value.copy(isLoading = true, error = null)
@@ -81,11 +90,12 @@ class ProductViewModel @Inject constructor(
             if (existingItem != null) {
                 existingItem.quantity += 1
             } else {
-                updatedCart.add(CartItems(product, 1))
+                updatedCart.add(CartItems(product = product,  quantity = 1))
             }
             currentState.copy(cartItems = updatedCart)
         }
     }
+
 
     fun removeFromCart(productId: String) {
         _state.update { currentState ->
@@ -127,6 +137,8 @@ class ProductViewModel @Inject constructor(
     }
     fun checkoutAndClearCart() {
         _state.update { currentState ->
+            val clientEmail = currentState.client.email
+
             val updatedProducts = currentState.products.map { product ->
                 val cartItem = currentState.cartItems.find { it.product.id == product.id }
                 if (cartItem != null) {
@@ -135,13 +147,27 @@ class ProductViewModel @Inject constructor(
                     product.copy(quantity = newStock.toString())
                 } else product
             }
+
+            val updatedOrderItems = currentState.cartItems.map { cartItem ->
+                CartItems(
+                    product = cartItem.product,
+                    quantity = cartItem.quantity,
+                    clientEmail = clientEmail
+                )
+            }
+
+            repository.updateProductStock(updatedProducts)
+            OrderRepository.addOrUpdateOrders(updatedOrderItems)
+
             currentState.copy(
                 products = updatedProducts,
-                orderItems = currentState.cartItems,
+                orderItems = updatedOrderItems + currentState.orderItems,
                 cartItems = emptyList()
             )
         }
     }
+
+
 
     fun setClientInfo(info: Client) {
         _state.update { currentState ->
@@ -154,4 +180,29 @@ class ProductViewModel @Inject constructor(
             current.copy(selectedGiftIndex = index)
         }
     }
+
+    fun onUserLoggedIn(user: User) {
+        var client = ClientRepository.getClientByEmail(user.email)
+        if (client == null) {
+            client = Client(
+                email = user.email,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                phone = user.phone,
+                country = "",
+                address = "",
+                postalCode = ""
+            )
+            ClientRepository.addClient(client)
+        }
+    }
+
+    fun getClientsByProduct(productId: String): List<Client> {
+        val ordersForProduct = OrderRepository.getOrdersByEmailForProduct(productId)
+        val clients = ordersForProduct.mapNotNull { order ->
+            ClientRepository.getClientByEmail(order.clientEmail)
+        }
+        return clients.distinctBy { it.email }
+    }
+
 }
