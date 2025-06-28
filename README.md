@@ -122,6 +122,25 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
 ![home3](https://github.com/user-attachments/assets/bea7a4b5-b678-48c7-938b-b6769787c6a3)
 ![home4](https://github.com/user-attachments/assets/cbef8298-d9d7-4a45-819f-6b9a178aec37)
 
+-Par défaut, l'application utilise un thème Light adapté aux produits cosmétiques, L'utilisateur peut changer de thème vers un mode Calme selon ses préférences visuelles ou l’environnement lumineux.
+![home5](https://github.com/user-attachments/assets/b37e0e67-ce60-42a7-9297-728a91fbc016)
+![home6](https://github.com/user-attachments/assets/037c1fe6-fac6-4bac-8bad-8f64ca52f2c1)
+
+- L’application est disponible en anglais par défaut, avec possibilité de changer vers français ou arabe
+![home7](https://github.com/user-attachments/assets/7b206a5b-af85-4c59-921a-af089c513b35)
+
+---
+
+- Français
+![home8](https://github.com/user-attachments/assets/9f8187c1-3e7a-414b-bb24-bed5898597e7)
+
+- Arabe
+![home9](https://github.com/user-attachments/assets/00ec4744-828f-4bc6-8d41-15b872259328)
+
+
+
+
+
 
 
 
