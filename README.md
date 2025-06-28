@@ -117,13 +117,17 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
 
 # Home Page
 - La page d’accueil constitue le cœur de l’application e-commerce. Elle propose une interface riche, intuitive et personnalisable, regroupant l’ensemble des produits de soins coréens disponibles à l’achat.
+- 
 ![home1](https://github.com/user-attachments/assets/95d56d10-5a36-42fc-aad2-648bb2c26987)
 ![home2](https://github.com/user-attachments/assets/4a37df02-4993-41a8-b0c1-5363e7baf960)
 ![home3](https://github.com/user-attachments/assets/bea7a4b5-b678-48c7-938b-b6769787c6a3)
 ![home4](https://github.com/user-attachments/assets/cbef8298-d9d7-4a45-819f-6b9a178aec37)
 
--Par défaut, l'application utilise un thème Light adapté aux produits cosmétiques, L'utilisateur peut changer de thème vers un mode Calme selon ses préférences visuelles ou l’environnement lumineux.
+- Par défaut, l'application utilise un thème Light adapté aux produits cosmétiques, L'utilisateur peut changer de thème vers un mode Calme selon ses préférences visuelles ou l’environnement lumineux.
+  
 ![home5](https://github.com/user-attachments/assets/b37e0e67-ce60-42a7-9297-728a91fbc016)
+
+- Thème Calme
 ![home6](https://github.com/user-attachments/assets/037c1fe6-fac6-4bac-8bad-8f64ca52f2c1)
 
 - L’application est disponible en anglais par défaut, avec possibilité de changer vers français ou arabe
