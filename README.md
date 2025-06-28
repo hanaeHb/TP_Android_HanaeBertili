@@ -96,8 +96,22 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
 
 # Logo d'application
 - Le flocon de neige symbolise la pureté, la fraîcheur et la douceur, des qualités liées à une peau saine et lumineuse. Le nom "여자_SKIN" est symbolique : "여자" signifie femme en coréen et "SKIN" veut dire peau en anglais, ce qui montre que l’application est dédiée aux femmes et aux soins de la peau.
-
+  
 ![WhatsApp Image 2025-06-28 à 00 10 56_c1423f6f](https://github.com/user-attachments/assets/1ca42bcc-69e5-45ad-9e57-211f77325446)
+
+---
+
+# Login Page
+- La page de connexion constitue une étape essentielle dans l'accès personnalisé à l'application. Elle permet aux utilisateurs, qu’ils soient clients ou administrateurs, de s’authentifier via leur adresse email et mot de passe.
+![login1](https://github.com/user-attachments/assets/fbe24e62-1882-4791-8d7e-352ca86acff4)
+![login2](https://github.com/user-attachments/assets/d6367194-ebfe-45e4-9148-44f90c665b19)
+
+---
+
+# Refister Page
+
+
+
 
 
 
