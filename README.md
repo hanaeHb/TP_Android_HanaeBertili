@@ -109,6 +109,22 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
 ---
 
 # Refister Page
+- La page d'inscription permet aux nouveaux utilisateurs de créer un compte personnel afin d'accéder aux fonctionnalités de l'application.
+![register1](https://github.com/user-attachments/assets/9c09101b-cdd1-432e-b274-e56c57347734)
+![register2](https://github.com/user-attachments/assets/f78c8dab-6063-4d50-9dcc-c3d8c2262f55)
+
+---
+
+# Home Page
+- La page d’accueil constitue le cœur de l’application e-commerce. Elle propose une interface riche, intuitive et personnalisable, regroupant l’ensemble des produits de soins coréens disponibles à l’achat.
+![home1](https://github.com/user-attachments/assets/95d56d10-5a36-42fc-aad2-648bb2c26987)
+![home2](https://github.com/user-attachments/assets/4a37df02-4993-41a8-b0c1-5363e7baf960)
+![home3](https://github.com/user-attachments/assets/bea7a4b5-b678-48c7-938b-b6769787c6a3)
+![home4](https://github.com/user-attachments/assets/cbef8298-d9d7-4a45-819f-6b9a178aec37)
+
+
+
+
 
 
 
