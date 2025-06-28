@@ -147,7 +147,7 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
 
 ## Arabe
   
-![home9](https://github.com/user-attachments/assets/00ec4744-828f-4bc6-8d41-15b87225-9328)
+![home9](https://github.com/user-attachments/assets/7460f721-183e-4573-8302-3655af356b04)
 
 ---
 
@@ -159,6 +159,59 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
 ![detaills2](https://github.com/user-attachments/assets/88f2660a-b63a-457e-9588-b2e35b006134)
 
 ---
+
+# Favorite Page
+
+- La page des favoris permet à l’utilisateur de retrouver tous les produits qu’il a ajoutés à sa liste de souhaits pour y accéder plus rapidement et les consulter à tout moment.
+
+![favorite1](https://github.com/user-attachments/assets/aae4c050-9142-470f-b444-73193abc39f7)
+
+---
+
+# Category Page
+
+- La page Catalogue permet à l’utilisateur d’explorer facilement tous les produits de l’application en parcourant les marques (brands) disponibles, puis les catégories associées à chaque marque.
+
+## Brands Page
+
+![category1](https://github.com/user-attachments/assets/82e7a982-262a-4790-94e1-bf186f1157d1)
+
+---
+
+## Brand's Category Page
+
+![category2](https://github.com/user-attachments/assets/9a5cc7bb-b366-4fa4-8e24-72a1fc371a09)
+
+---
+
+## Page displaying all products belonging to this Brand and Category
+
+![category3](https://github.com/user-attachments/assets/ae4fe819-b289-487b-a77a-c6cb2ce36b17)
+
+---
+
+# Cart Page
+
+- La page Panier permet à l’utilisateur de gérer sa sélection de produits avant de passer à la commande. Elle inclut la gestion dynamique des quantités, des prix, et du stock.
+
+![cart1](https://github.com/user-attachments/assets/23cd4c20-768b-48f9-904e-eb4315bf6338)
+
+---
+
+- Lorsqu’un utilisateur essaie de choisir une quantité supérieure au stock, l’application affiche  un message d’erreur clair :
+
+![cart2](https://github.com/user-attachments/assets/b6eb61d3-794f-4046-95ad-4e4582e30547)
+
+---
+
+# Checkout Page
+
+- 
+
+
+
+
+
 
 
 
