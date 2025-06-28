@@ -6,7 +6,7 @@ Une application mobile de e-commerce dédiée aux produits de soins coréens (K-
 
 ## Fonctionnalités
 
-- Parcourir les produits de beauté coréens (par catégorie, marque ou type)
+- Parcourir les produits de beauté coréens (par catégorie, marque...)
 - Ajouter aux favoris
 - Ajouter au panier et passer une commande
 - Suivre les commandes
@@ -20,11 +20,9 @@ Une application mobile de e-commerce dédiée aux produits de soins coréens (K-
 ## Technologies utilisées
 
 - **Kotlin** + **Jetpack Compose** pour l'UI
-- **Architecture MVVM** avec ViewModel et State Management
 - **MVI** pour la gestion des intentions utilisateur
 - **Hilt** pour l’injection de dépendances
 - **Navigation Compose** pour la navigation entre les écrans
-- **Room** (si utilisé) pour la base de données locale
 - **Coil** pour le chargement d’images
 - **Retrofit + Gson** pour les appels API (si connecté à une base distante)
 
@@ -55,5 +53,47 @@ implementation("com.squareup.retrofit2:retrofit:3.0.0")
 implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 ```
+---
+
+# Lancement de l’application
+
+Voici les étapes pour exécuter l’application mobile sur un appareil réel ou un émulateur :
+
+### 1. Cloner le projet
+
+```bash
+git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
+```
+---
+
+## 2. Ouvrir le projet
+- Ouvrir Android Studio
+
+- Cliquer sur "Open" et sélectionner le dossier du projet
+
+- Attendre la synchronisation de Gradle
+
+---
+
+## 3. Brancher l’appareil (ou utiliser un émulateur)
+
+- Activer le mode développeur sur votre téléphone
+
+- Activer le débogage USB
+
+- Brancher l’appareil via câble USB
+
+- Sinon, lancer un émulateur Android (API 30+)
+
+---
+
+## 4. Lancer l’application
+- Sélectionner l’appareil dans Android Studio
+
+- Cliquer sur Run pour exécuter l’application
+
+
+
+
 
 
