@@ -206,7 +206,65 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
 
 # Checkout Page
 
-- 
+- La page Checkout permet à l’utilisateur de finaliser sa commande en remplissant ses informations, en personnalisant l’emballage avec un cadeau, puis en effectuant le paiement.
+
+![checkout1](https://github.com/user-attachments/assets/5b7ac870-c8c2-44b1-ac06-e1d2e1323c80)
+![checkout2](https://github.com/user-attachments/assets/c173e870-8205-4d10-8ad0-9bf1fa19d5e5)
+![checkout3](https://github.com/user-attachments/assets/6c78ab76-e4c9-4dc4-ac2b-935df884bdcc)
+![checkout4](https://github.com/user-attachments/assets/8169d154-b953-4a70-962e-2da85ed9400f)
+
+---
+
+# Tracking Page
+
+- La page Suivi de commande permet au client de suivre en temps réel l’évolution de sa commande, depuis la validation jusqu’à la livraison finale.
+
+![tracking1](https://github.com/user-attachments/assets/e5d2eab2-7767-4a7a-b6b5-f5b79ee83af9)
+![image](https://github.com/user-attachments/assets/3c621267-5f8d-4f33-af5c-1468827d9b25)
+![tracking5](https://github.com/user-attachments/assets/aa2b2fda-dea3-4354-a4da-a0d76ce893d1)
+![tracking4](https://github.com/user-attachments/assets/cb26eb3a-d64e-45ac-8f3e-f614514e2ba3)
+
+- Estimation de livraison : Un message au-dessus de la timeline informe le client de la date estimée d’arrivée
+
+![tracking2](https://github.com/user-attachments/assets/520c72bc-4a13-4928-8bab-31e3ad8c84ac)
+
+---
+
+# Admin Page
+
+- La page Admin est une interface réservée à l’administrateur de l’application. Elle permet de gérer les utilisateurs, de surveiller les achats, et de suivre les stocks en temps réel.
+
+## Users
+
+- Pour chaque utilisateur, l’admin peut bloquer le compte, Si un utilisateur est bloqué, il ne peut plus se connecter ni se réinscrire avec le même email.
+
+![admin1](https://github.com/user-attachments/assets/fd9d88b5-0365-48d2-91e8-58e618d2661b)
+
+---
+
+## User's Products
+
+- L’admin peut voir tous les produits achetés par chaque utilisateur : Information du produit, Quantité achetée 
+
+![admin2](https://github.com/user-attachments/assets/960fc6a1-8909-4c61-bec8-d428d8a26b97)
+
+---
+
+## Products
+
+- Affichage de la liste complète des produits disponibles dans l’application
+
+![admin4](https://github.com/user-attachments/assets/cbd6891f-3eab-461b-9bac-b3819aadc2d6)
+
+## Products's Customer
+
+- Pour chaque produit (par Button Show Buyers), Voir les utilisateurs qui ont acheté ce produit
+
+![admin5](https://github.com/user-attachments/assets/fa7cc4dd-2f8c-4ddd-a2e2-4584f60837e8)
+
+
+
+
 
 
 
