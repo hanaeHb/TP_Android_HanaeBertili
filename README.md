@@ -129,7 +129,7 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
     
 ![home5](https://github.com/user-attachments/assets/b37e0e67-ce60-42a7-9297-728a91fbc016)
 
-- Thème Calme
+## Thème Calme
   
 ![home6](https://github.com/user-attachments/assets/037c1fe6-fac6-4bac-8bad-8f64ca52f2c1)
 
@@ -141,13 +141,27 @@ git clone https://github.com/hanaeHb/TP_Android_HanaeBertili.git
 
 ---
 
-- Français
+## Français
   
 ![home8](https://github.com/user-attachments/assets/9f8187c1-3e7a-414b-bb24-bed5898597e7)
 
-- Arabe
+## Arabe
   
-![home9](https://github.com/user-attachments/assets/00ec4744-828f-4bc6-8d41-15b872259328)
+![home9](https://github.com/user-attachments/assets/00ec4744-828f-4bc6-8d41-15b87225-9328)
+
+---
+
+# Product Details Page
+
+- La page de détails permet à l’utilisateur de consulter toutes les informations importantes concernant un produit spécifique de soins coréens. Elle est conçue pour offrir une vue claire, complète et attrayante du produit sélectionné.
+
+![detaills1](https://github.com/user-attachments/assets/dee2d00c-3522-43e1-9d60-bf20bdb1b9f4)
+![detaills2](https://github.com/user-attachments/assets/88f2660a-b63a-457e-9588-b2e35b006134)
+
+---
+
+
+
 
 
 
